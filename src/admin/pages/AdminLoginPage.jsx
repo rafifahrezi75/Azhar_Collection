@@ -6,8 +6,8 @@ import { Lock, Mail, ArrowRight, ShieldCheck } from 'lucide-react'
 import '../styles/admin.css'
 
 export default function AdminLoginPage() {
-  const [email, setEmail] = useState('admin@azharcollection.com')
-  const [password, setPassword] = useState('admin123')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
@@ -91,7 +91,7 @@ export default function AdminLoginPage() {
                 style={{ paddingLeft: '2.5rem' }}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="nama@domain.com"
+                placeholder="email@gmail.com"
               />
               <Mail
                 size={16}
@@ -119,7 +119,7 @@ export default function AdminLoginPage() {
                 style={{ paddingLeft: '2.5rem' }}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
+                placeholder="password"
               />
               <Lock
                 size={16}

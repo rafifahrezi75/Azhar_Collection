@@ -1,23 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
-  <defs>
-    <linearGradient id="azharPurple" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#9E0084" />
-      <stop offset="45%" stop-color="#800066" />
-      <stop offset="100%" stop-color="#550044" />
-    </linearGradient>
-    
-    <clipPath id="aShapeClip">
-      <path fill-rule="evenodd"
-            d="M 90 460 L 235 68 C 242 48, 260 36, 282 36 L 338 36 C 354 36, 366 46, 372 62 L 485 460 L 385 460 L 354 336 L 202 336 L 168 460 Z 
-               M 226 252 L 332 252 L 286 96 Z" />
-    </clipPath>
-  </defs>
-
-  <g transform="translate(-32, 8)">
-    <g clip-path="url(#aShapeClip)">
-      <rect width="600" height="600" fill="url(#azharPurple)" />
-      <path d="M 286 96 L 332 252 L 354 336 L 385 460 L 485 460 L 338 36 Z" 
-            fill="#000000" opacity="0.3" />
-    </g>
-  </g>
+  <path fill="#800080" fill-rule="evenodd"
+        d="M 216 56 L 296 56 L 446 456 L 356 456 L 316 350 L 196 350 L 156 456 L 66 456 Z 
+           M 256 140 L 290 275 L 222 275 Z" />
 </svg>

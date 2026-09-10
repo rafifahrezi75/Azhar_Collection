@@ -12,8 +12,8 @@ export const companyInfo = {
   contactPersonSecondary: "Lazuardi",
   email: "azharcollection@gmail.com",
   workingHours: "Senin - Sabtu: 08.00 - 17.00 WIB",
-  mapsEmbedUrl: "https://maps.google.com/maps?q=Damarsi%2C%20Buduran%2C%20Kabupaten%20Sidoarjo%2C%20Jawa%20Timur&t=&z=15&ie=UTF8&iwloc=&output=embed",
-  mapsUrl: "https://maps.google.com/?q=Damarsi,+Buduran,+Sidoarjo,+Jawa+Timur",
+  mapsEmbedUrl: "https://maps.google.com/maps?q=Azhar+Collection,+-7.4222628,112.763057&t=&z=17&ie=UTF8&iwloc=&output=embed",
+  mapsUrl: "https://maps.app.goo.gl/BAAqNXmsJQaVS2pn6",
   socials: {
     facebook: "https://facebook.com",
     instagram: "https://instagram.com",
