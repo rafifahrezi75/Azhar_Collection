@@ -3213,6 +3213,27 @@ img {
   }
 }
 
+@media (max-width: 420px) {
+  .client-clean-card {
+    gap: 0.75rem;
+    padding: 0.875rem 0.75rem;
+  }
+
+  .client-clean-img-wrap {
+    width: 70px;
+    min-width: 70px;
+    height: 70px;
+  }
+
+  .client-clean-title {
+    font-size: 0.9375rem;
+  }
+
+  .client-clean-meta {
+    font-size: 0.6875rem;
+  }
+}
+
 .career-journey-section {
   padding: 5rem 0;
   background: #FFFFFF;

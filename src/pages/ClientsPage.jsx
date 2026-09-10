@@ -2,7 +2,39 @@ import { useState, useEffect } from 'react'
 import PageHeader from '../components/PageHeader'
 import { getKlienList } from '../firebase/adminService'
 import { clientsData as fallbackClients } from '../data/siteData'
-import { MapPin, Calendar } from 'lucide-react'
+import { MapPin, Calendar, School } from 'lucide-react'
+
+function ClientLogo({ src, alt }) {
+  const [hasError, setHasError] = useState(false)
+
+  if (!src || hasError) {
+    return (
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'var(--color-bg-light, #F1F5F9)',
+          color: 'var(--color-primary-dark, #0A2540)'
+        }}
+      >
+        <School size={36} strokeWidth={1.75} style={{ opacity: 0.8 }} />
+      </div>
+    )
+  }
+
+  return (
+    <img
+      src={src}
+      alt={alt}
+      className="client-clean-img"
+      loading="lazy"
+      onError={() => setHasError(true)}
+    />
+  )
+}
 
 export default function ClientsPage() {
   const [clients, setClients] = useState(fallbackClients)
@@ -43,18 +75,7 @@ export default function ClientsPage() {
                     className="client-clean-card"
                   >
                     <div className="client-clean-img-wrap">
-                      {clientImg ? (
-                        <img
-                          src={clientImg}
-                          alt={client.name}
-                          className="client-clean-img"
-                          loading="lazy"
-                        />
-                      ) : (
-                        <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F1F5F9', color: '#94A3B8', fontSize: '0.75rem' }}>
-                          Logo Mitra
-                        </div>
-                      )}
+                      <ClientLogo src={clientImg} alt={client.name} />
                     </div>
 
                     <div className="client-clean-content">

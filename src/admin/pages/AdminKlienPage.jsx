@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Plus, Search, Edit2, Trash2, Users, Image as ImageIcon, Eye } from 'lucide-react'
+import { Plus, Search, Edit2, Trash2, Users, School, Eye } from 'lucide-react'
 import AdminModal from '../components/AdminModal'
 import { getKlienList, deleteKlienItem } from '../../firebase/adminService'
 
@@ -138,7 +138,7 @@ export default function AdminKlienPage() {
                               style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
                             />
                           ) : (
-                            <ImageIcon size={20} style={{ color: 'var(--admin-text-subtle)' }} />
+                            <School size={20} style={{ color: 'var(--admin-text-subtle)' }} />
                           )}
                         </div>
                         <div>

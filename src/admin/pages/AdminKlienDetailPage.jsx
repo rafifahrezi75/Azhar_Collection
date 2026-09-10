@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { ArrowLeft, Edit2, ExternalLink, Building2, MapPin, Calendar, Users, PackageCheck, AlertCircle, Loader2 } from 'lucide-react'
+import { ArrowLeft, Edit2, ExternalLink, Building2, MapPin, Calendar, Users, PackageCheck, AlertCircle, Loader2, School } from 'lucide-react'
 import { getKlienById } from '../../firebase/adminService'
 
 export default function AdminKlienDetailPage() {
@@ -182,7 +182,7 @@ export default function AdminKlienDetailPage() {
                   style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
                 />
               ) : (
-                <Building2 size={64} style={{ color: 'var(--admin-text-subtle)' }} />
+                <School size={64} style={{ color: 'var(--admin-text-subtle)' }} />
               )}
             </div>
           </div>

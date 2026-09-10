@@ -12,7 +12,7 @@ export const companyInfo = {
   contactPersonSecondary: "Lazuardi",
   email: "azharcollection@gmail.com",
   workingHours: "Senin - Sabtu: 08.00 - 17.00 WIB",
-  mapsEmbedUrl: "https://maps.google.com/maps?q=Azhar+Collection,+-7.4222628,112.763057&t=&z=17&ie=UTF8&iwloc=&output=embed",
+  mapsEmbedUrl: "https://www.google.com/maps/embed?origin=mfe&pb=!1m3!2m1!1sAzhar+Collection+Buduran!6i17",
   mapsUrl: "https://maps.app.goo.gl/BAAqNXmsJQaVS2pn6",
   socials: {
     facebook: "https://facebook.com",

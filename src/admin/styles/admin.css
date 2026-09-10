@@ -732,22 +732,37 @@
 
 .admin-login-wrapper {
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--admin-bg);
-  padding: 1.5rem;
+  background: radial-gradient(ellipse at top, rgba(128, 0, 128, 0.08) 0%, rgba(248, 250, 252, 1) 70%);
+  padding: 1.5rem 1rem;
   font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
 }
 
 .admin-login-card {
   width: 100%;
   max-width: 440px;
-  background: var(--admin-surface);
-  border: 1px solid var(--admin-border);
-  border-radius: var(--admin-radius);
+  background: #FFFFFF;
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  border-radius: 16px;
   padding: 2.25rem;
-  box-shadow: var(--admin-shadow-lg);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
+  box-sizing: border-box;
+}
+
+@media (max-width: 480px) {
+  .admin-login-wrapper {
+    padding: 1.25rem 0.875rem;
+  }
+
+  .admin-login-card {
+    padding: 1.75rem 1.25rem;
+    border-radius: 14px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.04);
+  }
 }
 
 .admin-alert {
