@@ -110,6 +110,10 @@ export default function AdminLayout() {
         <main className="admin-content">
           <Outlet context={{ currentUser, isDarkMode }} />
         </main>
+
+        <footer style={{ padding: '1rem 1.5rem', textAlign: 'center', fontSize: '0.75rem', color: 'var(--admin-text-subtle)', borderTop: '1px solid var(--admin-border)' }}>
+          &copy; {new Date().getFullYear()} Azhar Collection. Seluruh hak cipta dilindungi.
+        </footer>
       </div>
     </div>
   )

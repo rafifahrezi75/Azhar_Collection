@@ -220,7 +220,7 @@ export default function ContactMapSection({ showForm = true }) {
                   </a>
                 </div>
 
-                <div style={{ borderRadius: '8px', overflow: 'hidden', border: '1px solid var(--color-border)', height: '185px' }}>
+                <div style={{ borderRadius: '4px', overflow: 'hidden', border: '1px solid var(--color-border)', height: '185px' }}>
                   <iframe
                     src={companyInfo.mapsEmbedUrl}
                     title="Lokasi Azhar Collection Sidoarjo di Google Maps"
@@ -251,7 +251,7 @@ export default function ContactMapSection({ showForm = true }) {
                         style={{
                           width: '36px',
                           height: '36px',
-                          borderRadius: '8px',
+                          borderRadius: '4px',
                           background: 'var(--color-primary-soft)',
                           color: 'var(--color-primary)',
                           display: 'flex',
@@ -284,7 +284,7 @@ export default function ContactMapSection({ showForm = true }) {
                       style={{
                         width: '36px',
                         height: '36px',
-                        borderRadius: '8px',
+                        borderRadius: '4px',
                         padding: 0,
                         display: 'flex',
                         alignItems: 'center',

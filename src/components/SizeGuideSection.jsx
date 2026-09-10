@@ -33,7 +33,7 @@ export default function SizeGuideSection() {
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', marginBottom: '1.25rem', color: 'var(--color-primary-dark)' }}>
-                <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'var(--color-primary-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary)' }}>
+                <div style={{ width: '36px', height: '36px', borderRadius: '4px', background: 'var(--color-primary-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary)' }}>
                   <Ruler size={18} />
                 </div>
                 <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0 }}>

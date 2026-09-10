@@ -372,7 +372,7 @@ export default function ClientDetailPage() {
                       {client.totalPcs}
                     </div>
                   </div>
-                  <div style={{ width: '42px', height: '42px', borderRadius: '8px', background: 'rgba(128, 0, 128, 0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary)' }}>
+                  <div style={{ width: '42px', height: '42px', borderRadius: '4px', background: 'rgba(128, 0, 128, 0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary)' }}>
                     <Package size={20} />
                   </div>
                 </div>
@@ -396,7 +396,7 @@ export default function ClientDetailPage() {
                       {client.totalOrders}
                     </div>
                   </div>
-                  <div style={{ width: '42px', height: '42px', borderRadius: '8px', background: 'var(--color-accent-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-accent-hover)' }}>
+                  <div style={{ width: '42px', height: '42px', borderRadius: '4px', background: 'var(--color-accent-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-accent-hover)' }}>
                     <Calendar size={20} />
                   </div>
                 </div>
@@ -420,7 +420,7 @@ export default function ClientDetailPage() {
                       {client.orderedProducts?.length || 0} Model
                     </div>
                   </div>
-                  <div style={{ width: '42px', height: '42px', borderRadius: '8px', background: 'var(--color-accent-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-accent-hover)' }}>
+                  <div style={{ width: '42px', height: '42px', borderRadius: '4px', background: 'var(--color-accent-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-accent-hover)' }}>
                     <Layers size={20} />
                   </div>
                 </div>

@@ -14,7 +14,7 @@ export default function CtaBanner() {
           <Link
             to="/kontak"
             className="btn-primary"
-            style={{ padding: '1rem 2.25rem', fontSize: '1rem', borderRadius: '9999px' }}
+            style={{ padding: '1rem 2.25rem', fontSize: '1rem', borderRadius: '4px' }}
           >
             <MessageSquare size={18} />
             <span>Hubungi Tim Kami Sekarang</span>

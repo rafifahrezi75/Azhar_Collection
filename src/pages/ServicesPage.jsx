@@ -73,7 +73,7 @@ export default function ServicesPage() {
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                  <div style={{ width: '44px', height: '44px', borderRadius: '8px', background: 'var(--color-primary-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary)' }}>
+                  <div style={{ width: '44px', height: '44px', borderRadius: '4px', background: 'var(--color-primary-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary)' }}>
                     {item.icon}
                   </div>
                   <span style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--color-border)', letterSpacing: '0.05em' }}>

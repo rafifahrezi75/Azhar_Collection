@@ -42,7 +42,7 @@ export default function AdminLoginPage() {
               width: '48px',
               height: '48px',
               margin: '0 auto 0.875rem auto',
-              borderRadius: '12px',
+              borderRadius: '4px',
               background: 'linear-gradient(135deg, #5C005C 0%, #800080 100%)',
               display: 'flex',
               alignItems: 'center',
@@ -72,7 +72,7 @@ export default function AdminLoginPage() {
           <div
             style={{
               padding: '0.625rem 0.75rem',
-              borderRadius: '10px',
+              borderRadius: '4px',
               background: 'var(--admin-primary-soft)',
               color: 'var(--admin-primary)',
               fontSize: '0.71875rem',
@@ -189,7 +189,7 @@ export default function AdminLoginPage() {
           </button>
         </form>
 
-        <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
+        <div style={{ textAlign: 'center', marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem', alignItems: 'center' }}>
           <Link
             to="/"
             style={{
@@ -198,11 +198,14 @@ export default function AdminLoginPage() {
               textDecoration: 'none',
               display: 'inline-flex',
               alignItems: 'center',
-              padding: '0.375rem 0.75rem'
+              padding: '0.25rem 0.5rem'
             }}
           >
             ← Kembali ke Website Utama
           </Link>
+          <div style={{ fontSize: '0.75rem', color: 'var(--admin-text-subtle)' }}>
+            &copy; {new Date().getFullYear()} Azhar Collection. Seluruh hak cipta dilindungi.
+          </div>
         </div>
       </div>
     </div>
