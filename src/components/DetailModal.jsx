@@ -73,7 +73,6 @@ export default function DetailModal({
             <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-accent)', textTransform: 'uppercase' }}>
               {data.categoryLabel} - {data.id}
             </span>
-            <span className="product-badge" style={{ position: 'static' }}>{data.badge}</span>
           </div>
 
           <h4 style={{ fontSize: '1.375rem', fontWeight: 800, color: 'var(--color-primary-dark)', marginBottom: '0.75rem' }}>

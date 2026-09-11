@@ -9,7 +9,8 @@ export default function AdminImageUploader({
   onFileSelected,
   onRemove,
   onUrlChanged,
-  label = 'Foto / Gambar'
+  label = 'Foto / Gambar',
+  ratioHint = ''
 }) {
   const [internalFile, setInternalFile] = useState(null)
   const activeFile = controlledSelectedFile !== undefined ? controlledSelectedFile : internalFile
@@ -63,11 +64,18 @@ export default function AdminImageUploader({
 
   return (
     <div className="admin-input-group">
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.25rem' }}>
-        <label className="admin-label">{label}</label>
-        <span style={{ fontSize: '0.6875rem', color: 'var(--admin-primary)', fontWeight: 700 }}>
-          Cloudinary Terhubung
-        </span>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.25rem', flexWrap: 'wrap', gap: '0.375rem' }}>
+        <label className="admin-label" style={{ marginBottom: 0 }}>{label}</label>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          {ratioHint && (
+            <span style={{ fontSize: '0.6875rem', color: 'var(--admin-text-subtle)', fontWeight: 600 }}>
+              {ratioHint}
+            </span>
+          )}
+          <span style={{ fontSize: '0.6875rem', color: 'var(--admin-primary)', fontWeight: 700 }}>
+            Cloudinary Terhubung
+          </span>
+        </div>
       </div>
 
       {error && (
@@ -210,6 +218,11 @@ export default function AdminImageUploader({
           <div style={{ fontSize: '0.6875rem', color: 'var(--admin-text-muted)', marginTop: '0.2rem' }}>
             Foto akan diunggah otomatis ke Cloudinary saat Anda mengklik Simpan
           </div>
+          {ratioHint && (
+            <div style={{ marginTop: '0.5rem', display: 'inline-flex', alignItems: 'center', gap: '0.25rem', padding: '0.25rem 0.5rem', borderRadius: '4px', backgroundColor: 'var(--admin-surface-hover)', border: '1px solid var(--admin-border)', fontSize: '0.6875rem', fontWeight: 600, color: 'var(--admin-text-subtle)' }}>
+              <span>Rekomendasi: {ratioHint}</span>
+            </div>
+          )}
         </div>
       )}
     </div>

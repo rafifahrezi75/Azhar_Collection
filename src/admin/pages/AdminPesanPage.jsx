@@ -1,18 +1,20 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Search, Trash2, MessageSquare, Eye } from 'lucide-react'
-import AdminModal from '../components/AdminModal'
+import { Search, Eye, Trash2, Mail, MessageSquare } from 'lucide-react'
+import AdminPagination from '../components/AdminPagination'
 import {
   getInquiriesList,
   updateInquiryStatus,
   deleteInquiry
 } from '../../firebase/adminService'
+import { showDeleteConfirm, showToast, showErrorAlert } from '../utils/swal'
 
 export default function AdminPesanPage() {
   const [inquiries, setInquiries] = useState([])
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
-  const [deleteConfirmId, setDeleteConfirmId] = useState(null)
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 8
 
   const loadData = async () => {
     const list = await getInquiriesList()
@@ -29,16 +31,30 @@ export default function AdminPesanPage() {
     }
   }, [])
 
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [search, statusFilter])
+
   const handleStatusChange = async (id, newStatus) => {
     await updateInquiryStatus(id, newStatus)
     await loadData()
+    showToast({ icon: 'success', title: 'Status pesan diperbarui' })
   }
 
-  const handleDelete = async () => {
-    if (!deleteConfirmId) return
-    await deleteInquiry(deleteConfirmId)
-    await loadData()
-    setDeleteConfirmId(null)
+  const handleDelete = async (inq) => {
+    const res = await showDeleteConfirm({
+      title: 'Hapus Pesan Masuk?',
+      text: `Apakah Anda yakin ingin menghapus pesan dari "${inq.name}"? Data yang dihapus tidak dapat dipulihkan.`
+    })
+    if (res.isConfirmed) {
+      try {
+        await deleteInquiry(inq.id)
+        setInquiries((prev) => prev.filter((item) => item.id !== inq.id))
+        showToast({ icon: 'success', title: 'Pesan berhasil dihapus' })
+      } catch (err) {
+        showErrorAlert('Gagal Menghapus', err?.message)
+      }
+    }
   }
 
   const filteredInquiries = inquiries.filter((inq) => {
@@ -49,6 +65,12 @@ export default function AdminPesanPage() {
     const matchStatus = statusFilter === 'all' || inq.status === statusFilter
     return matchSearch && matchStatus
   })
+
+  const totalPages = Math.ceil(filteredInquiries.length / itemsPerPage) || 1
+  const paginatedInquiries = filteredInquiries.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  )
 
   return (
     <div>
@@ -68,9 +90,20 @@ export default function AdminPesanPage() {
       </div>
 
       <div className="admin-card">
-        <div className="admin-card-header">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flex: 1, flexWrap: 'wrap' }}>
-            <div style={{ position: 'relative', minWidth: '220px', maxWidth: '340px', flex: 1 }}>
+        <div className="admin-card-header admin-table-card-header">
+          <div className="admin-table-tools">
+            <select
+              className="admin-select admin-table-select-filter"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+            >
+              <option value="all">Semua Status</option>
+              <option value="baru">Belum Dibaca</option>
+              <option value="proses">Dalam Proses</option>
+              <option value="selesai">Selesai</option>
+            </select>
+
+            <div className="admin-table-search-box">
               <input
                 type="text"
                 placeholder="Cari pengirim / instansi..."
@@ -90,18 +123,6 @@ export default function AdminPesanPage() {
                 }}
               />
             </div>
-
-            <select
-              className="admin-select"
-              style={{ width: 'auto', minWidth: '160px' }}
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-            >
-              <option value="all">Semua Status</option>
-              <option value="baru">Belum Dibaca</option>
-              <option value="proses">Dalam Proses</option>
-              <option value="selesai">Selesai</option>
-            </select>
           </div>
         </div>
 
@@ -126,7 +147,7 @@ export default function AdminPesanPage() {
                   </td>
                 </tr>
               ) : (
-                filteredInquiries.map((inq) => (
+                paginatedInquiries.map((inq) => (
                   <tr key={inq.id}>
                     <td>
                       <div style={{ fontWeight: 700 }}>{inq.name}</div>
@@ -175,7 +196,7 @@ export default function AdminPesanPage() {
                         </Link>
                         <button
                           type="button"
-                          onClick={() => setDeleteConfirmId(inq.id)}
+                          onClick={() => handleDelete(inq)}
                           className="admin-icon-btn"
                           style={{ color: 'var(--admin-danger)' }}
                           title="Hapus Catatan"
@@ -190,36 +211,15 @@ export default function AdminPesanPage() {
             </tbody>
           </table>
         </div>
-      </div>
 
-      <AdminModal
-        isOpen={Boolean(deleteConfirmId)}
-        onClose={() => setDeleteConfirmId(null)}
-        title="Konfirmasi Hapus Pesan"
-        maxWidth="440px"
-        footer={
-          <>
-            <button
-              type="button"
-              onClick={() => setDeleteConfirmId(null)}
-              className="admin-btn admin-btn-secondary"
-            >
-              Batal
-            </button>
-            <button
-              type="button"
-              onClick={handleDelete}
-              className="admin-btn admin-btn-danger"
-            >
-              Hapus Sekarang
-            </button>
-          </>
-        }
-      >
-        <p style={{ margin: 0, fontSize: '0.875rem' }}>
-          Apakah Anda yakin ingin menghapus catatan pesan ini?
-        </p>
-      </AdminModal>
+        <AdminPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={filteredInquiries.length}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+        />
+      </div>
     </div>
   )
 }

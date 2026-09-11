@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Plus, Search, Edit2, Trash2, Scissors, Image as ImageIcon, Eye } from 'lucide-react'
-import AdminModal from '../components/AdminModal'
+import AdminPagination from '../components/AdminPagination'
 import { getLayananList, deleteLayananItem } from '../../firebase/adminService'
+import { showDeleteConfirm, showToast, showErrorAlert } from '../utils/swal'
 
 export default function AdminLayananPage() {
   const [servicesList, setServicesList] = useState([])
   const [search, setSearch] = useState('')
-  const [deleteConfirmId, setDeleteConfirmId] = useState(null)
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 8
 
   const loadData = async () => {
     const list = await getLayananList()
@@ -24,11 +26,24 @@ export default function AdminLayananPage() {
     }
   }, [])
 
-  const handleDelete = async () => {
-    if (!deleteConfirmId) return
-    await deleteLayananItem(deleteConfirmId)
-    await loadData()
-    setDeleteConfirmId(null)
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [search])
+
+  const handleDelete = async (service) => {
+    const res = await showDeleteConfirm({
+      title: 'Hapus Layanan Konveksi?',
+      text: `Apakah Anda yakin ingin menghapus "${service.title}"? Data yang dihapus tidak dapat dipulihkan.`
+    })
+    if (res.isConfirmed) {
+      try {
+        await deleteLayananItem(service.id)
+        setServicesList((prev) => prev.filter((s) => s.id !== service.id))
+        showToast({ icon: 'success', title: 'Layanan berhasil dihapus' })
+      } catch (err) {
+        showErrorAlert('Gagal Menghapus', err?.message)
+      }
+    }
   }
 
   const filteredServices = servicesList.filter((service) => {
@@ -39,24 +54,18 @@ export default function AdminLayananPage() {
     return matchSearch
   })
 
+  const totalPages = Math.ceil(filteredServices.length / itemsPerPage) || 1
+  const paginatedServices = filteredServices.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  )
+
   return (
     <div>
       <div className="admin-page-header">
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-            <h1 className="admin-page-title" style={{ margin: 0 }}>Layanan Konveksi & Jahit</h1>
-            <div className="admin-inline-actions">
-              <Link
-                to="/admin/layanan/tambah"
-                className="admin-action-icon-btn admin-action-icon-btn-primary"
-                title="Tambah Layanan Baru"
-                aria-label="Tambah Layanan Baru"
-              >
-                <Plus size={18} />
-              </Link>
-            </div>
-          </div>
-          <p className="admin-page-desc" style={{ margin: '0.25rem 0 0 0' }}>
+          <h1 className="admin-page-title">Layanan Konveksi & Jahit</h1>
+          <p className="admin-page-desc">
             Kelola ragam produk seragam, minimal pemesanan (MOQ), estimasi pengerjaan, dan spesifikasi bahan.
           </p>
         </div>
@@ -69,26 +78,37 @@ export default function AdminLayananPage() {
       </div>
 
       <div className="admin-card">
-        <div className="admin-card-header">
-          <div style={{ position: 'relative', minWidth: '220px', maxWidth: '340px', flex: 1 }}>
-            <input
-              type="text"
-              placeholder="Cari jenis layanan / bahan..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="admin-input"
-              style={{ paddingLeft: '2.25rem' }}
-            />
-            <Search
-              size={16}
-              style={{
-                position: 'absolute',
-                left: '0.75rem',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                color: 'var(--admin-text-subtle)'
-              }}
-            />
+        <div className="admin-card-header admin-table-card-header">
+          <div className="admin-table-tools">
+            <div className="admin-table-search-box">
+              <input
+                type="text"
+                placeholder="Cari jenis layanan / bahan..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="admin-input"
+                style={{ paddingLeft: '2.25rem' }}
+              />
+              <Search
+                size={16}
+                style={{
+                  position: 'absolute',
+                  left: '0.75rem',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  color: 'var(--admin-text-subtle)'
+                }}
+              />
+            </div>
+
+            <Link
+              to="/admin/layanan/tambah"
+              className="admin-action-icon-btn admin-action-icon-btn-primary"
+              title="Tambah Layanan Baru"
+              aria-label="Tambah Layanan Baru"
+            >
+              <Plus size={16} />
+            </Link>
           </div>
         </div>
 
@@ -112,7 +132,7 @@ export default function AdminLayananPage() {
                   </td>
                 </tr>
               ) : (
-                filteredServices.map((service) => (
+                paginatedServices.map((service) => (
                   <tr key={service.id}>
                     <td>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem' }}>
@@ -174,7 +194,7 @@ export default function AdminLayananPage() {
                         </Link>
                         <button
                           type="button"
-                          onClick={() => setDeleteConfirmId(service.id)}
+                          onClick={() => handleDelete(service)}
                           className="admin-icon-btn"
                           style={{ color: 'var(--admin-danger)' }}
                           title="Hapus Layanan"
@@ -189,36 +209,15 @@ export default function AdminLayananPage() {
             </tbody>
           </table>
         </div>
-      </div>
 
-      <AdminModal
-        isOpen={Boolean(deleteConfirmId)}
-        onClose={() => setDeleteConfirmId(null)}
-        title="Konfirmasi Hapus Layanan"
-        maxWidth="440px"
-        footer={
-          <>
-            <button
-              type="button"
-              onClick={() => setDeleteConfirmId(null)}
-              className="admin-btn admin-btn-secondary"
-            >
-              Batal
-            </button>
-            <button
-              type="button"
-              onClick={handleDelete}
-              className="admin-btn admin-btn-danger"
-            >
-              Hapus Sekarang
-            </button>
-          </>
-        }
-      >
-        <p style={{ margin: 0, fontSize: '0.875rem' }}>
-          Apakah Anda yakin ingin menghapus layanan ini? Data yang dihapus tidak dapat dipulihkan kembali.
-        </p>
-      </AdminModal>
+        <AdminPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={filteredServices.length}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+        />
+      </div>
     </div>
   )
 }

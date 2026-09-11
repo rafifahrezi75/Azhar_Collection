@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Plus, Edit2, Trash2, Star, MessageCircle, Eye, User } from 'lucide-react'
-import AdminModal from '../components/AdminModal'
+import { Plus, Edit2, Trash2, Star, MessageCircle, Eye, User, Search } from 'lucide-react'
+import AdminPagination from '../components/AdminPagination'
 import { getTestimonialList, deleteTestimonialItem } from '../../firebase/adminService'
+import { showDeleteConfirm, showToast, showErrorAlert } from '../utils/swal'
 
 export default function AdminTestimoniPage() {
   const [testis, setTestis] = useState([])
-  const [deleteConfirmId, setDeleteConfirmId] = useState(null)
+  const [search, setSearch] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 8
 
   const loadData = async () => {
     const list = await getTestimonialList()
@@ -23,31 +26,48 @@ export default function AdminTestimoniPage() {
     }
   }, [])
 
-  const handleDelete = async () => {
-    if (!deleteConfirmId) return
-    await deleteTestimonialItem(deleteConfirmId)
-    await loadData()
-    setDeleteConfirmId(null)
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [search])
+
+  const handleDelete = async (t) => {
+    const name = t.clientName || t.name || 'Klien'
+    const res = await showDeleteConfirm({
+      title: 'Hapus Ulasan Testimoni?',
+      text: `Apakah Anda yakin ingin menghapus testimoni dari "${name}"? Data yang dihapus tidak dapat dipulihkan.`
+    })
+    if (res.isConfirmed) {
+      try {
+        await deleteTestimonialItem(t.id)
+        setTestis((prev) => prev.filter((item) => item.id !== t.id))
+        showToast({ icon: 'success', title: 'Testimoni berhasil dihapus' })
+      } catch (err) {
+        showErrorAlert('Gagal Menghapus', err?.message)
+      }
+    }
   }
+
+  const filteredTestis = testis.filter((t) => {
+    const q = search.toLowerCase()
+    return (
+      (t.clientName || t.name || '').toLowerCase().includes(q) ||
+      (t.role || t.institution || '').toLowerCase().includes(q) ||
+      (t.comment || t.quote || '').toLowerCase().includes(q)
+    )
+  })
+
+  const totalPages = Math.ceil(filteredTestis.length / itemsPerPage) || 1
+  const paginatedTestis = filteredTestis.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  )
 
   return (
     <div>
       <div className="admin-page-header">
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-            <h1 className="admin-page-title" style={{ margin: 0 }}>Ulasan & Testimoni Mitra</h1>
-            <div className="admin-inline-actions">
-              <Link
-                to="/admin/testimoni/tambah"
-                className="admin-action-icon-btn admin-action-icon-btn-primary"
-                title="Tambah Testimoni Baru"
-                aria-label="Tambah Testimoni Baru"
-              >
-                <Plus size={18} />
-              </Link>
-            </div>
-          </div>
-          <p className="admin-page-desc" style={{ margin: '0.25rem 0 0 0' }}>
+          <h1 className="admin-page-title">Ulasan & Testimoni Mitra</h1>
+          <p className="admin-page-desc">
             Kelola ulasan kepuasan, rating bintang, dan feedback institusi yang tampil di beranda website.
           </p>
         </div>
@@ -60,9 +80,37 @@ export default function AdminTestimoniPage() {
       </div>
 
       <div className="admin-card">
-        <div className="admin-card-header">
-          <div style={{ fontWeight: 700, fontSize: '0.9375rem' }}>
-            Daftar Ulasan ({testis.length})
+        <div className="admin-card-header admin-table-card-header">
+          <div className="admin-table-tools">
+            <div className="admin-table-search-box">
+              <input
+                type="text"
+                placeholder="Cari ulasan / klien..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="admin-input"
+                style={{ paddingLeft: '2.25rem' }}
+              />
+              <Search
+                size={16}
+                style={{
+                  position: 'absolute',
+                  left: '0.75rem',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  color: 'var(--admin-text-subtle)'
+                }}
+              />
+            </div>
+
+            <Link
+              to="/admin/testimoni/tambah"
+              className="admin-action-icon-btn admin-action-icon-btn-primary"
+              title="Tambah Testimoni Baru"
+              aria-label="Tambah Testimoni Baru"
+            >
+              <Plus size={16} />
+            </Link>
           </div>
         </div>
 
@@ -78,7 +126,7 @@ export default function AdminTestimoniPage() {
               </tr>
             </thead>
             <tbody>
-              {testis.length === 0 ? (
+              {filteredTestis.length === 0 ? (
                 <tr>
                   <td colSpan={5} style={{ textAlign: 'center', padding: '3rem 1rem', color: 'var(--admin-text-muted)' }}>
                     <MessageCircle size={36} style={{ margin: '0 auto 0.75rem auto', opacity: 0.4 }} />
@@ -86,7 +134,7 @@ export default function AdminTestimoniPage() {
                   </td>
                 </tr>
               ) : (
-                testis.map((t) => (
+                paginatedTestis.map((t) => (
                   <tr key={t.id}>
                     <td>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
@@ -147,7 +195,7 @@ export default function AdminTestimoniPage() {
                         </Link>
                         <button
                           type="button"
-                          onClick={() => setDeleteConfirmId(t.id)}
+                          onClick={() => handleDelete(t)}
                           className="admin-icon-btn"
                           style={{ color: 'var(--admin-danger)' }}
                           title="Hapus Testimoni"
@@ -162,36 +210,15 @@ export default function AdminTestimoniPage() {
             </tbody>
           </table>
         </div>
-      </div>
 
-      <AdminModal
-        isOpen={Boolean(deleteConfirmId)}
-        onClose={() => setDeleteConfirmId(null)}
-        title="Konfirmasi Hapus Testimoni"
-        maxWidth="440px"
-        footer={
-          <>
-            <button
-              type="button"
-              onClick={() => setDeleteConfirmId(null)}
-              className="admin-btn admin-btn-secondary"
-            >
-              Batal
-            </button>
-            <button
-              type="button"
-              onClick={handleDelete}
-              className="admin-btn admin-btn-danger"
-            >
-              Hapus Sekarang
-            </button>
-          </>
-        }
-      >
-        <p style={{ margin: 0, fontSize: '0.875rem' }}>
-          Apakah Anda yakin ingin menghapus ulasan testimoni ini? Data yang dihapus tidak dapat dipulihkan kembali.
-        </p>
-      </AdminModal>
+        <AdminPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={filteredTestis.length}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+        />
+      </div>
     </div>
   )
 }

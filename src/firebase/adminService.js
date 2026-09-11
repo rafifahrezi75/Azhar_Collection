@@ -25,6 +25,7 @@ import {
   clientsData,
   servicesData,
   testimonialsData,
+  newsData,
   companyInfo
 } from '../data/siteData'
 
@@ -36,8 +37,21 @@ const defaultTestimonials = testimonialsData.map((t) => ({
   rating: t.rating || 5
 }))
 
+const defaultNews = newsData.map((n) => ({
+  id: String(n.id),
+  slug: n.slug,
+  title: n.title,
+  date: n.date,
+  readTime: n.readTime,
+  category: n.category,
+  author: n.author,
+  image: n.image,
+  excerpt: n.excerpt,
+  content: Array.isArray(n.content) ? n.content.map((p) => `<p>${p}</p>`).join('') : n.content
+}))
+
 const LOCAL_STORAGE_KEY_PREFIX = 'azhar_admin_'
-const DATA_VERSION_KEY = 'azhar_admin_data_seeded_v7'
+const DATA_VERSION_KEY = 'azhar_admin_data_seeded_v8'
 
 if (typeof window !== 'undefined' && !localStorage.getItem(DATA_VERSION_KEY)) {
   try {
@@ -46,6 +60,7 @@ if (typeof window !== 'undefined' && !localStorage.getItem(DATA_VERSION_KEY)) {
     localStorage.removeItem(LOCAL_STORAGE_KEY_PREFIX + 'services')
     localStorage.removeItem(LOCAL_STORAGE_KEY_PREFIX + 'testimonials')
     localStorage.removeItem(LOCAL_STORAGE_KEY_PREFIX + 'inquiries')
+    localStorage.removeItem(LOCAL_STORAGE_KEY_PREFIX + 'news')
     localStorage.setItem(DATA_VERSION_KEY, 'true')
   } catch (e) {
     void e
@@ -77,18 +92,20 @@ export const clearAllAdminData = async () => {
     localStorage.removeItem(LOCAL_STORAGE_KEY_PREFIX + 'services')
     localStorage.removeItem(LOCAL_STORAGE_KEY_PREFIX + 'testimonials')
     localStorage.removeItem(LOCAL_STORAGE_KEY_PREFIX + 'inquiries')
+    localStorage.removeItem(LOCAL_STORAGE_KEY_PREFIX + 'news')
     setLocalData('products', [])
     setLocalData('clients', [])
     setLocalData('services', [])
     setLocalData('testimonials', [])
     setLocalData('inquiries', [])
+    setLocalData('news', [])
   } catch {
     void 0
   }
 
   if (isFirebaseConfigured && db) {
     try {
-      const collections = ['products', 'clients', 'services', 'testimonials', 'inquiries']
+      const collections = ['products', 'clients', 'services', 'testimonials', 'inquiries', 'news']
       for (const colName of collections) {
         const snap = await getDocs(collection(db, colName))
         for (const d of snap.docs) {
@@ -589,7 +606,8 @@ export const seedInitialDataToFirestore = async () => {
     products: 0,
     clients: 0,
     services: 0,
-    testimonials: 0
+    testimonials: 0,
+    news: 0
   }
 
   for (const p of portfolioProducts) {
@@ -622,6 +640,14 @@ export const seedInitialDataToFirestore = async () => {
       createdAt: serverTimestamp()
     })
     results.testimonials += 1
+  }
+
+  for (const n of defaultNews) {
+    await setDoc(doc(db, 'news', String(n.id)), {
+      ...n,
+      createdAt: serverTimestamp()
+    })
+    results.news += 1
   }
 
   await setDoc(doc(db, 'settings', 'general'), {
@@ -704,11 +730,103 @@ export const getInquiryById = async (id) => {
         return { id: snap.id, ...snap.data() }
       }
     } catch {
-      const list = getLocalData('inquiries', [])
+      const list = getLocalData('inquiries', initialInquiries)
       return list.find((item) => String(item.id) === String(id)) || null
     }
   }
-  const list = getLocalData('inquiries', [])
+  const list = getLocalData('inquiries', initialInquiries)
   return list.find((item) => String(item.id) === String(id)) || null
+}
+
+export const getBeritaList = async () => {
+  if (isFirebaseConfigured && db) {
+    try {
+      const q = query(collection(db, 'news'), orderBy('createdAt', 'desc'))
+      const snap = await getDocs(q)
+      if (!snap.empty) {
+        return snap.docs.map((d) => ({ id: d.id, ...d.data() }))
+      }
+    } catch {
+      return getLocalData('news', defaultNews)
+    }
+  }
+  return getLocalData('news', defaultNews)
+}
+
+export const getBeritaById = async (id) => {
+  if (isFirebaseConfigured && db) {
+    try {
+      const snap = await getDoc(doc(db, 'news', String(id)))
+      if (snap.exists()) {
+        return { id: snap.id, ...snap.data() }
+      }
+    } catch {
+      const list = getLocalData('news', defaultNews)
+      return list.find((item) => String(item.id) === String(id)) || null
+    }
+  }
+  const list = getLocalData('news', defaultNews)
+  return list.find((item) => String(item.id) === String(id)) || null
+}
+
+export const getBeritaBySlug = async (slug) => {
+  const list = await getBeritaList()
+  return list.find((item) => item.slug === slug || String(item.id) === String(slug)) || null
+}
+
+export const saveBeritaItem = async (item) => {
+  const payload = {
+    ...item,
+    updatedAt: new Date().toISOString()
+  }
+
+  if (isFirebaseConfigured && db) {
+    try {
+      if (item.id) {
+        const ref = doc(db, 'news', String(item.id))
+        await setDoc(ref, payload, { merge: true })
+        return item.id
+      }
+      const colRef = collection(db, 'news')
+      const docRef = await addDoc(colRef, {
+        ...payload,
+        createdAt: serverTimestamp()
+      })
+      return docRef.id
+    } catch {
+      return saveLocalBerita(payload)
+    }
+  }
+  return saveLocalBerita(payload)
+}
+
+const saveLocalBerita = (payload) => {
+  const current = getLocalData('news', defaultNews)
+  if (payload.id) {
+    const updated = current.map((p) => (String(p.id) === String(payload.id) ? { ...p, ...payload } : p))
+    setLocalData('news', updated)
+    return payload.id
+  }
+  const newId = `NEWS-${Date.now()}`
+  const newItem = { ...payload, id: newId }
+  setLocalData('news', [newItem, ...current])
+  return newId
+}
+
+export const deleteBeritaItem = async (id) => {
+  if (isFirebaseConfigured && db) {
+    try {
+      await deleteDoc(doc(db, 'news', String(id)))
+    } catch {
+      deleteLocalBerita(id)
+    }
+  }
+  deleteLocalBerita(id)
+}
+
+const deleteLocalBerita = (id) => {
+  const current = getLocalData('news', defaultNews)
+  const filtered = current.filter((p) => String(p.id) !== String(id))
+  setLocalData('news', filtered)
 }
 

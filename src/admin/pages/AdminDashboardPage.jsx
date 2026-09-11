@@ -6,11 +6,12 @@ import {
   Scissors,
   MessageSquare,
   Database,
+  Cloud,
   ArrowUpRight,
   TrendingUp,
   Clock,
   Send,
-  Trash2
+  Globe
 } from 'lucide-react'
 import { Line } from 'react-chartjs-2'
 import {
@@ -28,10 +29,9 @@ import {
   getKatalogList,
   getKlienList,
   getLayananList,
-  getInquiriesList,
-  seedInitialDataToFirestore,
-  clearAllAdminData
+  getInquiriesList
 } from '../../firebase/adminService'
+import { getVisitorStats } from '../../firebase/visitorService'
 import { isFirebaseConfigured } from '../../firebase/config'
 
 ChartJS.register(
@@ -52,18 +52,23 @@ export default function AdminDashboardPage() {
     services: 0,
     inquiries: 0
   })
+  const [visitorStats, setVisitorStats] = useState({
+    totalVisitors: 0,
+    todayVisitors: 0,
+    totalPageViews: 0,
+    todayPageViews: 0,
+    recentDays: []
+  })
   const [recentInquiries, setRecentInquiries] = useState([])
-  const [seeding, setSeeding] = useState(false)
-  const [seedMessage, setSeedMessage] = useState('')
-  const [seedError, setSeedError] = useState('')
 
   useEffect(() => {
     const loadDashboardData = async () => {
-      const [prods, clis, servs, inqs] = await Promise.all([
+      const [prods, clis, servs, inqs, visitors] = await Promise.all([
         getKatalogList(),
         getKlienList(),
         getLayananList(),
-        getInquiriesList()
+        getInquiriesList(),
+        getVisitorStats()
       ])
 
       setStats({
@@ -72,48 +77,85 @@ export default function AdminDashboardPage() {
         services: servs.length,
         inquiries: inqs.length
       })
+      setVisitorStats(visitors)
       setRecentInquiries(inqs.slice(0, 5))
     }
 
     loadDashboardData()
   }, [])
 
-  const handleSeedFirebase = async () => {
-    setSeeding(true)
-    setSeedMessage('')
-    setSeedError('')
-
-    try {
-      const res = await seedInitialDataToFirestore()
-      setSeedMessage(
-        `Berhasil sinkronisasi: ${res.products} produk, ${res.clients} mitra, ${res.services} layanan, ${res.testimonials} testimoni ke Firestore!`
-      )
-    } catch (err) {
-      setSeedError(err.message || 'Gagal sinkronisasi data ke Firebase.')
-    } finally {
-      setSeeding(false)
-    }
+  const visitorChartData = {
+    labels: (visitorStats.recentDays || []).map((d) => d.label),
+    datasets: [
+      {
+        label: 'Pengunjung Unik',
+        data: (visitorStats.recentDays || []).map((d) => d.visitors),
+        borderColor: '#800080',
+        backgroundColor: 'rgba(128, 0, 128, 0.08)',
+        fill: true,
+        tension: 0.35,
+        borderWidth: 2.5,
+        pointRadius: 4,
+        pointBackgroundColor: '#FFFFFF',
+        pointBorderColor: '#800080',
+        pointBorderWidth: 2
+      },
+      {
+        label: 'Tayangan Halaman',
+        data: (visitorStats.recentDays || []).map((d) => d.pageViews),
+        borderColor: '#0284c7',
+        backgroundColor: 'rgba(2, 132, 199, 0.05)',
+        fill: true,
+        tension: 0.35,
+        borderWidth: 2,
+        borderDash: [4, 4],
+        pointRadius: 3,
+        pointBackgroundColor: '#FFFFFF',
+        pointBorderColor: '#0284c7',
+        pointBorderWidth: 2
+      }
+    ]
   }
 
-  const handleClearAllData = async () => {
-    if (!window.confirm('Apakah Anda yakin ingin mengosongkan semua data? Tindakan ini akan menghapus semua produk, klien, layanan, testimoni, dan pesan untuk penginputan data baru.')) return
-    setSeeding(true)
-    setSeedMessage('')
-    setSeedError('')
-    try {
-      await clearAllAdminData()
-      setStats({
-        products: 0,
-        clients: 0,
-        services: 0,
-        inquiries: 0
-      })
-      setRecentInquiries([])
-      setSeedMessage('Semua data berhasil dikosongkan. Anda siap menginput data baru!')
-    } catch (err) {
-      setSeedError(err.message || 'Gagal mengosongkan data.')
-    } finally {
-      setSeeding(false)
+  const visitorChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'top',
+        align: 'end',
+        labels: {
+          boxWidth: 10,
+          boxHeight: 10,
+          usePointStyle: true,
+          pointStyle: 'circle',
+          font: { size: 11, family: 'Poppins, sans-serif' }
+        }
+      },
+      tooltip: {
+        backgroundColor: '#475569',
+        titleFont: { size: 12, weight: '700', family: 'Poppins, sans-serif' },
+        bodyFont: { size: 11, family: 'Poppins, sans-serif' },
+        cornerRadius: 8,
+        padding: 10
+      }
+    },
+    scales: {
+      x: {
+        grid: { display: false },
+        ticks: { color: '#64748B', font: { weight: '600', size: 11, family: 'Poppins, sans-serif' } }
+      },
+      y: {
+        beginAtZero: true,
+        grid: { color: 'rgba(226, 232, 240, 0.6)' },
+        ticks: {
+          color: '#94A3B8',
+          font: { family: 'Poppins, sans-serif' },
+          precision: 0,
+          callback: (v) => v.toLocaleString('id-ID')
+        }
+      }
     }
   }
 
@@ -185,18 +227,6 @@ export default function AdminDashboardPage() {
         </div>
       </div>
 
-      {seedMessage && (
-        <div className="admin-alert admin-alert-success">
-          <span>{seedMessage}</span>
-        </div>
-      )}
-
-      {seedError && (
-        <div className="admin-alert admin-alert-danger">
-          <span>{seedError}</span>
-        </div>
-      )}
-
       <div className="admin-kpi-grid">
         <div className="admin-kpi-card">
           <div className="admin-kpi-top">
@@ -264,10 +294,47 @@ export default function AdminDashboardPage() {
             <span>Masuk via formulir kontak</span>
           </div>
         </div>
+
+        <div className="admin-kpi-card">
+          <div className="admin-kpi-top">
+            <span className="admin-kpi-label">Pengunjung Web</span>
+            <div
+              className="admin-kpi-icon-wrapper"
+              style={{ backgroundColor: 'var(--admin-primary-soft)', color: 'var(--admin-primary)' }}
+            >
+              <Globe size={20} />
+            </div>
+          </div>
+          <div className="admin-kpi-value">
+            {visitorStats.todayVisitors}{' '}
+            <span style={{ fontSize: '11px', fontWeight: 500, color: 'var(--admin-text-muted)' }}>
+              Hari Ini
+            </span>
+          </div>
+          <div className="admin-kpi-footer">
+            <TrendingUp size={14} style={{ color: 'var(--admin-success)' }} />
+            <span>{visitorStats.totalVisitors.toLocaleString('id-ID')} Total Pengunjung</span>
+          </div>
+        </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '1.5rem', marginBottom: '1.75rem' }}>
-        <div style={{ gridColumn: 'span 12' }} className="admin-card">
+      <div className="admin-dashboard-charts-grid">
+        <div className="admin-card">
+          <div className="admin-card-header">
+            <div>
+              <h2 className="admin-card-title">Statistik Pengunjung Website</h2>
+              <p className="admin-card-subtitle">
+                Aktivitas kunjungan unik & tayangan halaman (7 Hari Terakhir)
+              </p>
+            </div>
+            <div className="admin-badge admin-badge-primary">7 Hari Terakhir</div>
+          </div>
+          <div className="admin-chart-card-body">
+            <Line data={visitorChartData} options={visitorChartOptions} />
+          </div>
+        </div>
+
+        <div className="admin-card">
           <div className="admin-card-header">
             <div>
               <h2 className="admin-card-title">Tren Pertumbuhan Volume Produksi</h2>
@@ -277,7 +344,7 @@ export default function AdminDashboardPage() {
             </div>
             <div className="admin-badge admin-badge-primary">5 Tahun Terakhir</div>
           </div>
-          <div style={{ padding: '1.25rem', height: '300px' }}>
+          <div className="admin-chart-card-body">
             <Line data={chartData} options={chartOptions} />
           </div>
         </div>
@@ -349,65 +416,65 @@ export default function AdminDashboardPage() {
         </div>
       </div>
 
-      <div
-        className="admin-card"
-        style={{
-          padding: '1.25rem 1.5rem',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          gap: '1rem'
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem' }}>
-          <div
-            style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: 'var(--admin-radius)',
-              backgroundColor: 'var(--admin-primary-soft)',
-              color: 'var(--admin-primary)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
+      <div className="admin-cloud-grid">
+        <div className="admin-card admin-cloud-card">
+          <div className="admin-cloud-card-main">
+            <div
+              className="admin-cloud-status-icon"
+              style={{
+                backgroundColor: isFirebaseConfigured ? 'var(--admin-success-soft)' : 'var(--admin-warning-soft)',
+                color: isFirebaseConfigured ? 'var(--admin-success)' : 'var(--admin-warning)'
+              }}
+            >
+              <Database size={18} />
+            </div>
+            <div>
+              <div className="admin-cloud-status-title">
+                Cloud Firestore (Firebase)
+              </div>
+              <div className="admin-cloud-status-desc">
+                Basis data cloud & sinkronisasi real-time
+              </div>
+            </div>
+          </div>
+
+          <span
+            className={`admin-badge ${isFirebaseConfigured ? 'admin-badge-success' : 'admin-badge-warning'}`}
+            style={{ padding: '0.35rem 0.75rem', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em', display: 'inline-flex', alignItems: 'center' }}
           >
-            <Database size={20} />
-          </div>
-          <div>
-            <div style={{ fontSize: '0.9375rem', fontWeight: 800 }}>
-              Status Backend Firebase
-            </div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--admin-text-muted)' }}>
-              {isFirebaseConfigured
-                ? 'Firebase Firestore terhubung secara aktif.'
-                : 'Firebase .env belum terisi. Data berjalan dengan aman via Local Database Fallback.'}
-            </div>
-          </div>
+            {isFirebaseConfigured && <span className="admin-status-dot-pulse" />}
+            {isFirebaseConfigured ? 'Firebase Terhubung' : 'Firebase Offline'}
+          </span>
         </div>
 
-        <div style={{ display: 'flex', gap: '0.625rem', alignItems: 'center', flexWrap: 'wrap' }}>
-          <button
-            type="button"
-            disabled={seeding}
-            onClick={handleClearAllData}
-            className="admin-btn admin-btn-danger admin-btn-sm"
-          >
-            <Trash2 size={14} />
-            <span>Kosongkan Semua Data</span>
-          </button>
-
-          {isFirebaseConfigured && (
-            <button
-              type="button"
-              disabled={seeding}
-              onClick={handleSeedFirebase}
-              className="admin-btn admin-btn-secondary admin-btn-sm"
+        <div className="admin-card admin-cloud-card">
+          <div className="admin-cloud-card-main">
+            <div
+              className="admin-cloud-status-icon"
+              style={{
+                backgroundColor: 'var(--admin-success-soft)',
+                color: 'var(--admin-success)'
+              }}
             >
-              {seeding ? 'Menyinkronkan...' : 'Sinkronkan Data Awal ke Firestore'}
-            </button>
-          )}
+              <Cloud size={18} />
+            </div>
+            <div>
+              <div className="admin-cloud-status-title">
+                Cloudinary Media Storage
+              </div>
+              <div className="admin-cloud-status-desc">
+                CDN media aset gambar & galeri portofolio
+              </div>
+            </div>
+          </div>
+
+          <span
+            className="admin-badge admin-badge-success"
+            style={{ padding: '0.35rem 0.75rem', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em', display: 'inline-flex', alignItems: 'center' }}
+          >
+            <span className="admin-status-dot-pulse" />
+            Cloudinary Terhubung
+          </span>
         </div>
       </div>
     </div>

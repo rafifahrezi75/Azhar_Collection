@@ -1,11 +1,49 @@
+import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import PageHeader from '../components/PageHeader'
-import { newsData } from '../data/siteData'
-import { Calendar, Clock, User, ArrowLeft } from 'lucide-react'
+import { newsData as fallbackNews } from '../data/siteData'
+import { getBeritaList } from '../firebase/adminService'
+import { Calendar, Clock, User, ArrowLeft, Loader2 } from 'lucide-react'
 
 export default function NewsDetailPage() {
   const { slug } = useParams()
-  const article = newsData.find((n) => n.slug === slug)
+  const [news, setNews] = useState(fallbackNews)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let isMounted = true
+    getBeritaList()
+      .then((list) => {
+        if (isMounted && list && list.length > 0) {
+          setNews(list)
+        }
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false)
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
+  const article = news.find((n) => n.slug === slug || String(n.id) === String(slug))
+
+  if (loading) {
+    return (
+      <div className="news-detail-page">
+        <PageHeader
+          title="Memuat Berita..."
+          subtitle="Mengambil artikel berita terbaru."
+          breadcrumb="Detail Berita"
+        />
+        <div className="container" style={{ padding: '5rem 1.5rem', textAlign: 'center' }}>
+          <Loader2 size={36} className="spin-animation" style={{ margin: '0 auto 1rem auto', color: 'var(--color-primary)' }} />
+          <p style={{ color: 'var(--color-text-muted)' }}>Sedang memuat artikel...</p>
+        </div>
+      </div>
+    )
+  }
 
   if (!article) {
     return (
@@ -28,7 +66,7 @@ export default function NewsDetailPage() {
     )
   }
 
-  const otherArticles = newsData.filter((n) => n.id !== article.id).slice(0, 3)
+  const otherArticles = news.filter((n) => String(n.id) !== String(article.id)).slice(0, 3)
 
   return (
     <div className="news-detail-page">
@@ -69,11 +107,20 @@ export default function NewsDetailPage() {
               </div>
 
               <div className="article-body-text">
-                <p className="article-lead-text">{article.excerpt}</p>
+                {article.excerpt && <p className="article-lead-text">{article.excerpt}</p>}
 
-                {article.content.map((paragraph, idx) => (
-                  <p key={idx}>{paragraph}</p>
-                ))}
+                {typeof article.content === 'string' && article.content.includes('<') ? (
+                  <div
+                    dangerouslySetInnerHTML={{ __html: article.content }}
+                    style={{ lineHeight: 1.8 }}
+                  />
+                ) : Array.isArray(article.content) ? (
+                  article.content.map((paragraph, idx) => (
+                    <p key={idx}>{paragraph}</p>
+                  ))
+                ) : (
+                  <p style={{ whiteSpace: 'pre-line', lineHeight: 1.8 }}>{article.content}</p>
+                )}
               </div>
             </article>
 
@@ -82,7 +129,7 @@ export default function NewsDetailPage() {
                 <h3 className="sidebar-title">Artikel Lainnya</h3>
                 <div className="sidebar-news-list">
                   {otherArticles.map((item) => (
-                    <Link key={item.id} to={`/berita/${item.slug}`} className="sidebar-news-item">
+                    <Link key={item.id} to={`/berita/${item.slug || item.id}`} className="sidebar-news-item">
                       <img src={item.image} alt={item.title} className="sidebar-news-thumb" />
                       <div>
                         <span className="sidebar-news-cat">{item.category}</span>

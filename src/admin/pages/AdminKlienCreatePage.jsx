@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { ArrowLeft, Save, Building2, Sparkles, AlertCircle, Loader2 } from 'lucide-react'
+import { ArrowLeft, Save, Sparkles, AlertCircle, Loader2 } from 'lucide-react'
 import AdminImageUploader from '../components/AdminImageUploader'
 import AdminRichEditor from '../components/AdminRichEditor'
 import { uploadToCloudinary } from '../../firebase/cloudinaryService'
 import { saveKlienItem } from '../../firebase/adminService'
+import { showSuccessAlert, showErrorAlert } from '../utils/swal'
 
 export default function AdminKlienCreatePage() {
   const navigate = useNavigate()
@@ -64,204 +65,192 @@ export default function AdminKlienCreatePage() {
         image: finalImageUrl
       })
 
+      await showSuccessAlert('Berhasil Ditambahkan', 'Profil mitra baru berhasil ditambahkan.')
       navigate('/admin/klien')
     } catch (err) {
       setError(err?.message || 'Gagal menambahkan mitra klien')
+      showErrorAlert('Gagal Menyimpan', err?.message || 'Gagal menambahkan mitra klien')
     } finally {
       setSubmitting(false)
     }
   }
 
   return (
-    <div className="admin-form-page">
-      <div className="admin-form-header">
-        <div className="admin-form-header-left">
-          <Link to="/admin/klien" className="admin-back-btn" title="Kembali" aria-label="Kembali">
-            <ArrowLeft size={18} />
-          </Link>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+    <form id="klien-create-form" onSubmit={handleSubmit}>
+      <div className="admin-card">
+        <div className="admin-card-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap', padding: '1rem 1.25rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <Link to="/admin/klien" className="admin-back-btn" title="Kembali" aria-label="Kembali">
+              <ArrowLeft size={18} />
+            </Link>
+            <div>
               <h1 className="admin-page-title" style={{ margin: 0 }}>Tambah Mitra Institusi Baru</h1>
-              <div className="admin-inline-actions">
-                <button
-                  type="submit"
-                  form="klien-create-form"
-                  disabled={submitting}
-                  className="admin-action-icon-btn admin-action-icon-btn-primary"
-                  title="Simpan Mitra"
-                  aria-label="Simpan Mitra"
-                >
-                  {submitting ? <Loader2 size={16} className="admin-spin" /> : <Save size={16} />}
-                </button>
-              </div>
-            </div>
-            <p className="admin-page-desc" style={{ margin: '0.25rem 0 0 0' }}>
-              Daftarkan sekolah, instansi, atau kampus mitra pemesan seragam ke direktori website.
-            </p>
-          </div>
-        </div>
-
-        <div className="admin-breadcrumbs">
-          <Link to="/admin">Admin</Link>
-          <span>/</span>
-          <Link to="/admin/klien">Mitra Klien</Link>
-          <span>/</span>
-          <span className="current">Tambah</span>
-        </div>
-      </div>
-
-      {error && (
-        <div className="admin-alert admin-alert-danger" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <AlertCircle size={16} />
-          <span>{error}</span>
-        </div>
-      )}
-
-      <form id="klien-create-form" onSubmit={handleSubmit}>
-        <div className="admin-form-grid">
-          <div className="admin-form-card">
-            <h2 className="admin-form-card-title">
-              <Building2 size={18} style={{ color: 'var(--admin-primary)' }} />
-              <span>Profil Lembaga Mitra</span>
-            </h2>
-
-            <div className="admin-form-group">
-              <label className="admin-label" htmlFor="client-name">
-                Nama Instansi / Sekolah <span style={{ color: 'var(--admin-danger)' }}>*</span>
-              </label>
-              <input
-                id="client-name"
-                type="text"
-                className="admin-input"
-                placeholder="Contoh: SMA Negeri 1 Sidoarjo"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                required
-              />
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
-              <div className="admin-form-group">
-                <label className="admin-label" htmlFor="client-category">Kategori Lembaga</label>
-                <select
-                  id="client-category"
-                  className="admin-select"
-                  value={formData.category}
-                  onChange={handleCategorySelect}
-                >
-                  {categoryOptions.map((opt) => (
-                    <option key={opt.label} value={opt.label}>
-                      {opt.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="admin-form-group">
-                <label className="admin-label" htmlFor="client-city">Kota / Kabupaten</label>
-                <input
-                  id="client-city"
-                  type="text"
-                  className="admin-input"
-                  placeholder="Contoh: Kabupaten Sidoarjo"
-                  value={formData.city}
-                  onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                />
-              </div>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
-              <div className="admin-form-group">
-                <label className="admin-label" htmlFor="client-since">Tahun Mulai Kemitraan</label>
-                <input
-                  id="client-since"
-                  type="text"
-                  className="admin-input"
-                  placeholder="Contoh: 2021"
-                  value={formData.since}
-                  onChange={(e) => setFormData({ ...formData, since: e.target.value })}
-                />
-              </div>
-
-              <div className="admin-form-group">
-                <label className="admin-label" htmlFor="client-contact">Kontak PIC / Pejabat Lembaga</label>
-                <input
-                  id="client-contact"
-                  type="text"
-                  className="admin-input"
-                  placeholder="Contoh: Bpk. Bambang - Koordinator Pengadaan"
-                  value={formData.contactPerson}
-                  onChange={(e) => setFormData({ ...formData, contactPerson: e.target.value })}
-                />
-              </div>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
-              <div className="admin-form-group">
-                <label className="admin-label" htmlFor="client-total-orders">Frekuensi Pemesanan</label>
-                <input
-                  id="client-total-orders"
-                  type="text"
-                  className="admin-input"
-                  placeholder="Contoh: 5 Tahun Berturut-turut"
-                  value={formData.totalOrders}
-                  onChange={(e) => setFormData({ ...formData, totalOrders: e.target.value })}
-                />
-              </div>
-
-              <div className="admin-form-group">
-                <label className="admin-label" htmlFor="client-total-pcs">Estimasi Akumulasi Volume</label>
-                <input
-                  id="client-total-pcs"
-                  type="text"
-                  className="admin-input"
-                  placeholder="Contoh: 3.500+ Setel"
-                  value={formData.totalPcs}
-                  onChange={(e) => setFormData({ ...formData, totalPcs: e.target.value })}
-                />
-              </div>
-            </div>
-
-            <div className="admin-form-group">
-              <AdminRichEditor
-                id="client-summary-editor"
-                label="Ringkasan Kemitraan & Deskripsi Profil (TinyMCE)"
-                value={formData.summary}
-                onChange={(html) => setFormData((prev) => ({ ...prev, summary: html }))}
-                placeholder="Tuliskan riwayat pemesanan seragam OSIS, batik identitas, jas almamater, atau baju kerja yang dikerjakan untuk mitra ini..."
-                height={260}
-              />
-            </div>
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-            <div className="admin-form-card">
-              <h2 className="admin-form-card-title">
-                <span>Logo / Foto Mitra</span>
-              </h2>
-
-              <AdminImageUploader
-                label="Unggah Logo Instansi"
-                currentImage={formData.image}
-                onFileSelected={(file) => setImageFile(file)}
-                onUrlChanged={(url) => setFormData({ ...formData, image: url })}
-                folder="azhar/clients"
-              />
-            </div>
-
-            <div className="admin-form-card">
-              <h2 className="admin-form-card-title">
-                <Sparkles size={16} style={{ color: 'var(--admin-warning)' }} />
-                <span>Publikasi</span>
-              </h2>
-
-              <p style={{ fontSize: '0.8125rem', color: 'var(--admin-text-muted)', margin: 0 }}>
-                Data mitra akan langsung ditampilkan di halaman Klien Kami setelah disimpan melalui tombol simpan di atas.
+              <p className="admin-page-desc" style={{ margin: '0.25rem 0 0 0' }}>
+                Daftarkan sekolah, instansi, atau kampus mitra pemesan seragam ke direktori website.
               </p>
             </div>
           </div>
+
+          <div className="admin-inline-actions" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <button
+              type="submit"
+              disabled={submitting}
+              className="admin-action-icon-btn admin-action-icon-btn-primary"
+              title="Simpan Mitra"
+              aria-label="Simpan Mitra"
+            >
+              {submitting ? <Loader2 size={16} className="spin-animation" /> : <Save size={16} />}
+            </button>
+          </div>
         </div>
-      </form>
-    </div>
+
+        <div style={{ padding: '1.25rem' }}>
+          {error && (
+            <div className="admin-alert admin-alert-danger" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.25rem' }}>
+              <AlertCircle size={16} />
+              <span>{error}</span>
+            </div>
+          )}
+
+          <div className="admin-single-card-grid">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div className="admin-form-group">
+                  <label className="admin-label" htmlFor="client-name">
+                    Nama Instansi / Sekolah <span style={{ color: 'var(--admin-danger)' }}>*</span>
+                  </label>
+                  <input
+                    id="client-name"
+                    type="text"
+                    className="admin-input"
+                    placeholder="Contoh: SMA Negeri 1 Sidoarjo"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    required
+                  />
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
+                  <div className="admin-form-group">
+                    <label className="admin-label" htmlFor="client-category">Kategori Lembaga</label>
+                    <select
+                      id="client-category"
+                      className="admin-select"
+                      value={formData.category}
+                      onChange={handleCategorySelect}
+                    >
+                      {categoryOptions.map((opt) => (
+                        <option key={opt.label} value={opt.label}>
+                          {opt.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="admin-form-group">
+                    <label className="admin-label" htmlFor="client-city">Kota / Kabupaten</label>
+                    <input
+                      id="client-city"
+                      type="text"
+                      className="admin-input"
+                      placeholder="Contoh: Kabupaten Sidoarjo"
+                      value={formData.city}
+                      onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
+                  <div className="admin-form-group">
+                    <label className="admin-label" htmlFor="client-since">Tahun Mulai Kemitraan</label>
+                    <input
+                      id="client-since"
+                      type="text"
+                      className="admin-input"
+                      placeholder="Contoh: 2021"
+                      value={formData.since}
+                      onChange={(e) => setFormData({ ...formData, since: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="admin-form-group">
+                    <label className="admin-label" htmlFor="client-contact">Kontak PIC / Pejabat Lembaga</label>
+                    <input
+                      id="client-contact"
+                      type="text"
+                      className="admin-input"
+                      placeholder="Contoh: Bpk. Bambang - Koordinator Pengadaan"
+                      value={formData.contactPerson}
+                      onChange={(e) => setFormData({ ...formData, contactPerson: e.target.value })}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
+                  <div className="admin-form-group">
+                    <label className="admin-label" htmlFor="client-total-orders">Frekuensi Pemesanan</label>
+                    <input
+                      id="client-total-orders"
+                      type="text"
+                      className="admin-input"
+                      placeholder="Contoh: 5 Tahun Berturut-turut"
+                      value={formData.totalOrders}
+                      onChange={(e) => setFormData({ ...formData, totalOrders: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="admin-form-group">
+                    <label className="admin-label" htmlFor="client-total-pcs">Estimasi Akumulasi Volume</label>
+                    <input
+                      id="client-total-pcs"
+                      type="text"
+                      className="admin-input"
+                      placeholder="Contoh: 3.500+ Setel"
+                      value={formData.totalPcs}
+                      onChange={(e) => setFormData({ ...formData, totalPcs: e.target.value })}
+                    />
+                  </div>
+                </div>
+
+                <div className="admin-form-group">
+                  <AdminRichEditor
+                    id="client-summary-editor"
+                    label="Ringkasan Kemitraan & Deskripsi Profil (TinyMCE)"
+                    value={formData.summary}
+                    onChange={(html) => setFormData((prev) => ({ ...prev, summary: html }))}
+                    placeholder="Tuliskan riwayat pemesanan seragam OSIS, batik identitas, jas almamater, atau baju kerja yang dikerjakan untuk mitra ini..."
+                    height={260}
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                <div style={{ padding: '1rem', border: '1px solid var(--admin-border)', borderRadius: '6px', backgroundColor: 'var(--admin-surface-hover)' }}>
+                  <div style={{ fontWeight: 700, fontSize: '0.8125rem', marginBottom: '0.75rem', color: 'var(--admin-text-main)' }}>
+                    Logo / Foto Mitra
+                  </div>
+                  <AdminImageUploader
+                    label="Unggah Logo Instansi"
+                    ratioHint="Rasio 1:1 (Pas Foto 3x3, misal 600 x 600 px)"
+                    currentImage={formData.image}
+                    onFileSelected={(file) => setImageFile(file)}
+                    onUrlChanged={(url) => setFormData({ ...formData, image: url })}
+                    folder="azhar/clients"
+                  />
+                </div>
+
+                <div style={{ padding: '1rem', border: '1px solid var(--admin-border)', borderRadius: '6px', backgroundColor: 'var(--admin-surface-hover)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700, fontSize: '0.8125rem', marginBottom: '0.5rem', color: 'var(--admin-text-main)' }}>
+                    <Sparkles size={15} style={{ color: 'var(--admin-warning)' }} />
+                    <span>Publikasi</span>
+                  </div>
+                  <p style={{ fontSize: '0.8125rem', color: 'var(--admin-text-muted)', margin: 0, lineHeight: 1.5 }}>
+                    Data mitra akan langsung ditampilkan di halaman Klien Kami setelah disimpan.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </form>
   )
 }

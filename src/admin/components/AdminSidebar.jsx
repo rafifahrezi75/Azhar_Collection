@@ -4,6 +4,7 @@ import {
   Shirt,
   Users,
   Scissors,
+  Newspaper,
   MessageSquare,
   Star,
   Settings,
@@ -39,6 +40,11 @@ export default function AdminSidebar({
       icon: Scissors
     },
     {
+      label: 'Berita & Artikel',
+      path: '/admin/berita',
+      icon: Newspaper
+    },
+    {
       label: 'Pesan Masuk',
       path: '/admin/pesan',
       icon: MessageSquare
@@ -62,7 +68,7 @@ export default function AdminSidebar({
       }`}
     >
       <div className="admin-sidebar-header">
-        <Link to="/admin" className="admin-brand">
+        <Link to="/admin" className="admin-brand" onClick={onCloseMobile}>
           <div className="admin-brand-logo">A</div>
           {!isCollapsed && (
             <div className="admin-brand-text">
@@ -120,6 +126,7 @@ export default function AdminSidebar({
           rel="noopener noreferrer"
           className="admin-nav-link"
           title="Buka Website Publik"
+          onClick={onCloseMobile}
         >
           <ExternalLink className="admin-nav-icon" />
           {!isCollapsed && <span>Buka Website</span>}

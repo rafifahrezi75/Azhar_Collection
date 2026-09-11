@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Plus, Search, Edit2, Trash2, Users, School, Eye } from 'lucide-react'
-import AdminModal from '../components/AdminModal'
+import AdminPagination from '../components/AdminPagination'
 import { getKlienList, deleteKlienItem } from '../../firebase/adminService'
+import { showDeleteConfirm, showToast, showErrorAlert } from '../utils/swal'
 
 export default function AdminKlienPage() {
   const [clients, setClients] = useState([])
   const [search, setSearch] = useState('')
-  const [deleteConfirmId, setDeleteConfirmId] = useState(null)
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 8
 
   const loadData = async () => {
     const list = await getKlienList()
@@ -24,11 +26,24 @@ export default function AdminKlienPage() {
     }
   }, [])
 
-  const handleDelete = async () => {
-    if (!deleteConfirmId) return
-    await deleteKlienItem(deleteConfirmId)
-    await loadData()
-    setDeleteConfirmId(null)
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [search])
+
+  const handleDelete = async (client) => {
+    const res = await showDeleteConfirm({
+      title: 'Hapus Profil Mitra?',
+      text: `Apakah Anda yakin ingin menghapus data mitra "${client.name}"? Data yang dihapus tidak dapat dipulihkan.`
+    })
+    if (res.isConfirmed) {
+      try {
+        await deleteKlienItem(client.id)
+        setClients((prev) => prev.filter((c) => c.id !== client.id))
+        showToast({ icon: 'success', title: 'Profil mitra berhasil dihapus' })
+      } catch (err) {
+        showErrorAlert('Gagal Menghapus', err?.message)
+      }
+    }
   }
 
   const filteredClients = clients.filter((client) => {
@@ -39,24 +54,18 @@ export default function AdminKlienPage() {
     return matchSearch
   })
 
+  const totalPages = Math.ceil(filteredClients.length / itemsPerPage) || 1
+  const paginatedClients = filteredClients.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  )
+
   return (
     <div>
       <div className="admin-page-header">
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-            <h1 className="admin-page-title" style={{ margin: 0 }}>Mitra & Klien Kami</h1>
-            <div className="admin-inline-actions">
-              <Link
-                to="/admin/klien/tambah"
-                className="admin-action-icon-btn admin-action-icon-btn-primary"
-                title="Tambah Mitra Baru"
-                aria-label="Tambah Mitra Baru"
-              >
-                <Plus size={18} />
-              </Link>
-            </div>
-          </div>
-          <p className="admin-page-desc" style={{ margin: '0.25rem 0 0 0' }}>
+          <h1 className="admin-page-title">Mitra & Klien Kami</h1>
+          <p className="admin-page-desc">
             Kelola profil institusi sekolah, kampus, dan instansi pemesan seragam di Azhar Collection.
           </p>
         </div>
@@ -69,26 +78,37 @@ export default function AdminKlienPage() {
       </div>
 
       <div className="admin-card">
-        <div className="admin-card-header">
-          <div style={{ position: 'relative', minWidth: '220px', maxWidth: '340px', flex: 1 }}>
-            <input
-              type="text"
-              placeholder="Cari nama sekolah / kota..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="admin-input"
-              style={{ paddingLeft: '2.25rem' }}
-            />
-            <Search
-              size={16}
-              style={{
-                position: 'absolute',
-                left: '0.75rem',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                color: 'var(--admin-text-subtle)'
-              }}
-            />
+        <div className="admin-card-header admin-table-card-header">
+          <div className="admin-table-tools">
+            <div className="admin-table-search-box">
+              <input
+                type="text"
+                placeholder="Cari nama sekolah / kota..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="admin-input"
+                style={{ paddingLeft: '2.25rem' }}
+              />
+              <Search
+                size={16}
+                style={{
+                  position: 'absolute',
+                  left: '0.75rem',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  color: 'var(--admin-text-subtle)'
+                }}
+              />
+            </div>
+
+            <Link
+              to="/admin/klien/tambah"
+              className="admin-action-icon-btn admin-action-icon-btn-primary"
+              title="Tambah Mitra Baru"
+              aria-label="Tambah Mitra Baru"
+            >
+              <Plus size={16} />
+            </Link>
           </div>
         </div>
 
@@ -113,7 +133,7 @@ export default function AdminKlienPage() {
                   </td>
                 </tr>
               ) : (
-                filteredClients.map((client) => (
+                paginatedClients.map((client) => (
                   <tr key={client.id}>
                     <td>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem' }}>
@@ -179,7 +199,7 @@ export default function AdminKlienPage() {
                         </Link>
                         <button
                           type="button"
-                          onClick={() => setDeleteConfirmId(client.id)}
+                          onClick={() => handleDelete(client)}
                           className="admin-icon-btn"
                           style={{ color: 'var(--admin-danger)' }}
                           title="Hapus Mitra"
@@ -194,36 +214,15 @@ export default function AdminKlienPage() {
             </tbody>
           </table>
         </div>
-      </div>
 
-      <AdminModal
-        isOpen={Boolean(deleteConfirmId)}
-        onClose={() => setDeleteConfirmId(null)}
-        title="Konfirmasi Hapus Mitra"
-        maxWidth="440px"
-        footer={
-          <>
-            <button
-              type="button"
-              onClick={() => setDeleteConfirmId(null)}
-              className="admin-btn admin-btn-secondary"
-            >
-              Batal
-            </button>
-            <button
-              type="button"
-              onClick={handleDelete}
-              className="admin-btn admin-btn-danger"
-            >
-              Hapus Sekarang
-            </button>
-          </>
-        }
-      >
-        <p style={{ margin: 0, fontSize: '0.875rem' }}>
-          Apakah Anda yakin ingin menghapus data mitra lembaga ini? Data yang dihapus tidak dapat dipulihkan kembali.
-        </p>
-      </AdminModal>
+        <AdminPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={filteredClients.length}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+        />
+      </div>
     </div>
   )
 }

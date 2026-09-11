@@ -20,6 +20,10 @@ export default function AdminLayout() {
   const location = useLocation()
 
   useEffect(() => {
+    setIsMobileOpen(false)
+  }, [location.pathname])
+
+  useEffect(() => {
     localStorage.setItem('azhar_admin_sidebar_collapsed', isCollapsed ? 'true' : 'false')
   }, [isCollapsed])
 
@@ -108,8 +112,8 @@ export default function AdminLayout() {
           <Outlet context={{ currentUser, isDarkMode }} />
         </main>
 
-        <footer style={{ padding: '1rem 1.5rem', textAlign: 'center', fontSize: '0.75rem', color: 'var(--admin-text-subtle)', borderTop: '1px solid var(--admin-border)' }}>
-          &copy; {new Date().getFullYear()} Azhar Collection. Seluruh hak cipta dilindungi.
+        <footer className="admin-footer">
+          &copy; {new Date().getFullYear()} Azhar Collection. Hak Cipta Dilindungi.
         </footer>
       </div>
     </div>

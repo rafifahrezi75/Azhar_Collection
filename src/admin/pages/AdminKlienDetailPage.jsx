@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { ArrowLeft, Edit2, ExternalLink, Building2, MapPin, Calendar, Users, PackageCheck, AlertCircle, Loader2, School } from 'lucide-react'
+import { ArrowLeft, Edit2, ExternalLink, MapPin, Calendar, Users, PackageCheck, AlertCircle, Loader2, School, FileText } from 'lucide-react'
 import { getKlienById } from '../../firebase/adminService'
 
 export default function AdminKlienDetailPage() {
@@ -57,132 +57,120 @@ export default function AdminKlienDetailPage() {
 
   return (
     <div className="admin-detail-page">
-      <div className="admin-detail-header">
-        <div className="admin-detail-header-left">
-          <Link to="/admin/klien" className="admin-back-btn" title="Kembali" aria-label="Kembali">
-            <ArrowLeft size={18} />
-          </Link>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', flexWrap: 'wrap' }}>
-              <h1 className="admin-page-title" style={{ margin: 0 }}>{client.name}</h1>
-              <span className="admin-badge admin-badge-primary">{client.category || 'Institusi Mitra'}</span>
-              <div className="admin-inline-actions">
-                <Link
-                  to={`/admin/klien/edit/${client.id}`}
-                  className="admin-action-icon-btn admin-action-icon-btn-primary"
-                  title="Ubah Profil Mitra"
-                  aria-label="Ubah Profil Mitra"
-                >
-                  <Edit2 size={16} />
-                </Link>
-                <a
-                  href="/klien"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="admin-action-icon-btn"
-                  title="Lihat di Web"
-                  aria-label="Lihat di Web"
-                >
-                  <ExternalLink size={16} />
-                </a>
+      <div className="admin-card">
+        <div className="admin-card-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap', padding: '1rem 1.25rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <Link to="/admin/klien" className="admin-back-btn" title="Kembali" aria-label="Kembali">
+              <ArrowLeft size={18} />
+            </Link>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', flexWrap: 'wrap' }}>
+                <h1 className="admin-page-title" style={{ margin: 0 }}>{client.name}</h1>
+                <span className="admin-badge admin-badge-primary">{client.category || 'Institusi Mitra'}</span>
               </div>
-            </div>
-            <p className="admin-page-desc" style={{ margin: '0.25rem 0 0 0' }}>
-              Profil rekam jejak kemitraan produksi busana seragam.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div className="admin-detail-grid">
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          <div className="admin-detail-card">
-            <h2 className="admin-detail-card-title">
-              <Building2 size={18} style={{ color: 'var(--admin-primary)' }} />
-              <span>Informasi Kemitraan</span>
-            </h2>
-
-            <div className="admin-detail-meta-grid">
-              <div className="admin-detail-meta-item">
-                <span className="admin-detail-meta-label">
-                  <MapPin size={12} style={{ display: 'inline', marginRight: '4px' }} />
-                  Kota / Wilayah
-                </span>
-                <span className="admin-detail-meta-value">{client.city || '-'}</span>
-              </div>
-
-              <div className="admin-detail-meta-item">
-                <span className="admin-detail-meta-label">
-                  <Calendar size={12} style={{ display: 'inline', marginRight: '4px' }} />
-                  Kemitraan Sejak
-                </span>
-                <span className="admin-detail-meta-value">{client.since || '-'}</span>
-              </div>
-
-              <div className="admin-detail-meta-item">
-                <span className="admin-detail-meta-label">
-                  <Users size={12} style={{ display: 'inline', marginRight: '4px' }} />
-                  Kontak PIC
-                </span>
-                <span className="admin-detail-meta-value">{client.contactPerson || '-'}</span>
-              </div>
-
-              <div className="admin-detail-meta-item">
-                <span className="admin-detail-meta-label">
-                  <PackageCheck size={12} style={{ display: 'inline', marginRight: '4px' }} />
-                  Akumulasi Pesanan
-                </span>
-                <span className="admin-detail-meta-value">{client.totalPcs || client.totalOrders || '-'}</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="admin-detail-card">
-            <h2 className="admin-detail-card-title">
-              <span>Ringkasan Kemitraan & Rekam Jejak Produksi</span>
-            </h2>
-
-            {client.summary ? (
-              <div
-                className="rich-content-view"
-                dangerouslySetInnerHTML={{ __html: client.summary }}
-              />
-            ) : (
-              <p style={{ color: 'var(--admin-text-muted)', fontStyle: 'italic', margin: 0 }}>
-                Belum ada ringkasan kemitraan tertulis untuk mitra ini.
+              <p className="admin-page-desc" style={{ margin: '0.25rem 0 0 0' }}>
+                Profil rekam jejak kemitraan produksi busana seragam.
               </p>
-            )}
+            </div>
+          </div>
+
+          <div className="admin-inline-actions" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Link
+              to={`/admin/klien/edit/${client.id}`}
+              className="admin-action-icon-btn admin-action-icon-btn-primary"
+              title="Ubah Profil Mitra"
+              aria-label="Ubah Profil Mitra"
+            >
+              <Edit2 size={16} />
+            </Link>
+            <a
+              href="/klien"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="admin-action-icon-btn"
+              title="Lihat di Web"
+              aria-label="Lihat di Web"
+            >
+              <ExternalLink size={16} />
+            </a>
           </div>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          <div className="admin-detail-card">
-            <h2 className="admin-detail-card-title">
-              <span>Logo / Foto Institusi</span>
-            </h2>
-
-            <div
-              style={{
-                width: '100%',
-                borderRadius: 'var(--admin-radius)',
-                overflow: 'hidden',
-                backgroundColor: 'var(--admin-surface-hover)',
-                aspectRatio: '1',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '1.5rem',
-                border: '1px solid var(--admin-border)'
-              }}
-            >
+        <div className="admin-detail-grid">
+          <div className="admin-detail-showcase">
+            <div className="admin-detail-media-frame ratio-1-1">
               {client.image ? (
                 <img
                   src={client.image}
                   alt={client.name}
-                  style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
                 />
               ) : (
-                <School size={64} style={{ color: 'var(--admin-text-subtle)' }} />
+                <div style={{ textAlign: 'center', color: 'var(--admin-text-subtle)', padding: '2rem 1rem' }}>
+                  <School size={48} style={{ margin: '0 auto 0.5rem auto', opacity: 0.4 }} />
+                  <p style={{ margin: 0, fontSize: '0.75rem', fontWeight: 600 }}>Foto Belum Diunggah</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            <div className="admin-detail-meta-cards">
+              <div className="admin-detail-meta-card">
+                <div className="admin-detail-meta-header">
+                  <MapPin size={13} />
+                  <span>Kota / Wilayah</span>
+                </div>
+                <div className="admin-detail-meta-body">
+                  {client.city || '-'}
+                </div>
+              </div>
+
+              <div className="admin-detail-meta-card">
+                <div className="admin-detail-meta-header">
+                  <Calendar size={13} />
+                  <span>Kemitraan Sejak</span>
+                </div>
+                <div className="admin-detail-meta-body">
+                  {client.since || '-'}
+                </div>
+              </div>
+
+              <div className="admin-detail-meta-card">
+                <div className="admin-detail-meta-header">
+                  <Users size={13} />
+                  <span>Kontak PIC</span>
+                </div>
+                <div className="admin-detail-meta-body">
+                  {client.contactPerson || '-'}
+                </div>
+              </div>
+
+              <div className="admin-detail-meta-card">
+                <div className="admin-detail-meta-header">
+                  <PackageCheck size={13} />
+                  <span>Akumulasi Pesanan</span>
+                </div>
+                <div className="admin-detail-meta-body">
+                  {client.totalPcs || client.totalOrders || '-'}
+                </div>
+              </div>
+            </div>
+
+            <div className="admin-detail-specs-section">
+              <div className="admin-detail-specs-title">
+                <FileText size={16} style={{ color: 'var(--admin-primary)' }} />
+                <span>Ringkasan Kemitraan & Rekam Jejak Produksi</span>
+              </div>
+
+              {client.summary ? (
+                <div
+                  className="rich-content-view"
+                  dangerouslySetInnerHTML={{ __html: client.summary }}
+                />
+              ) : (
+                <p style={{ color: 'var(--admin-text-muted)', fontStyle: 'italic', margin: 0, fontSize: '0.8125rem' }}>
+                  Belum ada ringkasan kemitraan tertulis untuk mitra ini.
+                </p>
               )}
             </div>
           </div>

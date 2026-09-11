@@ -1,9 +1,24 @@
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import PageHeader from '../components/PageHeader'
-import { newsData } from '../data/siteData'
+import { newsData as fallbackNews } from '../data/siteData'
+import { getBeritaList } from '../firebase/adminService'
 import { Calendar, Clock, ArrowRight, User } from 'lucide-react'
 
 export default function NewsPage() {
+  const [news, setNews] = useState(fallbackNews)
+
+  useEffect(() => {
+    let isMounted = true
+    getBeritaList().then((list) => {
+      if (isMounted && list && list.length > 0) {
+        setNews(list)
+      }
+    })
+    return () => {
+      isMounted = false
+    }
+  }, [])
   return (
     <div className="news-page">
       <PageHeader
@@ -23,9 +38,9 @@ export default function NewsPage() {
           </div>
 
           <div className="news-grid">
-            {newsData.map((item) => (
+            {news.map((item) => (
               <article key={item.id} className="news-card">
-                <Link to={`/berita/${item.slug}`} className="news-card-img-wrapper">
+                <Link to={`/berita/${item.slug || item.id}`} className="news-card-img-wrapper">
                   <img
                     src={item.image}
                     alt={item.title}
@@ -47,7 +62,7 @@ export default function NewsPage() {
                   </div>
 
                   <h3 className="news-card-title">
-                    <Link to={`/berita/${item.slug}`}>{item.title}</Link>
+                    <Link to={`/berita/${item.slug || item.id}`}>{item.title}</Link>
                   </h3>
 
                   <p className="news-card-excerpt">{item.excerpt}</p>
@@ -58,7 +73,7 @@ export default function NewsPage() {
                       <span>{item.author}</span>
                     </div>
 
-                    <Link to={`/berita/${item.slug}`} className="btn-read-more">
+                    <Link to={`/berita/${item.slug || item.id}`} className="btn-read-more">
                       <span>Baca</span>
                       <ArrowRight size={14} />
                     </Link>

@@ -253,23 +253,43 @@ export default function ProductDetailPage() {
                 <h3 style={{ fontSize: '1.125rem', fontWeight: 800, color: 'var(--color-primary-dark)', margin: 0 }}>
                   Deskripsi & Spesifikasi Produk
                 </h3>
+
+                {Array.isArray(product.materials) && product.materials.length > 0 && (
+                  <div style={{ background: 'var(--color-bg-light)', padding: '1rem 1.25rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)' }}>
+                    <p style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--color-primary)', margin: '0 0 0.625rem 0' }}>
+                      Bahan Utama Kain
+                    </p>
+                    <ul style={{ margin: 0, paddingLeft: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+                      {product.materials.map((mat, idx) => (
+                        <li key={idx} style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-primary-dark)', lineHeight: 1.5 }}>
+                          {mat}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
                 {product.specs?.includes('<') ? (
                   <div
                     className="rich-content-view"
                     dangerouslySetInnerHTML={{ __html: product.specs }}
                   />
-                ) : (
-                  <>
-                    <p style={{ fontSize: '0.9375rem', lineHeight: 1.8, color: 'var(--color-text-main)', margin: 0 }}>
+                ) : product.specs ? (
+                  <div style={{ background: 'var(--color-bg-light)', padding: '1.25rem 1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)' }}>
+                    <p style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--color-primary)', margin: '0 0 0.5rem 0' }}>
+                      Rincian Spesifikasi & Keunggulan Model
+                    </p>
+                    <p style={{ fontSize: '0.875rem', lineHeight: 1.7, color: 'var(--color-text-muted)', margin: 0, whiteSpace: 'pre-line' }}>
+                      {product.specs}
+                    </p>
+                  </div>
+                ) : product.customDetails ? (
+                  <div style={{ background: 'var(--color-bg-light)', padding: '1.25rem 1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)' }}>
+                    <p style={{ fontSize: '0.875rem', lineHeight: 1.7, color: 'var(--color-text-muted)', margin: 0, whiteSpace: 'pre-line' }}>
                       {product.customDetails}
                     </p>
-                    <div style={{ background: 'var(--color-bg-light)', padding: '1.25rem 1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)' }}>
-                      <p style={{ fontSize: '0.875rem', lineHeight: 1.7, color: 'var(--color-text-muted)', margin: 0 }}>
-                        <strong style={{ color: 'var(--color-primary-dark)' }}>Spesifikasi Bahan:</strong> {product.specs}. Jahitan rapi standar garmen konveksi profesional dengan penguatan di titik-titik krusial serta opsi bordir komputer atau sablon sesuai identitas lembaga.
-                      </p>
-                    </div>
-                  </>
-                )}
+                  </div>
+                ) : null}
               </div>
             </div>
           </div>
