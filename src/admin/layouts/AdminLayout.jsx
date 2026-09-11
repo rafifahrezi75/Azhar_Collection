@@ -38,12 +38,9 @@ export default function AdminLayout() {
     const unsubscribe = subscribeToAuth((user) => {
       setCurrentUser(user)
       setLoading(false)
-      if (!user && location.pathname !== '/admin/login') {
-        navigate('/admin/login', { replace: true })
-      }
     })
     return () => unsubscribe()
-  }, [navigate, location.pathname])
+  }, [])
 
   const handleToggleDarkMode = () => {
     setIsDarkMode((prev) => !prev)

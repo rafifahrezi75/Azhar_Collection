@@ -787,6 +787,18 @@
   border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
+.admin-alert-warning {
+  background-color: var(--admin-warning-soft);
+  color: #B45309;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.admin-dark .admin-alert-warning {
+  background-color: var(--admin-warning-soft);
+  color: var(--admin-warning);
+  border: 1px solid rgba(251, 191, 36, 0.25);
+}
+
 @media (max-width: 1024px) {
   .admin-sidebar {
     transform: translateX(-100%);

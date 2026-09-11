@@ -1,7 +1,10 @@
 import {
   signInWithEmailAndPassword,
   signOut,
-  onAuthStateChanged
+  onAuthStateChanged,
+  setPersistence,
+  browserLocalPersistence,
+  browserSessionPersistence
 } from 'firebase/auth'
 import {
   collection,
@@ -80,7 +83,7 @@ export const clearAllAdminData = async () => {
     setLocalData('testimonials', [])
     setLocalData('inquiries', [])
   } catch {
-    // ignore
+    void 0
   }
 
   if (isFirebaseConfigured && db) {
@@ -98,8 +101,16 @@ export const clearAllAdminData = async () => {
   }
 }
 
-export const loginAdmin = async (email, password) => {
+export const loginAdmin = async (email, password, rememberMe = true) => {
   if (isFirebaseConfigured && auth) {
+    try {
+      await setPersistence(
+        auth,
+        rememberMe ? browserLocalPersistence : browserSessionPersistence
+      )
+    } catch (e) {
+      void e
+    }
     const userCredential = await signInWithEmailAndPassword(auth, email, password)
     return {
       uid: userCredential.user.uid,
@@ -114,7 +125,13 @@ export const loginAdmin = async (email, password) => {
       email: email.trim(),
       displayName: 'Admin Azhar Collection (Demo)'
     }
-    setLocalData('current_user', mockUser)
+    if (rememberMe) {
+      localStorage.setItem(LOCAL_STORAGE_KEY_PREFIX + 'current_user', JSON.stringify(mockUser))
+      sessionStorage.removeItem(LOCAL_STORAGE_KEY_PREFIX + 'current_user')
+    } else {
+      sessionStorage.setItem(LOCAL_STORAGE_KEY_PREFIX + 'current_user', JSON.stringify(mockUser))
+      localStorage.removeItem(LOCAL_STORAGE_KEY_PREFIX + 'current_user')
+    }
     return mockUser
   }
 
@@ -126,6 +143,7 @@ export const logoutAdmin = async () => {
     await signOut(auth)
   }
   localStorage.removeItem(LOCAL_STORAGE_KEY_PREFIX + 'current_user')
+  sessionStorage.removeItem(LOCAL_STORAGE_KEY_PREFIX + 'current_user')
 }
 
 export const subscribeToAuth = (callback) => {
@@ -143,8 +161,19 @@ export const subscribeToAuth = (callback) => {
     })
   }
 
-  const localUser = getLocalData('current_user', null)
-  callback(localUser)
+  const getMockUser = () => {
+    try {
+      const local = localStorage.getItem(LOCAL_STORAGE_KEY_PREFIX + 'current_user')
+      if (local) return JSON.parse(local)
+      const session = sessionStorage.getItem(LOCAL_STORAGE_KEY_PREFIX + 'current_user')
+      if (session) return JSON.parse(session)
+    } catch {
+      return null
+    }
+    return null
+  }
+
+  callback(getMockUser())
   return () => {}
 }
 

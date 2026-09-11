@@ -1,22 +1,36 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
-import { loginAdmin } from '../../firebase/adminService'
+import { useNavigate, useLocation, Link } from 'react-router-dom'
+import { loginAdmin, subscribeToAuth } from '../../firebase/adminService'
 import { isFirebaseConfigured } from '../../firebase/config'
-import { Lock, Mail, ArrowRight, ShieldCheck, Eye, EyeOff } from 'lucide-react'
+import { Lock, Mail, ArrowRight, ShieldCheck, Eye, EyeOff, Clock } from 'lucide-react'
 import '../styles/admin.css'
 
 export default function AdminLoginPage() {
-  const [email, setEmail] = useState('')
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  const [rememberMe, setRememberMe] = useState(() => {
+    return Boolean(localStorage.getItem('azhar_admin_remember_email'))
+  })
+  const [email, setEmail] = useState(() => {
+    return localStorage.getItem('azhar_admin_remember_email') || ''
+  })
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const navigate = useNavigate()
+
+  const isIdleLogout = location.state?.reason === 'idle'
 
   useEffect(() => {
-    setEmail('')
-    setPassword('')
-  }, [])
+    const unsubscribe = subscribeToAuth((user) => {
+      if (user) {
+        const destination = location.state?.from?.pathname || '/admin/dashboard'
+        navigate(destination, { replace: true })
+      }
+    })
+    return () => unsubscribe()
+  }, [navigate, location.state])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -24,8 +38,14 @@ export default function AdminLoginPage() {
     setLoading(true)
 
     try {
-      await loginAdmin(email, password)
-      navigate('/admin', { replace: true })
+      await loginAdmin(email, password, rememberMe)
+      if (rememberMe) {
+        localStorage.setItem('azhar_admin_remember_email', email.trim())
+      } else {
+        localStorage.removeItem('azhar_admin_remember_email')
+      }
+      const destination = location.state?.from?.pathname || '/admin/dashboard'
+      navigate(destination, { replace: true })
     } catch (err) {
       setError(err.message || 'Login gagal. Periksa kembali email dan kata sandi Anda.')
     } finally {
@@ -61,6 +81,13 @@ export default function AdminLoginPage() {
             Azhar Collection — Konveksi & Bordir Komputer Sidoarjo
           </p>
         </div>
+
+        {isIdleLogout && !error && (
+          <div className="admin-alert admin-alert-warning">
+            <Clock size={18} style={{ flexShrink: 0 }} />
+            <span>Sesi Anda telah berakhir karena tidak ada aktivitas selama 5 menit. Silakan masuk kembali.</span>
+          </div>
+        )}
 
         {error && (
           <div className="admin-alert admin-alert-danger">
@@ -168,13 +195,48 @@ export default function AdminLoginPage() {
             </div>
           </div>
 
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginTop: '0.25rem',
+              marginBottom: '1rem'
+            }}
+          >
+            <label
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                cursor: 'pointer',
+                fontSize: '0.8125rem',
+                color: 'var(--admin-text)',
+                userSelect: 'none'
+              }}
+            >
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                style={{
+                  accentColor: '#800080',
+                  width: '16px',
+                  height: '16px',
+                  cursor: 'pointer'
+                }}
+              />
+              <span>Ingat Saya</span>
+            </label>
+          </div>
+
           <button
             type="submit"
             disabled={loading}
             className="admin-btn admin-btn-primary"
             style={{
               width: '100%',
-              marginTop: '0.5rem',
+              marginTop: '0.25rem',
               minHeight: '44px',
               display: 'inline-flex',
               alignItems: 'center',

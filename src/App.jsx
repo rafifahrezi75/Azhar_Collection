@@ -13,7 +13,9 @@ import ClientsPage from './pages/ClientsPage'
 import NewsPage from './pages/NewsPage'
 import NewsDetailPage from './pages/NewsDetailPage'
 import ContactPage from './pages/ContactPage'
+import NotFoundPage from './pages/NotFoundPage'
 
+import ProtectedRoute from './admin/components/ProtectedRoute'
 import AdminLayout from './admin/layouts/AdminLayout'
 import AdminLoginPage from './admin/pages/AdminLoginPage'
 import AdminDashboardPage from './admin/pages/AdminDashboardPage'
@@ -60,7 +62,14 @@ export default function App() {
       <ScrollToTop />
       <Routes>
         <Route path="/admin/login" element={<AdminLoginPage />} />
-        <Route path="/admin" element={<AdminLayout />}>
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<AdminDashboardPage />} />
           <Route path="dashboard" element={<AdminDashboardPage />} />
           <Route path="katalog" element={<AdminKatalogPage />} />
@@ -82,6 +91,7 @@ export default function App() {
           <Route path="testimoni/edit/:id" element={<AdminTestimoniEditPage />} />
           <Route path="testimoni/detail/:id" element={<AdminTestimoniDetailPage />} />
           <Route path="pengaturan" element={<AdminPengaturanPage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Route>
 
         <Route element={<PublicLayout onOpenQuote={handleOpenWhatsAppQuote} />}>
@@ -109,7 +119,7 @@ export default function App() {
           <Route path="/kontak" element={<ContactPage />} />
           <Route
             path="*"
-            element={<HomePage onOpenQuote={handleOpenWhatsAppQuote} />}
+            element={<NotFoundPage />}
           />
         </Route>
       </Routes>
