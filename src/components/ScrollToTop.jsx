@@ -7,7 +7,8 @@ const pageTitles = {
   '/layanan': 'Layanan Konveksi | Azhar Collection',
   '/katalog': 'Katalog Seragam | Azhar Collection',
   '/klien': 'Klien & Mitra | Azhar Collection',
-  '/berita': 'Berita & Edukasi Busana | Azhar Collection',
+  '/galeri': 'Galeri Dokumentasi & Foto | Azhar Collection',
+  '/berita': 'Galeri Dokumentasi & Foto | Azhar Collection',
   '/kontak': 'Kontak & Pemesanan | Azhar Collection'
 }
 
@@ -17,7 +18,8 @@ const pageDescriptions = {
   '/layanan': 'Layanan konveksi seragam sekolah, kemeja kerja PDH/PDL, batik instansi, jas almamater, dan bordir komputer otomatis di Sidoarjo.',
   '/katalog': 'Katalog portofolio busana dan seragam hasil produksi Azhar Collection untuk sekolah, instansi dinas, dan perusahaan.',
   '/klien': 'Daftar sekolah, instansi pemerintah, dan lembaga mitra yang mempercayakan pengadaan seragam kepada Azhar Collection.',
-  '/berita': 'Artikel edukasi pemilihan bahan kain seragam, tips koperasi sekolah, dan teknologi konveksi Azhar Collection.',
+  '/galeri': 'Dokumentasi proses penjahitan seragam sekolah, pakaian dinas, bordir komputer, dan aktivitas workshop Azhar Collection di Buduran, Sidoarjo.',
+  '/berita': 'Dokumentasi proses penjahitan seragam sekolah, pakaian dinas, bordir komputer, dan aktivitas workshop Azhar Collection di Buduran, Sidoarjo.',
   '/kontak': 'Hubungi Azhar Collection Sidoarjo untuk konsultasi pemesanan seragam kustom, kalkulasi biaya, dan survei workshop.'
 }
 

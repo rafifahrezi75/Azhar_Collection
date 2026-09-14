@@ -31,7 +31,7 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://azharcollection.com/berita</loc>
+    <loc>https://azharcollection.com/galeri</loc>
     <lastmod>2026-09-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -41,29 +41,5 @@
     <lastmod>2026-09-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://azharcollection.com/berita/panduan-memilih-bahan-seragam-sekolah-famatex-vs-oxford</loc>
-    <lastmod>2026-09-14</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://azharcollection.com/berita/persiapan-efisien-pengadaan-seragam-tahun-ajaran-baru</loc>
-    <lastmod>2026-09-14</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://azharcollection.com/berita/keunggulan-mesin-bordir-komputer-multi-head-konveksi</loc>
-    <lastmod>2026-09-14</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://azharcollection.com/berita/perbedaan-kemeja-pdh-dan-pdl-untuk-seragam-kantor</loc>
-    <lastmod>2026-09-14</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
   </url>
 </urlset>

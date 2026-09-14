@@ -1,10 +1,11 @@
-import { NavLink, Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import {
   LayoutDashboard,
   Shirt,
   Users,
   Scissors,
-  Newspaper,
+  Images,
+  UserCheck,
   MessageSquare,
   Star,
   Settings,
@@ -17,12 +18,31 @@ export default function AdminSidebar({
   isMobileOpen,
   onCloseMobile
 }) {
+  const location = useLocation()
+  const currentPath = location.pathname
+
+  const isItemActive = (item) => {
+    if (item.path === '/admin') {
+      return (
+        currentPath === '/admin' ||
+        currentPath === '/admin/' ||
+        currentPath === '/admin/dashboard'
+      )
+    }
+    if (item.path === '/admin/galeri') {
+      return (
+        currentPath.startsWith('/admin/galeri') ||
+        currentPath.startsWith('/admin/berita')
+      )
+    }
+    return currentPath.startsWith(item.path)
+  }
+
   const navItems = [
     {
       label: 'Dashboard',
       path: '/admin',
-      icon: LayoutDashboard,
-      exact: true
+      icon: LayoutDashboard
     },
     {
       label: 'Katalog Produk',
@@ -40,9 +60,14 @@ export default function AdminSidebar({
       icon: Scissors
     },
     {
-      label: 'Berita & Artikel',
-      path: '/admin/berita',
-      icon: Newspaper
+      label: 'Galeri Foto',
+      path: '/admin/galeri',
+      icon: Images
+    },
+    {
+      label: 'Tim Marketing',
+      path: '/admin/marketing',
+      icon: UserCheck
     },
     {
       label: 'Pesan Masuk',
@@ -98,20 +123,18 @@ export default function AdminSidebar({
           <ul className="admin-nav-list">
             {navItems.map((item) => {
               const Icon = item.icon
+              const active = isItemActive(item)
               return (
                 <li key={item.path}>
-                  <NavLink
+                  <Link
                     to={item.path}
-                    end={item.exact}
-                    className={({ isActive }) =>
-                      `admin-nav-link ${isActive ? 'active' : ''}`
-                    }
+                    className={`admin-nav-link ${active ? 'active' : ''}`}
                     onClick={onCloseMobile}
                     title={isCollapsed ? item.label : undefined}
                   >
                     <Icon className="admin-nav-icon" />
                     {!isCollapsed && <span>{item.label}</span>}
-                  </NavLink>
+                  </Link>
                 </li>
               )
             })}

@@ -32,7 +32,7 @@ export default function Navbar({ onOpenQuote }) {
     { label: 'Layanan', to: '/layanan' },
     { label: 'Katalog', to: '/katalog' },
     { label: 'Klien Kami', to: '/klien' },
-    { label: 'Berita', to: '/berita' },
+    { label: 'Galeri', to: '/galeri' },
     { label: 'Kontak', to: '/kontak' }
   ]
 

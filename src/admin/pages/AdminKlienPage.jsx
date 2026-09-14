@@ -8,6 +8,7 @@ import { showDeleteConfirm, showToast, showErrorAlert } from '../utils/swal'
 export default function AdminKlienPage() {
   const [clients, setClients] = useState([])
   const [search, setSearch] = useState('')
+  const [categoryFilter, setCategoryFilter] = useState('all')
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 8
 
@@ -28,7 +29,7 @@ export default function AdminKlienPage() {
 
   useEffect(() => {
     setCurrentPage(1)
-  }, [search])
+  }, [search, categoryFilter])
 
   const handleDelete = async (client) => {
     const res = await showDeleteConfirm({
@@ -46,12 +47,15 @@ export default function AdminKlienPage() {
     }
   }
 
+  const categories = Array.from(new Set(clients.map((c) => c.category).filter(Boolean)))
+
   const filteredClients = clients.filter((client) => {
+    const matchCategory = categoryFilter === 'all' || client.category === categoryFilter
     const matchSearch =
       (client.name || '').toLowerCase().includes(search.toLowerCase()) ||
       (client.city || '').toLowerCase().includes(search.toLowerCase()) ||
       (client.category || '').toLowerCase().includes(search.toLowerCase())
-    return matchSearch
+    return matchCategory && matchSearch
   })
 
   const totalPages = Math.ceil(filteredClients.length / itemsPerPage) || 1
@@ -80,6 +84,19 @@ export default function AdminKlienPage() {
       <div className="admin-card">
         <div className="admin-card-header admin-table-card-header">
           <div className="admin-table-tools">
+            <select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              className="admin-select admin-table-select-filter"
+            >
+              <option value="all">Semua Kategori</option>
+              {categories.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
+
             <div className="admin-table-search-box">
               <input
                 type="text"

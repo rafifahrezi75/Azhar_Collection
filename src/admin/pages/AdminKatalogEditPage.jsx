@@ -164,8 +164,8 @@ export default function AdminKatalogEditPage() {
               type="submit"
               disabled={submitting}
               className="admin-action-icon-btn admin-action-icon-btn-primary"
-              title={submitting ? 'Memperbarui...' : 'Simpan Perubahan'}
-              aria-label="Simpan Perubahan"
+              title={submitting ? 'Memperbarui...' : 'Simpan'}
+              aria-label="Simpan"
             >
               {submitting ? <Loader2 size={16} className="spin-animation" /> : <Save size={16} />}
             </button>

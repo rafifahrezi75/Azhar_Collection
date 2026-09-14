@@ -86,7 +86,7 @@ export default function Footer({
               <li className="footer-link-item"><Link to="/layanan">Layanan Konveksi</Link></li>
               <li className="footer-link-item"><Link to="/katalog">Katalog Baju Kustom</Link></li>
               <li className="footer-link-item"><Link to="/klien">Daftar Klien & Mitra</Link></li>
-              <li className="footer-link-item"><Link to="/berita">Kabar & Berita</Link></li>
+              <li className="footer-link-item"><Link to="/galeri">Galeri Konveksi</Link></li>
               <li className="footer-link-item"><Link to="/kontak">Kontak & Workshop</Link></li>
               <li className="footer-link-item">
                 <Link

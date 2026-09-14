@@ -104,74 +104,9 @@ export const clientsData = [];
 
 export const portfolioProducts = [];
 
-export const newsData = [
-  {
-    id: 1,
-    slug: "panduan-memilih-bahan-seragam-sekolah-famatex-vs-oxford",
-    title: "Panduan Memilih Bahan Seragam Sekolah: Famatex vs Oxford vs Drill",
-    date: "18 Mei 2024",
-    readTime: "4 Menit Baca",
-    category: "Panduan Bahan",
-    author: "Tim Produksi Azhar Collection",
-    image: "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&w=1000&q=80",
-    excerpt: "Memahami karakteristik kain atasan dan bawahan seragam sekolah agar awet, tidak mudah sobek, dan tetap sejuk dipakai siswa beraktivitas seharian.",
-    content: [
-      "Pemilihan jenis kain seragam sekolah memegang peranan krusial dalam kenyamanan belajar siswa sekaligus efisiensi anggaran pengeluaran koperasi sekolah.",
-      "Kain Oxford Super umumnya menjadi pilihan utama untuk atasan kemeja putih SD, SMP, dan SMA. Kain ini memiliki anyaman bertekstur kotak kecil (basket weave) yang memberi ruang sirkulasi udara optimal. Hasilnya, kemeja terasa dingin di kulit, menyerap keringat, dan tidak menerawang.",
-      "Untuk bagian bawahan seperti celana dan rok rempel, Famatex Asli merupakan standar baku industri garmen sekolah di Indonesia. Serat Famatex tebal, tidak mudah kusut, memiliki ketahanan sobek yang sangat baik saat anak-anak bermain, serta warna kain yang tidak mudah pudar meskipun dicuci berulang kali.",
-      "Sedangkan bahan Drill (seperti American Drill dan Nagata Drill) sangat disarankan untuk kemeja dinas OSIS, seragam kejuruan SMK, jas almamater, dan pakaian dinas harian instansi karena strukturnya yang lebih tegap dan memiliki serat miring yang kokoh."
-    ]
-  },
-  {
-    id: 2,
-    slug: "persiapan-efisien-pengadaan-seragam-tahun-ajaran-baru",
-    title: "Tips Persiapan Pengadaan Seragam Siswa Baru untuk Koperasi Sekolah",
-    date: "04 Juni 2024",
-    readTime: "5 Menit Baca",
-    category: "Manajemen Sekolah",
-    author: "Ach. Haris (Marketing Tender)",
-    image: "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=1000&q=80",
-    excerpt: "Langkah-langkah strategis bagi pengurus sekolah dan panitia PPDB agar seragam siap sebelum masa orientasi tanpa kendala ukuran salah atau keterlambatan.",
-    content: [
-      "Menjelang tahun ajaran baru, panitia seragam sekolah kerap menghadapi tantangan besar terkait estimasi jumlah siswa, akurasi ukuran baju, serta batas waktu serah terima seragam sebelum Masa Pengenalan Lingkungan Sekolah (MPLS).",
-      "Pertama, gunakan panduan ukuran standar nasional (SNI) yang kami sediakan daripada meminta orang tua mengukur sendiri tanpa acuan. Standar ukuran S, M, L, XL yang jelas akan meminimalkan kesalahan tukar ukuran hingga 95%.",
-      "Kedua, lakukan pemesanan secara bertahap atau sistem pre-order awal. Koperasi sekolah dapat memesan kuota baseline 70% dari perkiraan daya tampung sekolah sejak bulan April atau Mei, lalu menambahkan sisa 30% kuota susulan setelah pendaftaran ulang resmi ditutup.",
-      "Ketiga, pastikan bekerja sama langsung dengan konveksi produsen tangan pertama yang memiliki mesin bordir komputer sendiri di workshop mereka. Hal ini menjamin pengerjaan badge nama dan lambang sekolah dapat diproses cepat tanpa antrean perantara."
-    ]
-  },
-  {
-    id: 3,
-    slug: "keunggulan-mesin-bordir-komputer-multi-head-konveksi",
-    title: "Mengapa Bordir Komputer Multi-Head Menghasilkan Logo Sekolah Lebih Tajam",
-    date: "22 Juli 2024",
-    readTime: "3 Menit Baca",
-    category: "Teknologi Produksi",
-    author: "Lazuardi (Tim Operasional)",
-    image: "https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=1000&q=80",
-    excerpt: "Mengenal teknologi bordir komputer otomatis 12 kepala yang digunakan di workshop Buduran Sidoarjo untuk memastikan ribuan emblem seragam seragam dan presisi.",
-    content: [
-      "Bordir manual sering kali menghasilkan kerapatan benang yang tidak konsisten dan bentuk teks kecil yang kabur. Untuk mengatasi masalah tersebut, Azhar Collection mengoperasikan mesin bordir komputer otomatis multi-head.",
-      "Dengan proses digitizing digital, setiap lekukan logo sekolah, kaligrafi yayasan, dan lambang instansi dipetakan titik jarumnya dengan ketelitian hingga 0,1 milimeter.",
-      "Hasil bordir memiliki kepadatan benang tinggi (high-density stitch), warna berkilau karena menggunakan benang polyester grade industri, serta tahan setrika panas tanpa risiko benang lepas atau kusut."
-    ]
-  },
-  {
-    id: 4,
-    slug: "perbedaan-kemeja-pdh-dan-pdl-untuk-seragam-kantor",
-    title: "Mengenal Perbedaan Kemeja PDH dan PDL untuk Seragam Kantor & Lapangan",
-    date: "15 Agustus 2024",
-    readTime: "4 Menit Baca",
-    category: "Edukasi Busana",
-    author: "Tim Produksi Azhar Collection",
-    image: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=1000&q=80",
-    excerpt: "Ketahui karakteristik desain, pilihan bahan, dan fungsionalitas antara Pakaian Dinas Harian (PDH) dan Pakaian Dinas Lapangan (PDL).",
-    content: [
-      "Pakaian Dinas Harian (PDH) dirancang untuk aktivitas kerja di dalam ruangan kantor, ruang pelayanan publik, atau pertemuan formal. Potongannya cenderung semi-formal, rapi, dengan bahan yang halus dan tidak kaku seperti Nagata Drill atau Taipan Tropical.",
-      "Sebaliknya, Pakaian Dinas Lapangan (PDL) dirancang khusus untuk mobilitas tinggi di luar ruangan. Ciri khas PDL adalah penggunaan kain Ripstop berserat kotak anti-sobek, kantong kargo fungsional, ventilasi udara jaring di punggung, dan tali pengait saat lengan digulung.",
-      "Azhar Collection menyediakan konsultasi gratis untuk merancang kombinasi seragam kerja PDH maupun PDL lengkap dengan bordir nama, jabatan, dan logo instansi Anda."
-    ]
-  }
-];
+export const galleryData = [];
+
+export const newsData = [];
 
 export const sizeChartData = {
   sd: [
@@ -199,21 +134,4 @@ export const sizeChartData = {
 
 export const testimonialsData = [];
 
-export const marketingTeam = [
-  {
-    id: "haris",
-    name: "Ach. Haris",
-    division: "Marketing & Pemesanan Tender",
-    phone: "+6281330666807",
-    waUrl: "https://wa.me/6281330666807?text=Halo%20Pak%20Haris%20Azhar%20Collection%2C%20saya%20ingin%20konsultasi%20pemesanan%20kustom%20seragam.",
-    status: "online"
-  },
-  {
-    id: "lazuardi",
-    name: "Lazuardi",
-    division: "Customer Service & Operasional Produksi",
-    phone: "+6287855476538",
-    waUrl: "https://wa.me/6287855476538?text=Halo%20Mas%20Lazuardi%20Azhar%20Collection%2C%20saya%20ingin%20tanya%20informasi%20layanan%20konveksi.",
-    status: "online"
-  }
-];
+export const marketingTeam = [];

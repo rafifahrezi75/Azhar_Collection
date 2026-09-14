@@ -10,8 +10,7 @@ import ServiceDetailPage from './pages/ServiceDetailPage'
 import PortfolioPage from './pages/PortfolioPage'
 import ProductDetailPage from './pages/ProductDetailPage'
 import ClientsPage from './pages/ClientsPage'
-import NewsPage from './pages/NewsPage'
-import NewsDetailPage from './pages/NewsDetailPage'
+import GalleryPage from './pages/GalleryPage'
 import ContactPage from './pages/ContactPage'
 import NotFoundPage from './pages/NotFoundPage'
 
@@ -41,6 +40,10 @@ import AdminTestimoniPage from './admin/pages/AdminTestimoniPage'
 import AdminTestimoniCreatePage from './admin/pages/AdminTestimoniCreatePage'
 import AdminTestimoniEditPage from './admin/pages/AdminTestimoniEditPage'
 import AdminTestimoniDetailPage from './admin/pages/AdminTestimoniDetailPage'
+import AdminMarketingPage from './admin/pages/AdminMarketingPage'
+import AdminMarketingCreatePage from './admin/pages/AdminMarketingCreatePage'
+import AdminMarketingEditPage from './admin/pages/AdminMarketingEditPage'
+import AdminMarketingDetailPage from './admin/pages/AdminMarketingDetailPage'
 import { useEffect } from 'react'
 import AdminPengaturanPage from './admin/pages/AdminPengaturanPage'
 import { trackPublicVisit } from './firebase/visitorService'
@@ -102,6 +105,11 @@ export default function App() {
           <Route path="berita/create" element={<AdminBeritaCreatePage />} />
           <Route path="berita/edit/:id" element={<AdminBeritaEditPage />} />
           <Route path="berita/detail/:id" element={<AdminBeritaDetailPage />} />
+          <Route path="galeri" element={<AdminBeritaPage />} />
+          <Route path="galeri/tambah" element={<AdminBeritaCreatePage />} />
+          <Route path="galeri/create" element={<AdminBeritaCreatePage />} />
+          <Route path="galeri/edit/:id" element={<AdminBeritaEditPage />} />
+          <Route path="galeri/detail/:id" element={<AdminBeritaDetailPage />} />
           <Route path="pesan" element={<AdminPesanPage />} />
           <Route path="pesan/detail/:id" element={<AdminPesanDetailPage />} />
           <Route path="testimoni" element={<AdminTestimoniPage />} />
@@ -109,6 +117,11 @@ export default function App() {
           <Route path="testimoni/create" element={<AdminTestimoniCreatePage />} />
           <Route path="testimoni/edit/:id" element={<AdminTestimoniEditPage />} />
           <Route path="testimoni/detail/:id" element={<AdminTestimoniDetailPage />} />
+          <Route path="marketing" element={<AdminMarketingPage />} />
+          <Route path="marketing/tambah" element={<AdminMarketingCreatePage />} />
+          <Route path="marketing/create" element={<AdminMarketingCreatePage />} />
+          <Route path="marketing/edit/:id" element={<AdminMarketingEditPage />} />
+          <Route path="marketing/detail/:id" element={<AdminMarketingDetailPage />} />
           <Route path="pengaturan" element={<AdminPengaturanPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
@@ -130,11 +143,9 @@ export default function App() {
             path="/klien/:clientId"
             element={<Navigate to="/klien" replace />}
           />
-          <Route path="/berita" element={<NewsPage />} />
-          <Route
-            path="/berita/:slug"
-            element={<NewsDetailPage />}
-          />
+          <Route path="/galeri" element={<GalleryPage />} />
+          <Route path="/berita" element={<Navigate to="/galeri" replace />} />
+          <Route path="/berita/:slug" element={<Navigate to="/galeri" replace />} />
           <Route path="/kontak" element={<ContactPage />} />
           <Route
             path="*"

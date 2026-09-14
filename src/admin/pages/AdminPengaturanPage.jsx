@@ -148,7 +148,7 @@ export default function AdminPengaturanPage() {
               className="admin-btn admin-btn-primary"
             >
               <Save size={16} />
-              <span>{saving ? 'Menyimpan...' : 'Simpan Perubahan'}</span>
+              <span>{saving ? 'Menyimpan...' : 'Simpan'}</span>
             </button>
           </form>
         </div>

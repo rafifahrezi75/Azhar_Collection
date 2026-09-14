@@ -1,9 +1,10 @@
-import { useState } from 'react'
-import { PhoneCall, MapPin, Mail, Phone, CheckCircle2, ExternalLink } from 'lucide-react'
-import { companyInfo, marketingTeam } from '../data/siteData'
-import { saveInquiry } from '../firebase/adminService'
+import { useState, useEffect } from 'react'
+import { PhoneCall, MapPin, Mail, Phone, CheckCircle2, ExternalLink, Image as ImageIcon } from 'lucide-react'
+import { companyInfo } from '../data/siteData'
+import { saveInquiry, getMarketingList } from '../firebase/adminService'
 
 export default function ContactMapSection({ showForm = true }) {
+  const [marketingList, setMarketingList] = useState([])
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -11,6 +12,16 @@ export default function ContactMapSection({ showForm = true }) {
     message: ''
   })
   const [isSubmitted, setIsSubmitted] = useState(false)
+
+  useEffect(() => {
+    let isMounted = true
+    getMarketingList().then((data) => {
+      if (isMounted && data) setMarketingList(data)
+    })
+    return () => {
+      isMounted = false
+    }
+  }, [])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -232,7 +243,7 @@ export default function ContactMapSection({ showForm = true }) {
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: '0.75rem', marginTop: '0.25rem' }}>
-                {marketingTeam.map((member) => (
+                {marketingList.map((member) => (
                   <div
                     key={member.id}
                     style={{
@@ -257,12 +268,34 @@ export default function ContactMapSection({ showForm = true }) {
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          fontWeight: 800,
-                          fontSize: '0.875rem',
-                          flexShrink: 0
+                          flexShrink: 0,
+                          overflow: 'hidden'
                         }}
                       >
-                        {member.name.charAt(0)}
+                        {member.photo ? (
+                          <img
+                            src={member.photo}
+                            alt={member.name}
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none'
+                              if (e.currentTarget.nextElementSibling) {
+                                e.currentTarget.nextElementSibling.style.display = 'flex'
+                              }
+                            }}
+                          />
+                        ) : null}
+                        <div
+                          style={{
+                            display: member.photo ? 'none' : 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            width: '100%',
+                            height: '100%'
+                          }}
+                        >
+                          <ImageIcon size={18} />
+                        </div>
                       </div>
                       <div style={{ minWidth: 0 }}>
                         <h4 style={{ fontSize: '0.84375rem', fontWeight: 800, color: 'var(--color-primary-dark)', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
@@ -312,18 +345,36 @@ export default function ContactMapSection({ showForm = true }) {
 
             <div className="contact-map-grid">
               <div className="marketing-cards-column">
-                {marketingTeam.map((member) => (
+                {marketingList.map((member) => (
                   <div key={member.id} className="marketing-card">
                     <div className="marketing-info-left">
                       <div className="marketing-avatar">
-                        {member.name.charAt(0)}
+                        {member.photo ? (
+                          <img
+                            src={member.photo}
+                            alt={member.name}
+                            className="marketing-avatar-img"
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none'
+                              if (e.currentTarget.nextElementSibling) {
+                                e.currentTarget.nextElementSibling.style.display = 'flex'
+                              }
+                            }}
+                          />
+                        ) : null}
+                        <div
+                          className="marketing-avatar-placeholder"
+                          style={{ display: member.photo ? 'none' : 'flex' }}
+                        >
+                          <ImageIcon size={22} />
+                        </div>
                       </div>
                       <div>
                         <h3 className="marketing-name">{member.name}</h3>
                         <p className="marketing-division">{member.division}</p>
                         <span className="status-badge">
                           <span className="status-dot" />
-                          <span>Online Siap Melayani</span>
+                          <span>{member.status || 'Online Siap Melayani'}</span>
                         </span>
                       </div>
                     </div>

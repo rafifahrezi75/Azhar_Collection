@@ -37,21 +37,48 @@ const defaultTestimonials = testimonialsData.map((t) => ({
   rating: t.rating || 5
 }))
 
-const defaultNews = newsData.map((n) => ({
-  id: String(n.id),
-  slug: n.slug,
-  title: n.title,
-  date: n.date,
-  readTime: n.readTime,
-  category: n.category,
-  author: n.author,
-  image: n.image,
-  excerpt: n.excerpt,
-  content: Array.isArray(n.content) ? n.content.map((p) => `<p>${p}</p>`).join('') : n.content
-}))
+const defaultGallery = [
+  {
+    id: "galeri-1",
+    image: "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&w=1200&q=80",
+    date: "10 September 2024"
+  },
+  {
+    id: "galeri-3",
+    image: "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=1200&q=80",
+    date: "05 September 2024"
+  },
+  {
+    id: "galeri-4",
+    image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=1200&q=80",
+    date: "02 September 2024"
+  },
+  {
+    id: "galeri-5",
+    image: "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=1200&q=80",
+    date: "28 Agustus 2024"
+  },
+  {
+    id: "galeri-6",
+    image: "https://images.unsplash.com/photo-1582738411706-bfc8e691d1c2?auto=format&fit=crop&w=1200&q=80",
+    date: "25 Agustus 2024"
+  },
+  {
+    id: "galeri-7",
+    image: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=1200&q=80",
+    date: "20 Agustus 2024"
+  },
+  {
+    id: "galeri-8",
+    image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1200&q=80",
+    date: "18 Agustus 2024"
+  }
+]
+
+const defaultNews = defaultGallery
 
 const LOCAL_STORAGE_KEY_PREFIX = 'azhar_admin_'
-const DATA_VERSION_KEY = 'azhar_admin_data_seeded_v8'
+const DATA_VERSION_KEY = 'azhar_admin_data_seeded_v10'
 
 if (typeof window !== 'undefined' && !localStorage.getItem(DATA_VERSION_KEY)) {
   try {
@@ -741,17 +768,28 @@ export const getInquiryById = async (id) => {
 export const getBeritaList = async () => {
   if (isFirebaseConfigured && db) {
     try {
-      const q = query(collection(db, 'news'), orderBy('createdAt', 'desc'))
-      const snap = await getDocs(q)
-      if (!snap.empty) {
-        return snap.docs.map((d) => ({ id: d.id, ...d.data() }))
+      try {
+        const q = query(collection(db, 'news'), orderBy('createdAt', 'desc'))
+        const snap = await getDocs(q)
+        if (!snap.empty) {
+          return snap.docs.map((d) => ({ id: d.id, ...d.data() }))
+        }
+      } catch {
+        const snap = await getDocs(collection(db, 'news'))
+        if (!snap.empty) {
+          return snap.docs.map((d) => ({ id: d.id, ...d.data() }))
+        }
       }
     } catch {
-      return getLocalData('news', defaultNews)
+      const list = getLocalData('news', defaultGallery)
+      return list && list.length > 0 ? list : defaultGallery
     }
   }
-  return getLocalData('news', defaultNews)
+  const list = getLocalData('news', defaultGallery)
+  return list && list.length > 0 ? list : defaultGallery
 }
+
+export const getGalleryList = getBeritaList
 
 export const getBeritaById = async (id) => {
   if (isFirebaseConfigured && db) {
@@ -761,13 +799,17 @@ export const getBeritaById = async (id) => {
         return { id: snap.id, ...snap.data() }
       }
     } catch {
-      const list = getLocalData('news', defaultNews)
-      return list.find((item) => String(item.id) === String(id)) || null
+      const list = getLocalData('news', defaultGallery)
+      const effectiveList = list && list.length > 0 ? list : defaultGallery
+      return effectiveList.find((item) => String(item.id) === String(id)) || null
     }
   }
-  const list = getLocalData('news', defaultNews)
-  return list.find((item) => String(item.id) === String(id)) || null
+  const list = getLocalData('news', defaultGallery)
+  const effectiveList = list && list.length > 0 ? list : defaultGallery
+  return effectiveList.find((item) => String(item.id) === String(id)) || null
 }
+
+export const getGalleryById = getBeritaById
 
 export const getBeritaBySlug = async (slug) => {
   const list = await getBeritaList()
@@ -776,8 +818,12 @@ export const getBeritaBySlug = async (slug) => {
 
 export const saveBeritaItem = async (item) => {
   const payload = {
-    ...item,
+    image: item.image || '',
+    date: item.date || new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }),
     updatedAt: new Date().toISOString()
+  }
+  if (item.id) {
+    payload.id = String(item.id)
   }
 
   if (isFirebaseConfigured && db) {
@@ -801,15 +847,16 @@ export const saveBeritaItem = async (item) => {
 }
 
 const saveLocalBerita = (payload) => {
-  const current = getLocalData('news', defaultNews)
+  const current = getLocalData('news', defaultGallery)
+  const effectiveCurrent = current && current.length > 0 ? current : defaultGallery
   if (payload.id) {
-    const updated = current.map((p) => (String(p.id) === String(payload.id) ? { ...p, ...payload } : p))
+    const updated = effectiveCurrent.map((p) => (String(p.id) === String(payload.id) ? { ...p, ...payload } : p))
     setLocalData('news', updated)
     return payload.id
   }
-  const newId = `NEWS-${Date.now()}`
+  const newId = `GALERI-${Date.now()}`
   const newItem = { ...payload, id: newId }
-  setLocalData('news', [newItem, ...current])
+  setLocalData('news', [newItem, ...effectiveCurrent])
   return newId
 }
 
@@ -825,8 +872,139 @@ export const deleteBeritaItem = async (id) => {
 }
 
 const deleteLocalBerita = (id) => {
-  const current = getLocalData('news', defaultNews)
-  const filtered = current.filter((p) => String(p.id) !== String(id))
+  const current = getLocalData('news', defaultGallery)
+  const effectiveCurrent = current && current.length > 0 ? current : defaultGallery
+  const filtered = effectiveCurrent.filter((p) => String(p.id) !== String(id))
   setLocalData('news', filtered)
+}
+
+export const saveGalleryItem = saveBeritaItem
+export const deleteGalleryItem = deleteBeritaItem
+
+const defaultMarketing = [
+  {
+    id: "haris",
+    name: "Ach. Haris",
+    division: "Marketing & Pemesanan Tender",
+    phone: "+6281330666807",
+    waUrl: "https://wa.me/6281330666807?text=Halo%20Pak%20Haris%20Azhar%20Collection%2C%20saya%20ingin%20konsultasi%20pemesanan%20kustom%20seragam.",
+    photo: "",
+    status: "Online Siap Melayani",
+    order: 1
+  },
+  {
+    id: "lazuardi",
+    name: "Lazuardi",
+    division: "Customer Service & Operasional Produksi",
+    phone: "+6287855476538",
+    waUrl: "https://wa.me/6287855476538?text=Halo%20Mas%20Lazuardi%20Azhar%20Collection%2C%20saya%20ingin%20tanya%20informasi%20layanan%20konveksi.",
+    photo: "",
+    status: "Online Siap Melayani",
+    order: 2
+  }
+]
+
+export const getMarketingList = async () => {
+  if (isFirebaseConfigured && db) {
+    try {
+      try {
+        const q = query(collection(db, 'marketing'), orderBy('order', 'asc'))
+        const snap = await getDocs(q)
+        if (!snap.empty) {
+          return snap.docs.map((d) => ({ id: d.id, ...d.data() }))
+        }
+      } catch {
+        const snap = await getDocs(collection(db, 'marketing'))
+        if (!snap.empty) {
+          return snap.docs.map((d) => ({ id: d.id, ...d.data() }))
+        }
+      }
+    } catch {
+      return getLocalData('marketing', defaultMarketing)
+    }
+  }
+  return getLocalData('marketing', defaultMarketing)
+}
+
+export const getMarketingById = async (id) => {
+  if (isFirebaseConfigured && db) {
+    try {
+      const snap = await getDoc(doc(db, 'marketing', String(id)))
+      if (snap.exists()) {
+        return { id: snap.id, ...snap.data() }
+      }
+    } catch {
+      const list = getLocalData('marketing', defaultMarketing)
+      return list.find((item) => String(item.id) === String(id)) || null
+    }
+  }
+  const list = getLocalData('marketing', defaultMarketing)
+  return list.find((item) => String(item.id) === String(id)) || null
+}
+
+export const saveMarketingItem = async (item) => {
+  let cleanPhone = (item.phone || '').replace(/\D/g, '')
+  if (cleanPhone.startsWith('0')) {
+    cleanPhone = '62' + cleanPhone.slice(1)
+  }
+  const defaultText = `Halo ${item.name} Azhar Collection, saya ingin konsultasi pemesanan seragam.`
+  const waUrl = item.waUrl || `https://wa.me/${cleanPhone}?text=${encodeURIComponent(defaultText)}`
+
+  const payload = {
+    ...item,
+    phone: item.phone,
+    waUrl,
+    order: Number(item.order) || 1,
+    updatedAt: new Date().toISOString()
+  }
+
+  if (isFirebaseConfigured && db) {
+    try {
+      if (item.id) {
+        const ref = doc(db, 'marketing', String(item.id))
+        await setDoc(ref, payload, { merge: true })
+        return item.id
+      }
+      const colRef = collection(db, 'marketing')
+      const docRef = await addDoc(colRef, {
+        ...payload,
+        createdAt: serverTimestamp()
+      })
+      return docRef.id
+    } catch {
+      return saveLocalMarketing(payload)
+    }
+  }
+  return saveLocalMarketing(payload)
+}
+
+const saveLocalMarketing = (payload) => {
+  const current = getLocalData('marketing', defaultMarketing)
+  if (payload.id) {
+    const updated = current.map((p) => (String(p.id) === String(payload.id) ? { ...p, ...payload } : p))
+    setLocalData('marketing', updated)
+    return payload.id
+  }
+  const newId = `MKT-${Date.now()}`
+  const newItem = { ...payload, id: newId }
+  setLocalData('marketing', [...current, newItem])
+  return newId
+}
+
+export const deleteMarketingItem = async (id) => {
+  if (isFirebaseConfigured && db) {
+    try {
+      await deleteDoc(doc(db, 'marketing', String(id)))
+    } catch {
+      deleteLocalMarketing(id)
+    }
+  }
+  deleteLocalMarketing(id)
+}
+
+const deleteLocalMarketing = (id) => {
+  const current = getLocalData('marketing', defaultMarketing)
+  const filtered = current.filter((p) => String(p.id) !== String(id))
+  setLocalData('marketing', filtered)
 }
 

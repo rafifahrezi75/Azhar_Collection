@@ -143,8 +143,8 @@ export default function AdminKlienEditPage() {
               type="submit"
               disabled={submitting}
               className="admin-action-icon-btn admin-action-icon-btn-primary"
-              title="Simpan Perubahan"
-              aria-label="Simpan Perubahan"
+              title="Simpan"
+              aria-label="Simpan"
             >
               {submitting ? <Loader2 size={16} className="spin-animation" /> : <Save size={16} />}
             </button>

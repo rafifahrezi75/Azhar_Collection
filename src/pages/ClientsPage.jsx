@@ -70,10 +70,7 @@ export default function ClientsPage() {
               {clients.map((client) => {
                 const clientImg = client.image || client.orderedProducts?.[0]?.image
                 return (
-                  <div
-                    key={client.id}
-                    className="client-clean-card"
-                  >
+                  <div key={client.id} className="client-clean-card">
                     <div className="client-clean-img-wrap">
                       <ClientLogo src={clientImg} alt={client.name} />
                     </div>
@@ -81,19 +78,18 @@ export default function ClientsPage() {
                     <div className="client-clean-content">
                       <h3 className="client-clean-title">{client.name}</h3>
 
-                      <div className="client-clean-meta" style={{ marginBottom: 0 }}>
+                      <div className="client-clean-meta">
                         {client.city && (
-                          <span className="client-meta-item">
-                            <MapPin size={13} className="client-meta-icon" />
-                            {client.city}
-                          </span>
+                          <div className="client-meta-row">
+                            <MapPin size={14} className="client-meta-icon" />
+                            <span className="client-meta-text">{client.city}</span>
+                          </div>
                         )}
-                        {client.city && client.since && <span className="client-meta-divider">•</span>}
                         {client.since && (
-                          <span className="client-meta-item">
-                            <Calendar size={13} className="client-meta-icon" />
-                            Mitra Sejak {client.since}
-                          </span>
+                          <div className="client-meta-row">
+                            <Calendar size={14} className="client-meta-icon" />
+                            <span className="client-meta-text">Mitra Sejak {client.since}</span>
+                          </div>
                         )}
                       </div>
                     </div>
