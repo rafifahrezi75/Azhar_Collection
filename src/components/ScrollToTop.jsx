@@ -11,24 +11,58 @@ const pageTitles = {
   '/kontak': 'Kontak & Pemesanan | Azhar Collection'
 }
 
+const pageDescriptions = {
+  '/': 'Azhar Collection - Produsen konveksi dan garment terpercaya di Buduran, Sidoarjo. Melayani seragam sekolah SD, SMP, SMA, pramuka, batik, kemeja PDH/PDL, almamater, kaos olahraga, dan bordir komputer.',
+  '/tentang-kami': 'Profil dan perjalanan Azhar Collection sejak 2004 sebagai mitra konveksi seragam dan garment terpercaya di Sidoarjo dan Jawa Timur.',
+  '/layanan': 'Layanan konveksi seragam sekolah, kemeja kerja PDH/PDL, batik instansi, jas almamater, dan bordir komputer otomatis di Sidoarjo.',
+  '/katalog': 'Katalog portofolio busana dan seragam hasil produksi Azhar Collection untuk sekolah, instansi dinas, dan perusahaan.',
+  '/klien': 'Daftar sekolah, instansi pemerintah, dan lembaga mitra yang mempercayakan pengadaan seragam kepada Azhar Collection.',
+  '/berita': 'Artikel edukasi pemilihan bahan kain seragam, tips koperasi sekolah, dan teknologi konveksi Azhar Collection.',
+  '/kontak': 'Hubungi Azhar Collection Sidoarjo untuk konsultasi pemesanan seragam kustom, kalkulasi biaya, dan survei workshop.'
+}
+
 export default function ScrollToTop() {
   const { pathname, hash } = useLocation()
 
   useEffect(() => {
+    let title = 'Azhar Collection | Konveksi Seragam Sidoarjo'
+    let description = pageDescriptions['/']
+
     if (pageTitles[pathname]) {
-      document.title = pageTitles[pathname]
+      title = pageTitles[pathname]
+      description = pageDescriptions[pathname] || description
     } else if (pathname.startsWith('/admin')) {
-      document.title = 'Admin Panel | Azhar Collection'
+      title = 'Admin Panel | Azhar Collection'
+      description = 'Panel administrasi internal Azhar Collection'
     } else if (pathname.startsWith('/layanan/')) {
-      document.title = 'Detail Layanan | Azhar Collection'
+      title = 'Detail Layanan | Azhar Collection'
+      description = 'Informasi spesifikasi layanan jahit dan konveksi busana Azhar Collection.'
     } else if (pathname.startsWith('/katalog/')) {
-      document.title = 'Detail Produk | Azhar Collection'
+      title = 'Detail Produk | Azhar Collection'
+      description = 'Detail model dan spesifikasi produk seragam pesanan kustom Azhar Collection.'
     } else if (pathname.startsWith('/klien/')) {
-      document.title = 'Detail Klien | Azhar Collection'
+      title = 'Detail Klien | Azhar Collection'
+      description = 'Informasi profil dan kerja sama mitra dengan Azhar Collection.'
     } else if (pathname.startsWith('/berita/')) {
-      document.title = 'Artikel Busana | Azhar Collection'
-    } else {
-      document.title = 'Azhar Collection | Konveksi Seragam Sidoarjo'
+      title = 'Artikel Busana | Azhar Collection'
+      description = 'Baca panduan bahan pakaian, pengadaan seragam, dan info konveksi terkini.'
+    }
+
+    document.title = title
+
+    const metaDesc = document.querySelector('meta[name="description"]')
+    if (metaDesc) {
+      metaDesc.setAttribute('content', description)
+    }
+
+    const ogTitle = document.querySelector('meta[property="og:title"]')
+    if (ogTitle) {
+      ogTitle.setAttribute('content', title)
+    }
+
+    const ogDesc = document.querySelector('meta[property="og:description"]')
+    if (ogDesc) {
+      ogDesc.setAttribute('content', description)
     }
 
     if (hash) {
