@@ -17,7 +17,8 @@ import {
   deleteDoc,
   query,
   orderBy,
-  serverTimestamp
+  serverTimestamp,
+  writeBatch
 } from 'firebase/firestore'
 import { auth, db, isFirebaseConfigured } from './config'
 import {
@@ -70,7 +71,28 @@ const defaultGallery = [
   }
 ]
 
-const defaultNews = defaultGallery
+const defaultNews = [
+  {
+    id: "berita-1",
+    title: "Tips Memilih Bahan Kain Seragam Sekolah yang Awet dan Tidak Panas",
+    slug: "tips-memilih-bahan-kain-seragam-sekolah",
+    author: "Admin Azhar Collection",
+    summary: "Panduan lengkap memilih jenis kain Famatex, Oxford, dan Cotton Combed untuk kenyamanan siswa belajar seharian.",
+    content: "<p>Memilih bahan kain seragam sekolah merupakan keputusan penting bagi pihak sekolah maupun koperasi. Bahan kain yang berkualitas tidak hanya nyaman digunakan seharian oleh siswa, tetapi juga memiliki daya tahan tinggi terhadap pencucian berulang.</p><p>Beberapa jenis kain unggulan yang direkomendasikan antara lain Kain Famatex untuk celana dan rok, Kain Oxford Super untuk kemeja seragam, serta Cotton Combed untuk kaos olahraga.</p>",
+    image: "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&w=1200&q=80",
+    date: "12 September 2024"
+  },
+  {
+    id: "berita-2",
+    title: "Keunggulan Bordir Komputer Multi-Head untuk Emblem Instansi",
+    slug: "keunggulan-bordir-komputer-emblem-instansi",
+    author: "Tim Redaksi",
+    summary: "Mengapa mesin bordir komputer 12 kepala menghasilkan logo sekolah & dinas lebih presisi dan tahan lama.",
+    content: "<p>Dalam produksi seragam dinas dan instansi, kerapatan benang serta presisi logo merupakan hal utama. Dengan teknologi bordir komputer multi-head, proses pembordiran logo instansi dan nama siswa dapat diselesaikan dalam jumlah besar secara cepat dan konsisten.</p>",
+    image: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80",
+    date: "05 September 2024"
+  }
+]
 
 const LOCAL_STORAGE_KEY_PREFIX = 'azhar_admin_'
 const DATA_VERSION_KEY = 'azhar_admin_data_seeded_v10'
@@ -141,6 +163,13 @@ export const clearAllAdminData = async () => {
 }
 
 export const loginAdmin = async (email, password, rememberMe = true) => {
+  if (!email || !email.trim()) {
+    throw new Error('Email administrator wajib diisi. Silakan masukkan alamat email Anda.')
+  }
+  if (!password || password.trim().length < 5) {
+    throw new Error('Kata sandi wajib diisi minimal 5 karakter.')
+  }
+
   if (isFirebaseConfigured && auth) {
     try {
       await setPersistence(
@@ -150,11 +179,31 @@ export const loginAdmin = async (email, password, rememberMe = true) => {
     } catch (e) {
       void e
     }
-    const userCredential = await signInWithEmailAndPassword(auth, email, password)
-    return {
-      uid: userCredential.user.uid,
-      email: userCredential.user.email,
-      displayName: userCredential.user.displayName || 'Admin Azhar Collection'
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email.trim(), password)
+      return {
+        uid: userCredential.user.uid,
+        email: userCredential.user.email,
+        displayName: userCredential.user.displayName || 'Admin Azhar Collection'
+      }
+    } catch (err) {
+      const code = err?.code || ''
+      if (code === 'auth/user-not-found' || code === 'auth/wrong-password' || code === 'auth/invalid-credential') {
+        throw new Error('Email atau kata sandi yang Anda masukkan salah. Silakan periksa kembali data login Anda.')
+      }
+      if (code === 'auth/invalid-email') {
+        throw new Error('Format email tidak valid. Pastikan penulisan email sudah benar (contoh: admin@azharcollection.com).')
+      }
+      if (code === 'auth/too-many-requests') {
+        throw new Error('Terlalu banyak percobaan masuk yang gagal. Akses ditahan sementara demi keamanan, silakan coba beberapa saat lagi.')
+      }
+      if (code === 'auth/network-request-failed') {
+        throw new Error('Koneksi jaringan terputus. Pastikan perangkat Anda terhubung ke internet.')
+      }
+      if (code === 'auth/user-disabled') {
+        throw new Error('Akun administrator ini telah dinonaktifkan. Silakan hubungi pengelola sistem.')
+      }
+      throw new Error(err?.message || 'Terjadi kesalahan saat melakukan verifikasi login.')
     }
   }
 
@@ -174,7 +223,7 @@ export const loginAdmin = async (email, password, rememberMe = true) => {
     return mockUser
   }
 
-  throw new Error('Email atau password tidak valid')
+  throw new Error('Email atau kata sandi tidak valid (minimal 5 karakter).')
 }
 
 export const logoutAdmin = async () => {
@@ -639,6 +688,62 @@ const deleteLocalTestimonial = (id) => {
   setLocalData('testimonials', current.filter((t) => String(t.id) !== String(id)))
 }
 
+const defaultCompanySettings = {
+  name: 'Azhar Collection',
+  legalName: 'CV. Azhar Collection Konveksi',
+  tagline: 'Spesialis Konveksi & Jahit Seragam Kustom Sidoarjo',
+  phone: '+6281330666807',
+  whatsapp: '6281330666807',
+  email: 'azharcollection@gmail.com',
+  address: 'Damarsi Rt.03 Rw.01, Kec. Buduran, Kab. Sidoarjo, Jawa Timur 61252',
+  hours: 'Senin - Sabtu: 08.00 - 17.00 WIB',
+  vision: 'Menjadi produsen konveksi dan garment terdepan di Indonesia yang dipercaya karena keaslian bahan baku, standar jahitan prima, ketepatan waktu distribusi, dan integritas kemitraan jangka panjang bersama lembaga pendidikan maupun instansi kedinasan.',
+  mission: 'Mengutamakan bahan kain otentik bersertifikat (Famatex, Oxford Super, Nagata Drill).\nMenerapkan sistem manajemen produksi terpadu dengan pengawasan mutu tiga lapis.\nMemberdayakan tenaga jahit lokal terampil dengan apresiasi dan lingkungan kerja yang bermartabat.\nMemberikan harga langsung produsen tanpa mata rantai perantara yang membebani sekolah.'
+}
+
+const defaultTimeline = [
+  {
+    id: "karir-1",
+    year: "2004",
+    title: "Awal Berdiri & Usaha Jahit Mandiri",
+    badge: "Langkah Pertama",
+    desc: "Memulai usaha jahit rumahan dan pakaian kustom lokal di Damarsi, Buduran, Sidoarjo dengan mengutamakan kerapian potongan jahitan.",
+    order: 1
+  },
+  {
+    id: "karir-2",
+    year: "2010",
+    title: "Kemitraan Koperasi Sekolah",
+    badge: "Ekspansi Sekolah",
+    desc: "Dipercaya menjadi rekanan penyedia seragam sekolah reguler merah putih dan pramuka untuk puluhan SD dan SMP di wilayah Sidoarjo.",
+    order: 2
+  },
+  {
+    id: "karir-3",
+    year: "2015",
+    title: "Modernisasi Mesin Bordir Komputer",
+    badge: "Teknologi Modern",
+    desc: "Pengadaan mesin bordir komputer otomatis 12 kepala multi-head untuk memproses ribuan badge logo dan emblem dengan presisi tinggi.",
+    order: 3
+  },
+  {
+    id: "karir-4",
+    year: "2019",
+    title: "Perluasan Tender Instansi & Kampus",
+    badge: "Skala Nasional",
+    desc: "Memperluas layanan jahit kemeja dinas PDH/PDL instansi pemerintah, jas almamater universitas, dan seragam santri pondok pesantren.",
+    order: 4
+  },
+  {
+    id: "karir-5",
+    year: "2024 - Sekarang",
+    title: "Produsen Tepercaya Lebih Dari 500 Mitra",
+    badge: "Masa Kini",
+    desc: "Didukung puluhan penjahit profesional berkapasitas ribuan setel per bulan dengan komitmen harga produsen tangan pertama.",
+    order: 5
+  }
+]
+
 export const getCompanySettings = async () => {
   if (isFirebaseConfigured && db) {
     try {
@@ -647,15 +752,15 @@ export const getCompanySettings = async () => {
         const found = snap.docs.find((d) => d.id === 'general')
         if (found) {
           const data = found.data()
-          setLocalData('settings', data)
-          return data
+          setLocalData('settings', { ...defaultCompanySettings, ...data })
+          return { ...defaultCompanySettings, ...data }
         }
       }
     } catch {
-      return getLocalData('settings', companyInfo)
+      return getLocalData('settings', defaultCompanySettings)
     }
   }
-  return getLocalData('settings', companyInfo)
+  return getLocalData('settings', defaultCompanySettings)
 }
 
 export const saveCompanySettings = async (settings) => {
@@ -824,6 +929,7 @@ export const getInquiryById = async (id) => {
   return list.find((item) => String(item.id) === String(id)) || null
 }
 
+// --- BERITA / ARTIKEL CRUD ---
 export const getBeritaList = async () => {
   if (isFirebaseConfigured && db) {
     try {
@@ -850,15 +956,13 @@ export const getBeritaList = async () => {
         return docs
       }
     } catch {
-      const list = getLocalData('news', defaultGallery)
-      return list && list.length > 0 ? list : defaultGallery
+      const list = getLocalData('news', defaultNews)
+      return list && list.length > 0 ? list : defaultNews
     }
   }
-  const list = getLocalData('news', defaultGallery)
-  return list && list.length > 0 ? list : defaultGallery
+  const list = getLocalData('news', defaultNews)
+  return list && list.length > 0 ? list : defaultNews
 }
-
-export const getGalleryList = getBeritaList
 
 export const getBeritaById = async (id) => {
   if (isFirebaseConfigured && db) {
@@ -870,17 +974,15 @@ export const getBeritaById = async (id) => {
         return item
       }
     } catch {
-      const list = getLocalData('news', defaultGallery)
-      const effectiveList = list && list.length > 0 ? list : defaultGallery
+      const list = getLocalData('news', defaultNews)
+      const effectiveList = list && list.length > 0 ? list : defaultNews
       return effectiveList.find((item) => String(item.id) === String(id)) || null
     }
   }
-  const list = getLocalData('news', defaultGallery)
-  const effectiveList = list && list.length > 0 ? list : defaultGallery
+  const list = getLocalData('news', defaultNews)
+  const effectiveList = list && list.length > 0 ? list : defaultNews
   return effectiveList.find((item) => String(item.id) === String(id)) || null
 }
-
-export const getGalleryById = getBeritaById
 
 export const getBeritaBySlug = async (slug) => {
   const list = await getBeritaList()
@@ -891,6 +993,9 @@ export const saveBeritaItem = async (item) => {
   const payload = {
     ...item,
     title: item.title || '',
+    author: item.author || 'Admin Azhar Collection',
+    summary: item.summary || '',
+    content: item.content || '',
     image: item.image || '',
     date: item.date || new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }),
     createdAt: item.createdAt || new Date().toISOString(),
@@ -923,8 +1028,8 @@ export const saveBeritaItem = async (item) => {
 }
 
 const saveLocalBerita = (payload) => {
-  const current = getLocalData('news', defaultGallery)
-  const effectiveCurrent = current && current.length > 0 ? current : defaultGallery
+  const current = getLocalData('news', defaultNews)
+  const effectiveCurrent = current && current.length > 0 ? current : defaultNews
   if (payload.id) {
     const exists = effectiveCurrent.some((p) => String(p.id) === String(payload.id))
     if (exists) {
@@ -935,7 +1040,7 @@ const saveLocalBerita = (payload) => {
     }
     return payload.id
   }
-  const newId = `GALERI-${Date.now()}`
+  const newId = `BERITA-${Date.now()}`
   const newItem = { ...payload, id: newId }
   setLocalData('news', [newItem, ...effectiveCurrent])
   return newId
@@ -953,14 +1058,138 @@ export const deleteBeritaItem = async (id) => {
 }
 
 const deleteLocalBerita = (id) => {
-  const current = getLocalData('news', defaultGallery)
-  const effectiveCurrent = current && current.length > 0 ? current : defaultGallery
+  const current = getLocalData('news', defaultNews)
+  const effectiveCurrent = current && current.length > 0 ? current : defaultNews
   const filtered = effectiveCurrent.filter((p) => String(p.id) !== String(id))
   setLocalData('news', filtered)
 }
 
-export const saveGalleryItem = saveBeritaItem
-export const deleteGalleryItem = deleteBeritaItem
+// --- GALERI FOTO CRUD ---
+export const getGalleryList = async () => {
+  if (isFirebaseConfigured && db) {
+    try {
+      let docs = []
+      try {
+        const q = query(collection(db, 'gallery'), orderBy('createdAt', 'desc'))
+        const snap = await getDocs(q)
+        if (!snap.empty) {
+          docs = snap.docs.map((d) => ({ id: d.id, ...d.data() }))
+        }
+      } catch {
+        void 0
+      }
+
+      if (docs.length === 0) {
+        const snap = await getDocs(collection(db, 'gallery'))
+        if (!snap.empty) {
+          docs = snap.docs.map((d) => ({ id: d.id, ...d.data() }))
+        }
+      }
+
+      if (docs.length > 0) {
+        setLocalData('gallery', docs)
+        return docs
+      }
+    } catch {
+      const list = getLocalData('gallery', defaultGallery)
+      return list && list.length > 0 ? list : defaultGallery
+    }
+  }
+  const list = getLocalData('gallery', defaultGallery)
+  return list && list.length > 0 ? list : defaultGallery
+}
+
+export const getGalleryById = async (id) => {
+  if (isFirebaseConfigured && db) {
+    try {
+      const snap = await getDoc(doc(db, 'gallery', String(id)))
+      if (snap.exists()) {
+        const item = { id: snap.id, ...snap.data() }
+        saveLocalGallery(item)
+        return item
+      }
+    } catch {
+      const list = getLocalData('gallery', defaultGallery)
+      const effectiveList = list && list.length > 0 ? list : defaultGallery
+      return effectiveList.find((item) => String(item.id) === String(id)) || null
+    }
+  }
+  const list = getLocalData('gallery', defaultGallery)
+  const effectiveList = list && list.length > 0 ? list : defaultGallery
+  return effectiveList.find((item) => String(item.id) === String(id)) || null
+}
+
+export const saveGalleryItem = async (item) => {
+  const payload = {
+    ...item,
+    title: item.title || '',
+    image: item.image || '',
+    date: item.date || new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }),
+    createdAt: item.createdAt || new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  }
+  if (item.id) {
+    payload.id = String(item.id)
+  }
+
+  if (isFirebaseConfigured && db) {
+    try {
+      if (item.id) {
+        const ref = doc(db, 'gallery', String(item.id))
+        await setDoc(ref, payload, { merge: true })
+        saveLocalGallery(payload)
+        return item.id
+      }
+      const colRef = collection(db, 'gallery')
+      const docRef = await addDoc(colRef, {
+        ...payload,
+        createdAt: serverTimestamp()
+      })
+      saveLocalGallery({ ...payload, id: docRef.id })
+      return docRef.id
+    } catch {
+      return saveLocalGallery(payload)
+    }
+  }
+  return saveLocalGallery(payload)
+}
+
+const saveLocalGallery = (payload) => {
+  const current = getLocalData('gallery', defaultGallery)
+  const effectiveCurrent = current && current.length > 0 ? current : defaultGallery
+  if (payload.id) {
+    const exists = effectiveCurrent.some((p) => String(p.id) === String(payload.id))
+    if (exists) {
+      const updated = effectiveCurrent.map((p) => (String(p.id) === String(payload.id) ? { ...p, ...payload } : p))
+      setLocalData('gallery', updated)
+    } else {
+      setLocalData('gallery', [payload, ...effectiveCurrent])
+    }
+    return payload.id
+  }
+  const newId = `GALERI-${Date.now()}`
+  const newItem = { ...payload, id: newId }
+  setLocalData('gallery', [newItem, ...effectiveCurrent])
+  return newId
+}
+
+export const deleteGalleryItem = async (id) => {
+  if (isFirebaseConfigured && db) {
+    try {
+      await deleteDoc(doc(db, 'gallery', String(id)))
+    } catch {
+      deleteLocalGallery(id)
+    }
+  }
+  deleteLocalGallery(id)
+}
+
+const deleteLocalGallery = (id) => {
+  const current = getLocalData('gallery', defaultGallery)
+  const effectiveCurrent = current && current.length > 0 ? current : defaultGallery
+  const filtered = effectiveCurrent.filter((p) => String(p.id) !== String(id))
+  setLocalData('gallery', filtered)
+}
 
 const defaultMarketing = [
   {
@@ -1108,5 +1337,148 @@ const deleteLocalMarketing = (id) => {
   const filtered = current.filter((p) => String(p.id) !== String(id))
   setLocalData('marketing', filtered)
 }
+
+// --- PERJALANAN KARIR / TIMELINE CRUD ---
+export const getTimelineList = async () => {
+  if (isFirebaseConfigured && db) {
+    try {
+      let docs = []
+      try {
+        const q = query(collection(db, 'timeline'), orderBy('order', 'asc'))
+        const snap = await getDocs(q)
+        if (!snap.empty) {
+          docs = snap.docs.map((d) => ({ id: d.id, ...d.data() }))
+        }
+      } catch {
+        void 0
+      }
+
+      if (docs.length === 0) {
+        const snap = await getDocs(collection(db, 'timeline'))
+        if (!snap.empty) {
+          docs = snap.docs.map((d) => ({ id: d.id, ...d.data() }))
+        }
+      }
+
+      if (docs.length > 0) {
+        setLocalData('timeline', docs)
+        return docs
+      }
+    } catch {
+      return getLocalData('timeline', defaultTimeline)
+    }
+  }
+  return getLocalData('timeline', defaultTimeline)
+}
+
+export const getTimelineById = async (id) => {
+  if (isFirebaseConfigured && db) {
+    try {
+      const snap = await getDoc(doc(db, 'timeline', String(id)))
+      if (snap.exists()) {
+        const item = { id: snap.id, ...snap.data() }
+        saveLocalTimeline(item)
+        return item
+      }
+    } catch {
+      const list = getLocalData('timeline', defaultTimeline)
+      return list.find((item) => String(item.id) === String(id)) || null
+    }
+  }
+  const list = getLocalData('timeline', defaultTimeline)
+  return list.find((item) => String(item.id) === String(id)) || null
+}
+
+export const saveTimelineItem = async (item) => {
+  const currentList = await getTimelineList()
+  const payloadId = item.id || `KARIR-${Date.now()}`
+  const requestedOrder = Number(item.order) || (currentList.length + 1)
+
+  const payload = {
+    ...item,
+    id: payloadId,
+    year: item.year || '',
+    title: item.title || '',
+    badge: item.badge || '',
+    desc: item.desc || '',
+    order: requestedOrder,
+    createdAt: item.createdAt || new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  }
+
+  const existingFiltered = currentList.filter((t) => String(t.id) !== String(payloadId))
+  const insertIndex = Math.max(0, Math.min(requestedOrder - 1, existingFiltered.length))
+  existingFiltered.splice(insertIndex, 0, payload)
+
+  const normalized = existingFiltered.map((t, index) => ({
+    ...t,
+    order: index + 1
+  }))
+
+  await reorderTimelineList(normalized)
+  return payloadId
+}
+
+const saveLocalTimeline = (payload) => {
+  const current = getLocalData('timeline', defaultTimeline)
+  if (payload.id) {
+    const exists = current.some((p) => String(p.id) === String(payload.id))
+    if (exists) {
+      const updated = current.map((p) => (String(p.id) === String(payload.id) ? { ...p, ...payload } : p))
+      setLocalData('timeline', updated)
+    } else {
+      setLocalData('timeline', [...current, payload])
+    }
+    return payload.id
+  }
+  const newId = `KARIR-${Date.now()}`
+  const newItem = { ...payload, id: newId }
+  setLocalData('timeline', [...current, newItem])
+  return newId
+}
+
+export const deleteTimelineItem = async (id) => {
+  if (isFirebaseConfigured && db) {
+    try {
+      await deleteDoc(doc(db, 'timeline', String(id)))
+    } catch {
+      deleteLocalTimeline(id)
+    }
+  }
+  deleteLocalTimeline(id)
+}
+
+const deleteLocalTimeline = (id) => {
+  const current = getLocalData('timeline', defaultTimeline)
+  const filtered = current.filter((p) => String(p.id) !== String(id))
+  setLocalData('timeline', filtered)
+}
+
+export const reorderTimelineList = async (items) => {
+  const updatedItems = items.map((item, index) => ({
+    ...item,
+    order: index + 1
+  }))
+
+  setLocalData('timeline', updatedItems)
+
+  if (isFirebaseConfigured && db) {
+    try {
+      const batch = writeBatch(db)
+      updatedItems.forEach((item) => {
+        if (item.id) {
+          const ref = doc(db, 'timeline', String(item.id))
+          batch.update(ref, { order: item.order, updatedAt: new Date().toISOString() })
+        }
+      })
+      await batch.commit()
+    } catch {
+      void 0
+    }
+  }
+
+  return updatedItems
+}
+
 
 

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Plus, Search, Edit2, Trash2, Eye, Calendar, Images, Image as ImageIcon, X } from 'lucide-react'
 import AdminPagination from '../components/AdminPagination'
-import { getBeritaList, deleteBeritaItem } from '../../firebase/adminService'
+import { getGalleryList, deleteGalleryItem } from '../../firebase/adminService'
 import { showDeleteConfirm, showToast, showErrorAlert } from '../utils/swal'
 
 const toInputDateFormat = (dateStr) => {
@@ -33,7 +33,7 @@ const toInputDateFormat = (dateStr) => {
   return ''
 }
 
-export default function AdminBeritaPage() {
+export default function AdminGaleriPage() {
   const [items, setItems] = useState([])
   const [search, setSearch] = useState('')
   const [dateFilter, setDateFilter] = useState('')
@@ -42,7 +42,7 @@ export default function AdminBeritaPage() {
 
   useEffect(() => {
     let isMounted = true
-    getBeritaList().then((list) => {
+    getGalleryList().then((list) => {
       if (isMounted && list) setItems(list)
     })
     return () => {
@@ -61,7 +61,7 @@ export default function AdminBeritaPage() {
     })
     if (res.isConfirmed) {
       try {
-        await deleteBeritaItem(item.id)
+        await deleteGalleryItem(item.id)
         setItems((prev) => prev.filter((it) => String(it.id) !== String(item.id)))
         showToast({ icon: 'success', title: 'Foto galeri berhasil dihapus' })
       } catch (err) {
@@ -218,7 +218,7 @@ export default function AdminBeritaPage() {
                             className="admin-table-title-link"
                             style={{ fontWeight: 700, color: 'var(--admin-text-main)', display: 'block', lineHeight: 1.3 }}
                           >
-                            {item.title || `Dokumentasi Foto #${item.id}`}
+                            {item.title && item.title.trim() ? item.title : 'Dokumentasi Galeri'}
                           </Link>
                         </div>
                       </div>

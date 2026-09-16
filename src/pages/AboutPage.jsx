@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import PageHeader from '../components/PageHeader'
 import {
   ShieldCheck,
@@ -6,47 +7,50 @@ import {
   GraduationCap,
   Cpu,
   Building2,
-  Trophy
+  Trophy,
+  CheckCircle2
 } from 'lucide-react'
+import { getCompanySettings, getTimelineList } from '../firebase/adminService'
+
+const ICON_MAP = [Scissors, GraduationCap, Cpu, Building2, Trophy]
 
 export default function AboutPage() {
-  const journeyMilestones = [
-    {
-      year: '2004',
-      title: 'Awal Berdiri & Usaha Jahit Mandiri',
-      desc: 'Memulai usaha jahit rumahan dan pakaian kustom lokal di Damarsi, Buduran, Sidoarjo dengan mengutamakan kerapian potongan jahitan.',
-      badge: 'Langkah Pertama',
-      icon: Scissors
-    },
-    {
-      year: '2010',
-      title: 'Kemitraan Koperasi Sekolah',
-      desc: 'Dipercaya menjadi rekanan penyedia seragam sekolah reguler merah putih dan pramuka untuk puluhan SD dan SMP di wilayah Sidoarjo.',
-      badge: 'Ekspansi Sekolah',
-      icon: GraduationCap
-    },
-    {
-      year: '2015',
-      title: 'Modernisasi Mesin Bordir Komputer',
-      desc: 'Pengadaan mesin bordir komputer otomatis 12 kepala multi-head untuk memproses ribuan badge logo dan emblem dengan presisi tinggi.',
-      badge: 'Teknologi Modern',
-      icon: Cpu
-    },
-    {
-      year: '2019',
-      title: 'Perluasan Tender Instansi & Kampus',
-      desc: 'Memperluas layanan jahit kemeja dinas PDH/PDL instansi pemerintah, jas almamater universitas, dan seragam santri pondok pesantren.',
-      badge: 'Skala Nasional',
-      icon: Building2
-    },
-    {
-      year: '2024 - Sekarang',
-      title: 'Produsen Tepercaya Lebih Dari 500 Mitra',
-      desc: 'Didukung puluhan penjahit profesional berkapasitas ribuan setel per bulan dengan komitmen harga produsen tangan pertama.',
-      badge: 'Masa Kini',
-      icon: Trophy
+  const [settings, setSettings] = useState(null)
+  const [journeyMilestones, setJourneyMilestones] = useState([])
+
+  useEffect(() => {
+    let isMounted = true
+    const fetchData = async () => {
+      const [compData, timelineData] = await Promise.all([
+        getCompanySettings(),
+        getTimelineList()
+      ])
+      if (isMounted) {
+        if (compData) setSettings(compData)
+        if (timelineData && timelineData.length > 0) {
+          setJourneyMilestones(timelineData)
+        }
+      }
     }
-  ]
+    fetchData()
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
+  const visionText = settings?.vision ||
+    'Menjadi produsen konveksi dan garment terdepan di Indonesia yang dipercaya karena keaslian bahan baku, standar jahitan prima, ketepatan waktu distribusi, dan integritas kemitraan jangka panjang bersama lembaga pendidikan maupun instansi kedinasan.'
+
+  const defaultMissionText = `Mengutamakan bahan kain otentik bersertifikat (Famatex, Oxford Super, Nagata Drill).
+Menerapkan sistem manajemen produksi terpadu dengan pengawasan mutu tiga lapis.
+Memberdayakan tenaga jahit lokal terampil dengan apresiasi dan lingkungan kerja yang bermartabat.
+Memberikan harga langsung produsen tanpa mata rantai perantara yang membebani sekolah.`
+
+  const rawMission = settings?.mission || defaultMissionText
+  const missionItems = rawMission
+    .split('\n')
+    .map((item) => item.trim())
+    .filter(Boolean)
 
   return (
     <div className="about-page">
@@ -71,11 +75,11 @@ export default function AboutPage() {
 
             <div className="journey-zigzag-list">
               {journeyMilestones.map((item, idx) => {
-                const IconComponent = item.icon
+                const IconComponent = ICON_MAP[idx % ICON_MAP.length] || Scissors
                 const isEven = idx % 2 === 0
                 return (
                   <div
-                    key={idx}
+                    key={item.id || idx}
                     className={`journey-zigzag-row ${isEven ? 'row-left' : 'row-right'}`}
                   >
                     <div className="journey-center-node">
@@ -117,7 +121,7 @@ export default function AboutPage() {
                 Visi Azhar Collection
               </h3>
               <p style={{ fontSize: '0.875rem', color: 'var(--color-text-muted)', lineHeight: 1.7 }}>
-                Menjadi produsen konveksi dan garment terdepan di Indonesia yang dipercaya karena keaslian bahan baku, standar jahitan prima, ketepatan waktu distribusi, dan integritas kemitraan jangka panjang bersama lembaga pendidikan maupun instansi kedinasan.
+                {visionText}
               </p>
             </div>
 
@@ -128,11 +132,13 @@ export default function AboutPage() {
               <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--color-primary-dark)', marginBottom: '0.75rem' }}>
                 Misi Azhar Collection
               </h3>
-              <ul style={{ fontSize: '0.875rem', color: 'var(--color-text-muted)', lineHeight: 1.7, paddingLeft: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                <li>Mengutamakan bahan kain otentik bersertifikat (Famatex, Oxford Super, Nagata Drill).</li>
-                <li>Menerapkan sistem manajemen produksi terpadu dengan pengawasan mutu tiga lapis.</li>
-                <li>Memberdayakan tenaga jahit lokal terampil dengan apresiasi dan lingkungan kerja yang bermartabat.</li>
-                <li>Memberikan harga langsung produsen tanpa mata rantai perantara yang membebani sekolah.</li>
+              <ul style={{ fontSize: '0.875rem', color: 'var(--color-text-muted)', lineHeight: 1.7, paddingLeft: '0', display: 'flex', flexDirection: 'column', gap: '0.625rem', listStyle: 'none' }}>
+                {missionItems.map((point, i) => (
+                  <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.625rem' }}>
+                    <CheckCircle2 size={16} style={{ color: 'var(--color-primary)', marginTop: '0.2rem', flexShrink: 0 }} />
+                    <span>{point}</span>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>

@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
-import { ArrowLeft, Save, AlertCircle, Loader2, Calendar, Sparkles } from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
+import { ArrowLeft, Save, Sparkles, AlertCircle, Loader2, Calendar } from 'lucide-react'
 import AdminImageUploader from '../components/AdminImageUploader'
-import { saveBeritaItem } from '../../firebase/adminService'
+import { saveGalleryItem } from '../../firebase/adminService'
 import { uploadToCloudinary } from '../../firebase/cloudinaryService'
 import { showSuccessAlert, showErrorAlert } from '../utils/swal'
 
@@ -34,7 +34,7 @@ const formatDateToIndonesian = (val, type = 'full') => {
   return val
 }
 
-export default function AdminBeritaCreatePage() {
+export default function AdminGaleriCreatePage() {
   const navigate = useNavigate()
   const [dateType, setDateType] = useState('full')
   const [dateValue, setDateValue] = useState(new Date().toISOString().split('T')[0])
@@ -50,7 +50,7 @@ export default function AdminBeritaCreatePage() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!imageFile && !formData.image) {
-      setError('Foto dokumentasi wajib diunggah')
+      setError('Foto dokumentasi galeri wajib diunggah. Silakan pilih berkas gambar dari perangkat Anda atau masukkan URL foto.')
       return
     }
 
@@ -65,8 +65,8 @@ export default function AdminBeritaCreatePage() {
 
       const formattedDate = formatDateToIndonesian(dateValue, dateType)
 
-      await saveBeritaItem({
-        title: formData.title.trim() || 'Dokumentasi Produksi',
+      await saveGalleryItem({
+        title: formData.title.trim(),
         image: finalImageUrl,
         date: formattedDate
       })
@@ -74,8 +74,9 @@ export default function AdminBeritaCreatePage() {
       await showSuccessAlert('Foto Berhasil Disimpan', 'Dokumentasi foto baru telah ditambahkan ke galeri.')
       navigate('/admin/galeri')
     } catch (err) {
-      setError(err?.message || 'Gagal menyimpan foto galeri')
-      await showErrorAlert('Gagal Menyimpan', err?.message)
+      const errMsg = err?.message || 'Gagal menyimpan foto ke galeri. Mohon periksa koneksi internet Anda.'
+      setError(errMsg)
+      await showErrorAlert('Gagal Menyimpan Foto', errMsg)
     } finally {
       setSubmitting(false)
     }
@@ -83,6 +84,23 @@ export default function AdminBeritaCreatePage() {
 
   return (
     <form id="gallery-create-form" onSubmit={handleSubmit}>
+      <div className="admin-page-header">
+        <div>
+          <h1 className="admin-page-title">Unggah Foto Galeri Baru</h1>
+          <p className="admin-page-desc">
+            Tambahkan foto dokumentasi workshop, jahitan, atau bordir komputer dan tentukan tanggal unggah.
+          </p>
+        </div>
+
+        <div className="admin-breadcrumbs">
+          <Link to="/admin">Admin</Link>
+          <span>/</span>
+          <Link to="/admin/galeri">Galeri Foto</Link>
+          <span>/</span>
+          <span className="current">Tambah</span>
+        </div>
+      </div>
+
       <div className="admin-card">
         <div className="admin-card-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap', padding: '1rem 1.25rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
@@ -90,9 +108,9 @@ export default function AdminBeritaCreatePage() {
               <ArrowLeft size={18} />
             </Link>
             <div>
-              <h1 className="admin-page-title" style={{ margin: 0 }}>Unggah Foto Galeri Baru</h1>
-              <p className="admin-page-desc" style={{ margin: '0.25rem 0 0 0' }}>
-                Tambahkan foto dokumentasi workshop, jahitan, atau bordir komputer dan tentukan tanggal unggah.
+              <h2 className="admin-card-title" style={{ margin: 0 }}>Formulir Dokumentasi Foto</h2>
+              <p className="admin-card-subtitle" style={{ margin: '0.25rem 0 0 0' }}>
+                Isi judul/keterangan foto (keperluan admin) dan tentukan tanggal unggah.
               </p>
             </div>
           </div>
@@ -121,10 +139,11 @@ export default function AdminBeritaCreatePage() {
           <div className="admin-single-card-grid">
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div className="admin-form-group">
-                <label className="admin-label">
+                <label className="admin-label" htmlFor="gallery-title">
                   Nama / Judul Foto Galeri
                 </label>
                 <input
+                  id="gallery-title"
                   type="text"
                   className="admin-input"
                   placeholder="Contoh: Proses Bordir Komputer Logo Sekolah"
@@ -134,62 +153,69 @@ export default function AdminBeritaCreatePage() {
               </div>
 
               <div className="admin-form-group">
-                <label className="admin-label">
-                  <Calendar size={14} style={{ display: 'inline', marginRight: '0.35rem' }} />
-                  Format Tanggal Upload <span style={{ color: 'var(--admin-danger)' }}>*</span>
-                </label>
-                <div style={{ display: 'flex', gap: '1.25rem', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
-                  <label style={{ display: 'inline-flex', alignItems: 'center', gap: '0.375rem', cursor: 'pointer', fontSize: '0.8125rem', fontWeight: 600 }}>
-                    <input
-                      type="radio"
-                      name="dateType"
-                      value="full"
-                      checked={dateType === 'full'}
-                      onChange={() => setDateType('full')}
-                    />
-                    <span>Tanggal Lengkap (misal: 10 September 2024)</span>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.375rem' }}>
+                  <label htmlFor="gallery-date" className="admin-label" style={{ margin: 0 }}>
+                    Tanggal Upload <span style={{ color: 'var(--admin-danger)' }}>*</span>
                   </label>
-                  <label style={{ display: 'inline-flex', alignItems: 'center', gap: '0.375rem', cursor: 'pointer', fontSize: '0.8125rem', fontWeight: 600 }}>
+
+                  <label style={{ display: 'inline-flex', alignItems: 'center', gap: '0.375rem', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 600, color: 'var(--admin-text-main)', userSelect: 'none' }}>
                     <input
-                      type="radio"
-                      name="dateType"
-                      value="month"
+                      type="checkbox"
                       checked={dateType === 'month'}
-                      onChange={() => setDateType('month')}
+                      onChange={(e) => {
+                        const isMonth = e.target.checked
+                        setDateType(isMonth ? 'month' : 'full')
+                        if (isMonth) {
+                          if (/^\d{4}-\d{2}-\d{2}$/.test(dateValue)) {
+                            setDateValue(dateValue.slice(0, 7))
+                          } else if (!/^\d{4}-\d{2}$/.test(dateValue)) {
+                            setDateValue(new Date().toISOString().slice(0, 7))
+                          }
+                        } else {
+                          if (/^\d{4}-\d{2}$/.test(dateValue)) {
+                            setDateValue(`${dateValue}-01`)
+                          } else if (!/^\d{4}-\d{2}-\d{2}$/.test(dateValue)) {
+                            setDateValue(new Date().toISOString().split('T')[0])
+                          }
+                        }
+                      }}
+                      style={{ accentColor: 'var(--admin-primary)', cursor: 'pointer' }}
                     />
-                    <span>Hanya Bulan & Tahun (misal: September 2024)</span>
+                    <span>Periode (Hanya Bulan & Tahun)</span>
                   </label>
                 </div>
 
-                {dateType === 'full' ? (
-                  <input
-                    id="gallery-date"
-                    type="date"
-                    className="admin-input"
-                    value={dateValue}
-                    onChange={(e) => setDateValue(e.target.value)}
-                    required
-                  />
-                ) : (
-                  <input
-                    id="gallery-date"
-                    type="month"
-                    className="admin-input"
-                    value={dateValue.length > 7 ? dateValue.slice(0, 7) : dateValue}
-                    onChange={(e) => setDateValue(e.target.value)}
-                    required
-                  />
-                )}
+                <div style={{ position: 'relative' }}>
+                  <Calendar size={15} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--admin-text-subtle)', pointerEvents: 'none', zIndex: 1 }} />
+                  {dateType === 'month' ? (
+                    <input
+                      id="gallery-date"
+                      type="month"
+                      className="admin-input"
+                      style={{ paddingLeft: '2.25rem' }}
+                      value={dateValue.length > 7 ? dateValue.slice(0, 7) : dateValue}
+                      onChange={(e) => setDateValue(e.target.value)}
+                      required
+                    />
+                  ) : (
+                    <input
+                      id="gallery-date"
+                      type="date"
+                      className="admin-input"
+                      style={{ paddingLeft: '2.25rem' }}
+                      value={dateValue.length > 10 ? dateValue.slice(0, 10) : dateValue}
+                      onChange={(e) => setDateValue(e.target.value)}
+                      required
+                    />
+                  )}
+                </div>
               </div>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               <div style={{ padding: '1rem', border: '1px solid var(--admin-border)', borderRadius: '6px', backgroundColor: 'var(--admin-surface-hover)' }}>
-                <div style={{ fontWeight: 700, fontSize: '0.8125rem', marginBottom: '0.75rem', color: 'var(--admin-text-main)' }}>
-                  Foto Galeri Dokumentasi <span style={{ color: 'var(--admin-danger)' }}>*</span>
-                </div>
                 <AdminImageUploader
-                  label="Unggah Foto Galeri"
+                  label="Foto Galeri Dokumentasi *"
                   ratioHint="Format JPG, PNG, WebP (Rasio Bebas)"
                   currentImage={formData.image}
                   onFileSelected={(file) => setImageFile(file)}
@@ -214,4 +240,3 @@ export default function AdminBeritaCreatePage() {
     </form>
   )
 }
-

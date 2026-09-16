@@ -1,19 +1,20 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { getGalleryList } from '../firebase/adminService'
-import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react'
+import { Calendar } from 'lucide-react'
 
 export default function GallerySection() {
   const [rawItems, setRawItems] = useState([])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isHovered, setIsHovered] = useState(false)
   const [slidesToShow, setSlidesToShow] = useState(4)
+  const [enableTransition, setEnableTransition] = useState(true)
   const autoPlayRef = useRef(null)
 
   useEffect(() => {
     let isMounted = true
     getGalleryList().then((data) => {
-      if (isMounted && data) {
-        setRawItems(data.slice(0, 5))
+      if (isMounted && data && data.length > 0) {
+        setRawItems(data.slice(0, 7))
       }
     })
     return () => {
@@ -40,46 +41,53 @@ export default function GallerySection() {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  let items = []
+  let baseItems = []
   if (rawItems.length > 0) {
     let count = 0
-    while (items.length < 5) {
+    while (baseItems.length < 7) {
       const it = rawItems[count % rawItems.length]
-      items.push({
+      baseItems.push({
         ...it,
-        uniqueKey: `${it.id || 'item'}-${items.length}`
+        originalIndex: baseItems.length,
+        uniqueKey: `${it.id || 'item'}-${baseItems.length}`
       })
       count++
     }
   }
 
-  const visibleCount = Math.min(slidesToShow, items.length)
-  const maxIndex = Math.max(0, items.length - visibleCount)
+  const displayItems = baseItems.length > 0
+    ? [...baseItems, ...baseItems.map((it, idx) => ({ ...it, uniqueKey: `${it.uniqueKey}-clone-${idx}` }))]
+    : []
 
-  const handleNext = useCallback(() => {
-    if (maxIndex <= 0) return
-    setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1))
-  }, [maxIndex])
+  const totalBase = baseItems.length
+  const visibleCount = Math.min(slidesToShow, totalBase)
 
-  const handlePrev = useCallback(() => {
-    if (maxIndex <= 0) return
-    setCurrentIndex((prev) => (prev <= 0 ? maxIndex : prev - 1))
-  }, [maxIndex])
+  const handleNext = () => {
+    setEnableTransition(true)
+    setCurrentIndex((prev) => prev + 1)
+  }
+
+  const handleTransitionEnd = () => {
+    if (currentIndex >= totalBase) {
+      setEnableTransition(false)
+      setCurrentIndex(0)
+    }
+  }
 
   useEffect(() => {
-    if (maxIndex <= 0 || isHovered) {
+    if (totalBase <= 0 || isHovered) {
       if (autoPlayRef.current) clearInterval(autoPlayRef.current)
       return
     }
 
     autoPlayRef.current = setInterval(() => {
       handleNext()
-    }, 3000)
+    }, 5000)
 
     return () => {
       if (autoPlayRef.current) clearInterval(autoPlayRef.current)
     }
-  }, [maxIndex, isHovered, handleNext])
+  }, [totalBase, isHovered])
 
   if (rawItems.length === 0) {
     return null
@@ -87,6 +95,7 @@ export default function GallerySection() {
 
   const gapPx = 20
   const translateXPercent = currentIndex * (100 / visibleCount)
+  const activeDotIndex = currentIndex % totalBase
 
   return (
     <section
@@ -95,97 +104,71 @@ export default function GallerySection() {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="container">
-        <div className="section-header-flex">
-          <div>
-            <span className="section-tag">DOKUMENTASI & GALERI</span>
-            <h2 className="section-title" style={{ textAlign: 'left', margin: '0.25rem 0 0.5rem 0' }}>
-              Galeri Foto Produksi
-            </h2>
-            <p className="section-subtitle" style={{ textAlign: 'left', margin: 0, maxWidth: '640px' }}>
-              Dokumentasi pengerjaan seragam sekolah, pakaian dinas, dan proses bordir komputer di workshop Azhar Collection.
-            </p>
-          </div>
-
-          <div className="gallery-header-actions">
-            <div className="gallery-nav-buttons">
-              <button
-                type="button"
-                className="gallery-nav-btn"
-                onClick={handlePrev}
-                aria-label="Sebelumnya"
-              >
-                <ChevronLeft size={20} />
-              </button>
-              <button
-                type="button"
-                className="gallery-nav-btn"
-                onClick={handleNext}
-                aria-label="Selanjutnya"
-              >
-                <ChevronRight size={20} />
-              </button>
-            </div>
-          </div>
+        <div style={{ textAlign: 'center', maxWidth: '700px', margin: '0 auto 2.5rem auto' }}>
+          <span className="section-tag">DOKUMENTASI & GALERI</span>
+          <h2 className="section-title">Galeri Foto Produksi</h2>
+          <p className="section-subtitle">
+            Dokumentasi pengerjaan di workshop Azhar Collection.
+          </p>
         </div>
 
-        <div>
-          <div className="gallery-carousel-viewport">
-            <div
-              className="gallery-carousel-track"
-              style={{
-                transform: `translateX(-${translateXPercent}%)`,
-                transition: 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)'
-              }}
-            >
-              {items.map((item) => (
-                <div
-                  key={item.uniqueKey}
-                  className="gallery-carousel-slide"
-                  style={{
-                    flex: `0 0 calc(${100 / visibleCount}% - ${(gapPx * (visibleCount - 1)) / visibleCount}px)`,
-                    maxWidth: `calc(${100 / visibleCount}% - ${(gapPx * (visibleCount - 1)) / visibleCount}px)`
-                  }}
-                >
-                  <div className="gallery-card">
-                    <div className="gallery-card-img-wrap" style={{ height: '220px' }}>
-                      <img
-                        src={item.image}
-                        alt={item.title || (item.date ? `Foto dokumentasi ${item.date}` : 'Foto galeri')}
-                        className="gallery-card-img"
-                        loading="lazy"
-                      />
-                      {item.date && (
-                        <span className="gallery-card-date-badge">
-                          <Calendar size={13} />
-                          <span>{item.date}</span>
-                        </span>
-                      )}
-                    </div>
+        <div className="gallery-carousel-viewport">
+          <div
+            className="gallery-carousel-track"
+            onTransitionEnd={handleTransitionEnd}
+            style={{
+              transform: `translateX(-${translateXPercent}%)`,
+              transition: enableTransition ? 'transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)' : 'none'
+            }}
+          >
+            {displayItems.map((item) => (
+              <div
+                key={item.uniqueKey}
+                className="gallery-carousel-slide"
+                style={{
+                  flex: `0 0 calc(${100 / visibleCount}% - ${(gapPx * (visibleCount - 1)) / visibleCount}px)`,
+                  maxWidth: `calc(${100 / visibleCount}% - ${(gapPx * (visibleCount - 1)) / visibleCount}px)`
+                }}
+              >
+                <div className="gallery-card">
+                  <div className="gallery-card-img-wrap" style={{ height: '230px' }}>
+                    <img
+                      src={item.image}
+                      alt={item.title || (item.date ? `Foto dokumentasi ${item.date}` : 'Foto galeri')}
+                      className="gallery-card-img"
+                      loading="lazy"
+                    />
+                    {item.date && (
+                      <span className="gallery-card-date-badge">
+                        <Calendar size={13} />
+                        <span>{item.date}</span>
+                      </span>
+                    )}
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
-
-          {maxIndex > 0 && (
-            <div className="gallery-carousel-indicators">
-              {Array.from({ length: maxIndex + 1 }).map((_, idx) => (
-                <button
-                  key={idx}
-                  type="button"
-                  className={`gallery-indicator-dot ${idx === currentIndex ? 'active' : ''}`}
-                  onClick={() => setCurrentIndex(idx)}
-                  aria-label={`Lihat slide galeri ${idx + 1}`}
-                />
-              ))}
-            </div>
-          )}
         </div>
+
+        {totalBase > 0 && (
+          <div className="gallery-carousel-indicators" style={{ marginTop: '2rem' }}>
+            {Array.from({ length: totalBase }).map((_, idx) => (
+              <button
+                key={idx}
+                type="button"
+                className={`gallery-indicator-dot ${idx === activeDotIndex ? 'active' : ''}`}
+                onClick={() => {
+                  setEnableTransition(true)
+                  setCurrentIndex(idx)
+                }}
+                aria-label={`Lihat slide galeri ${idx + 1}`}
+                title={`Pindah ke slide ${idx + 1}`}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   )
 }
-
-
-
-

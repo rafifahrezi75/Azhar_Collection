@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 :root {
   --color-primary: #800080;
   --color-primary-dark: #4A0E4E;
@@ -3578,6 +3580,16 @@ img {
   border-radius: 4px;
   backdrop-filter: blur(4px);
   z-index: 2;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(6px);
+  transition: all 0.3s ease;
+}
+
+.gallery-card:hover .gallery-card-date-badge {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
 
 .gallery-page-grid {
@@ -3716,6 +3728,17 @@ img {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(6px);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 3;
+}
+
+.gallery-card:hover .gallery-card-date-badge {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
 
 .gallery-carousel-indicators {
@@ -3745,6 +3768,14 @@ img {
   width: 24px;
   background: var(--color-primary);
   border-radius: 4px;
+}
+
+.gallery-bottom-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  margin-top: 2rem;
 }
 
 

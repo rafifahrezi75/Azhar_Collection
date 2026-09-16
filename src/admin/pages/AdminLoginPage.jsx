@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useLocation, Link } from 'react-router-dom'
 import { loginAdmin, subscribeToAuth } from '../../firebase/adminService'
 import { isFirebaseConfigured } from '../../firebase/config'
-import { Lock, Mail, ArrowRight, ShieldCheck, Eye, EyeOff, Clock } from 'lucide-react'
+import { Lock, Mail, ArrowRight, ShieldCheck, Eye, EyeOff, Clock, AlertCircle } from 'lucide-react'
 import '../styles/admin.css'
 
 export default function AdminLoginPage() {
@@ -47,7 +47,7 @@ export default function AdminLoginPage() {
       const destination = location.state?.from?.pathname || '/admin/dashboard'
       navigate(destination, { replace: true })
     } catch (err) {
-      setError(err.message || 'Login gagal. Periksa kembali email dan kata sandi Anda.')
+      setError(err.message || 'Login gagal. Silakan periksa kembali email dan kata sandi Anda.')
     } finally {
       setLoading(false)
     }
@@ -90,7 +90,8 @@ export default function AdminLoginPage() {
         )}
 
         {error && (
-          <div className="admin-alert admin-alert-danger">
+          <div className="admin-alert admin-alert-danger" style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
+            <AlertCircle size={18} style={{ flexShrink: 0 }} />
             <span>{error}</span>
           </div>
         )}

@@ -30,10 +30,10 @@ import AdminLayananPage from './admin/pages/AdminLayananPage'
 import AdminLayananCreatePage from './admin/pages/AdminLayananCreatePage'
 import AdminLayananEditPage from './admin/pages/AdminLayananEditPage'
 import AdminLayananDetailPage from './admin/pages/AdminLayananDetailPage'
-import AdminBeritaPage from './admin/pages/AdminBeritaPage'
-import AdminBeritaCreatePage from './admin/pages/AdminBeritaCreatePage'
-import AdminBeritaEditPage from './admin/pages/AdminBeritaEditPage'
-import AdminBeritaDetailPage from './admin/pages/AdminBeritaDetailPage'
+import AdminGaleriPage from './admin/pages/AdminGaleriPage'
+import AdminGaleriCreatePage from './admin/pages/AdminGaleriCreatePage'
+import AdminGaleriEditPage from './admin/pages/AdminGaleriEditPage'
+import AdminGaleriDetailPage from './admin/pages/AdminGaleriDetailPage'
 import AdminPesanPage from './admin/pages/AdminPesanPage'
 import AdminPesanDetailPage from './admin/pages/AdminPesanDetailPage'
 import AdminTestimoniPage from './admin/pages/AdminTestimoniPage'
@@ -44,6 +44,10 @@ import AdminMarketingPage from './admin/pages/AdminMarketingPage'
 import AdminMarketingCreatePage from './admin/pages/AdminMarketingCreatePage'
 import AdminMarketingEditPage from './admin/pages/AdminMarketingEditPage'
 import AdminMarketingDetailPage from './admin/pages/AdminMarketingDetailPage'
+import AdminTimelinePage from './admin/pages/AdminTimelinePage'
+import AdminTimelineCreatePage from './admin/pages/AdminTimelineCreatePage'
+import AdminTimelineEditPage from './admin/pages/AdminTimelineEditPage'
+import AdminTimelineDetailPage from './admin/pages/AdminTimelineDetailPage'
 import { useEffect } from 'react'
 import AdminPengaturanPage from './admin/pages/AdminPengaturanPage'
 import { trackPublicVisit } from './firebase/visitorService'
@@ -100,16 +104,12 @@ export default function App() {
           <Route path="layanan/create" element={<AdminLayananCreatePage />} />
           <Route path="layanan/edit/:id" element={<AdminLayananEditPage />} />
           <Route path="layanan/detail/:id" element={<AdminLayananDetailPage />} />
-          <Route path="berita" element={<AdminBeritaPage />} />
-          <Route path="berita/tambah" element={<AdminBeritaCreatePage />} />
-          <Route path="berita/create" element={<AdminBeritaCreatePage />} />
-          <Route path="berita/edit/:id" element={<AdminBeritaEditPage />} />
-          <Route path="berita/detail/:id" element={<AdminBeritaDetailPage />} />
-          <Route path="galeri" element={<AdminBeritaPage />} />
-          <Route path="galeri/tambah" element={<AdminBeritaCreatePage />} />
-          <Route path="galeri/create" element={<AdminBeritaCreatePage />} />
-          <Route path="galeri/edit/:id" element={<AdminBeritaEditPage />} />
-          <Route path="galeri/detail/:id" element={<AdminBeritaDetailPage />} />
+          <Route path="berita/*" element={<Navigate to="/admin/galeri" replace />} />
+          <Route path="galeri" element={<AdminGaleriPage />} />
+          <Route path="galeri/tambah" element={<AdminGaleriCreatePage />} />
+          <Route path="galeri/create" element={<AdminGaleriCreatePage />} />
+          <Route path="galeri/edit/:id" element={<AdminGaleriEditPage />} />
+          <Route path="galeri/detail/:id" element={<AdminGaleriDetailPage />} />
           <Route path="pesan" element={<AdminPesanPage />} />
           <Route path="pesan/detail/:id" element={<AdminPesanDetailPage />} />
           <Route path="testimoni" element={<AdminTestimoniPage />} />
@@ -122,6 +122,11 @@ export default function App() {
           <Route path="marketing/create" element={<AdminMarketingCreatePage />} />
           <Route path="marketing/edit/:id" element={<AdminMarketingEditPage />} />
           <Route path="marketing/detail/:id" element={<AdminMarketingDetailPage />} />
+          <Route path="karir" element={<AdminTimelinePage />} />
+          <Route path="karir/tambah" element={<AdminTimelineCreatePage />} />
+          <Route path="karir/create" element={<AdminTimelineCreatePage />} />
+          <Route path="karir/edit/:id" element={<AdminTimelineEditPage />} />
+          <Route path="karir/detail/:id" element={<AdminTimelineDetailPage />} />
           <Route path="pengaturan" element={<AdminPengaturanPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>

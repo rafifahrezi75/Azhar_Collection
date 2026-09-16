@@ -8,6 +8,7 @@ import {
   UserCheck,
   MessageSquare,
   Star,
+  TrendingUp,
   Settings,
   ExternalLink,
   X
@@ -27,12 +28,6 @@ export default function AdminSidebar({
         currentPath === '/admin' ||
         currentPath === '/admin/' ||
         currentPath === '/admin/dashboard'
-      )
-    }
-    if (item.path === '/admin/galeri') {
-      return (
-        currentPath.startsWith('/admin/galeri') ||
-        currentPath.startsWith('/admin/berita')
       )
     }
     return currentPath.startsWith(item.path)
@@ -78,6 +73,11 @@ export default function AdminSidebar({
       label: 'Testimoni',
       path: '/admin/testimoni',
       icon: Star
+    },
+    {
+      label: 'Perjalanan Karir',
+      path: '/admin/karir',
+      icon: TrendingUp
     },
     {
       label: 'Pengaturan',
