@@ -224,10 +224,25 @@ export const subscribeToAuth = (callback) => {
 export const getKatalogList = async () => {
   if (isFirebaseConfigured && db) {
     try {
-      const q = query(collection(db, 'products'), orderBy('createdAt', 'desc'))
-      const snap = await getDocs(q)
-      if (!snap.empty) {
-        return snap.docs.map((d) => ({ id: d.id, ...d.data() }))
+      let docs = []
+      try {
+        const q = query(collection(db, 'products'), orderBy('createdAt', 'desc'))
+        const snap = await getDocs(q)
+        if (!snap.empty) {
+          docs = snap.docs.map((d) => ({ id: d.id, ...d.data() }))
+        }
+      } catch {
+        void 0
+      }
+      if (docs.length === 0) {
+        const snap = await getDocs(collection(db, 'products'))
+        if (!snap.empty) {
+          docs = snap.docs.map((d) => ({ id: d.id, ...d.data() }))
+        }
+      }
+      if (docs.length > 0) {
+        setLocalData('products', docs)
+        return docs
       }
     } catch {
       return getLocalData('products', portfolioProducts)
@@ -239,14 +254,16 @@ export const getKatalogList = async () => {
 export const saveKatalogItem = async (item) => {
   const payload = {
     ...item,
+    createdAt: item.createdAt || new Date().toISOString(),
     updatedAt: new Date().toISOString()
   }
 
   if (isFirebaseConfigured && db) {
     try {
       if (item.id) {
-        const ref = doc(db, 'products', item.id)
+        const ref = doc(db, 'products', String(item.id))
         await setDoc(ref, payload, { merge: true })
+        saveLocalKatalog(payload)
         return item.id
       }
       const colRef = collection(db, 'products')
@@ -254,6 +271,7 @@ export const saveKatalogItem = async (item) => {
         ...payload,
         createdAt: serverTimestamp()
       })
+      saveLocalKatalog({ ...payload, id: docRef.id })
       return docRef.id
     } catch {
       return saveLocalKatalog(payload)
@@ -265,8 +283,13 @@ export const saveKatalogItem = async (item) => {
 const saveLocalKatalog = (payload) => {
   const current = getLocalData('products', portfolioProducts)
   if (payload.id) {
-    const updated = current.map((p) => (p.id === payload.id ? { ...p, ...payload } : p))
-    setLocalData('products', updated)
+    const exists = current.some((p) => String(p.id) === String(payload.id))
+    if (exists) {
+      const updated = current.map((p) => (String(p.id) === String(payload.id) ? { ...p, ...payload } : p))
+      setLocalData('products', updated)
+    } else {
+      setLocalData('products', [payload, ...current])
+    }
     return payload.id
   }
   const newId = `PROD-${Date.now()}`
@@ -278,7 +301,7 @@ const saveLocalKatalog = (payload) => {
 export const deleteKatalogItem = async (id) => {
   if (isFirebaseConfigured && db) {
     try {
-      await deleteDoc(doc(db, 'products', id))
+      await deleteDoc(doc(db, 'products', String(id)))
     } catch {
       deleteLocalKatalog(id)
     }
@@ -288,7 +311,7 @@ export const deleteKatalogItem = async (id) => {
 
 const deleteLocalKatalog = (id) => {
   const current = getLocalData('products', portfolioProducts)
-  const filtered = current.filter((p) => p.id !== id)
+  const filtered = current.filter((p) => String(p.id) !== String(id))
   setLocalData('products', filtered)
 }
 
@@ -297,7 +320,9 @@ export const getKlienList = async () => {
     try {
       const snap = await getDocs(collection(db, 'clients'))
       if (!snap.empty) {
-        return snap.docs.map((d) => ({ id: d.id, ...d.data() }))
+        const docs = snap.docs.map((d) => ({ id: d.id, ...d.data() }))
+        setLocalData('clients', docs)
+        return docs
       }
     } catch {
       return getLocalData('clients', clientsData)
@@ -309,13 +334,15 @@ export const getKlienList = async () => {
 export const saveKlienItem = async (client) => {
   const payload = {
     ...client,
+    createdAt: client.createdAt || new Date().toISOString(),
     updatedAt: new Date().toISOString()
   }
 
   if (isFirebaseConfigured && db) {
     try {
-      const ref = doc(db, 'clients', client.id)
+      const ref = doc(db, 'clients', String(client.id))
       await setDoc(ref, payload, { merge: true })
+      saveLocalKlien(payload)
       return client.id
     } catch {
       return saveLocalKlien(payload)
@@ -326,7 +353,7 @@ export const saveKlienItem = async (client) => {
 
 const saveLocalKlien = (payload) => {
   const current = getLocalData('clients', clientsData)
-  const index = current.findIndex((c) => c.id === payload.id)
+  const index = current.findIndex((c) => String(c.id) === String(payload.id))
   if (index >= 0) {
     const updated = [...current]
     updated[index] = { ...updated[index], ...payload }
@@ -342,7 +369,7 @@ const saveLocalKlien = (payload) => {
 export const deleteKlienItem = async (id) => {
   if (isFirebaseConfigured && db) {
     try {
-      await deleteDoc(doc(db, 'clients', id))
+      await deleteDoc(doc(db, 'clients', String(id)))
     } catch {
       deleteLocalKlien(id)
     }
@@ -352,7 +379,7 @@ export const deleteKlienItem = async (id) => {
 
 const deleteLocalKlien = (id) => {
   const current = getLocalData('clients', clientsData)
-  setLocalData('clients', current.filter((c) => c.id !== id))
+  setLocalData('clients', current.filter((c) => String(c.id) !== String(id)))
 }
 
 export const getLayananList = async () => {
@@ -360,7 +387,9 @@ export const getLayananList = async () => {
     try {
       const snap = await getDocs(collection(db, 'services'))
       if (!snap.empty) {
-        return snap.docs.map((d) => ({ id: d.id, ...d.data() }))
+        const docs = snap.docs.map((d) => ({ id: d.id, ...d.data() }))
+        setLocalData('services', docs)
+        return docs
       }
     } catch {
       return getLocalData('services', servicesData)
@@ -372,13 +401,15 @@ export const getLayananList = async () => {
 export const saveLayananItem = async (service) => {
   const payload = {
     ...service,
+    createdAt: service.createdAt || new Date().toISOString(),
     updatedAt: new Date().toISOString()
   }
 
   if (isFirebaseConfigured && db) {
     try {
-      const ref = doc(db, 'services', service.id)
+      const ref = doc(db, 'services', String(service.id))
       await setDoc(ref, payload, { merge: true })
+      saveLocalLayanan(payload)
       return service.id
     } catch {
       return saveLocalLayanan(payload)
@@ -389,7 +420,7 @@ export const saveLayananItem = async (service) => {
 
 const saveLocalLayanan = (payload) => {
   const current = getLocalData('services', servicesData)
-  const index = current.findIndex((s) => s.id === payload.id)
+  const index = current.findIndex((s) => String(s.id) === String(payload.id))
   if (index >= 0) {
     const updated = [...current]
     updated[index] = { ...updated[index], ...payload }
@@ -405,7 +436,7 @@ const saveLocalLayanan = (payload) => {
 export const deleteLayananItem = async (id) => {
   if (isFirebaseConfigured && db) {
     try {
-      await deleteDoc(doc(db, 'services', id))
+      await deleteDoc(doc(db, 'services', String(id)))
     } catch {
       deleteLocalLayanan(id)
     }
@@ -415,7 +446,7 @@ export const deleteLayananItem = async (id) => {
 
 const deleteLocalLayanan = (id) => {
   const current = getLocalData('services', servicesData)
-  setLocalData('services', current.filter((s) => s.id !== id))
+  setLocalData('services', current.filter((s) => String(s.id) !== String(id)))
 }
 
 const initialInquiries = [
@@ -457,10 +488,25 @@ const initialInquiries = [
 export const getInquiriesList = async () => {
   if (isFirebaseConfigured && db) {
     try {
-      const q = query(collection(db, 'inquiries'), orderBy('createdAt', 'desc'))
-      const snap = await getDocs(q)
-      if (!snap.empty) {
-        return snap.docs.map((d) => ({ id: d.id, ...d.data() }))
+      let docs = []
+      try {
+        const q = query(collection(db, 'inquiries'), orderBy('createdAt', 'desc'))
+        const snap = await getDocs(q)
+        if (!snap.empty) {
+          docs = snap.docs.map((d) => ({ id: d.id, ...d.data() }))
+        }
+      } catch {
+        void 0
+      }
+      if (docs.length === 0) {
+        const snap = await getDocs(collection(db, 'inquiries'))
+        if (!snap.empty) {
+          docs = snap.docs.map((d) => ({ id: d.id, ...d.data() }))
+        }
+      }
+      if (docs.length > 0) {
+        setLocalData('inquiries', docs)
+        return docs
       }
     } catch {
       return getLocalData('inquiries', initialInquiries)
@@ -472,13 +518,14 @@ export const getInquiriesList = async () => {
 export const saveInquiry = async (inquiry) => {
   const payload = {
     ...inquiry,
-    createdAt: new Date().toISOString()
+    createdAt: inquiry.createdAt || new Date().toISOString()
   }
 
   if (isFirebaseConfigured && db) {
     try {
       const colRef = collection(db, 'inquiries')
       const docRef = await addDoc(colRef, payload)
+      saveLocalInquiry({ ...payload, id: docRef.id })
       return docRef.id
     } catch {
       return saveLocalInquiry(payload)
@@ -489,7 +536,7 @@ export const saveInquiry = async (inquiry) => {
 
 const saveLocalInquiry = (payload) => {
   const current = getLocalData('inquiries', initialInquiries)
-  const newId = `INQ-${Date.now()}`
+  const newId = payload.id || `INQ-${Date.now()}`
   const newItem = { ...payload, id: newId }
   setLocalData('inquiries', [newItem, ...current])
   return newId
@@ -498,7 +545,7 @@ const saveLocalInquiry = (payload) => {
 export const updateInquiryStatus = async (id, status) => {
   if (isFirebaseConfigured && db) {
     try {
-      await updateDoc(doc(db, 'inquiries', id), { status })
+      await updateDoc(doc(db, 'inquiries', String(id)), { status })
     } catch {
       updateLocalInquiryStatus(id, status)
     }
@@ -508,14 +555,14 @@ export const updateInquiryStatus = async (id, status) => {
 
 const updateLocalInquiryStatus = (id, status) => {
   const current = getLocalData('inquiries', initialInquiries)
-  const updated = current.map((item) => (item.id === id ? { ...item, status } : item))
+  const updated = current.map((item) => (String(item.id) === String(id) ? { ...item, status } : item))
   setLocalData('inquiries', updated)
 }
 
 export const deleteInquiry = async (id) => {
   if (isFirebaseConfigured && db) {
     try {
-      await deleteDoc(doc(db, 'inquiries', id))
+      await deleteDoc(doc(db, 'inquiries', String(id)))
     } catch {
       deleteLocalInquiry(id)
     }
@@ -525,7 +572,7 @@ export const deleteInquiry = async (id) => {
 
 const deleteLocalInquiry = (id) => {
   const current = getLocalData('inquiries', initialInquiries)
-  setLocalData('inquiries', current.filter((item) => item.id !== id))
+  setLocalData('inquiries', current.filter((item) => String(item.id) !== String(id)))
 }
 
 export const getTestimonialList = async () => {
@@ -533,7 +580,9 @@ export const getTestimonialList = async () => {
     try {
       const snap = await getDocs(collection(db, 'testimonials'))
       if (!snap.empty) {
-        return snap.docs.map((d) => ({ id: d.id, ...d.data() }))
+        const docs = snap.docs.map((d) => ({ id: d.id, ...d.data() }))
+        setLocalData('testimonials', docs)
+        return docs
       }
     } catch {
       return getLocalData('testimonials', defaultTestimonials)
@@ -547,6 +596,7 @@ export const getTestimoniList = getTestimonialList
 export const saveTestimonialItem = async (testi) => {
   const payload = {
     ...testi,
+    createdAt: testi.createdAt || new Date().toISOString(),
     updatedAt: new Date().toISOString()
   }
 
@@ -554,6 +604,7 @@ export const saveTestimonialItem = async (testi) => {
     try {
       const ref = doc(db, 'testimonials', String(testi.id))
       await setDoc(ref, payload, { merge: true })
+      saveLocalTestimonial(payload)
       return testi.id
     } catch {
       return saveLocalTestimonial(payload)
@@ -564,7 +615,7 @@ export const saveTestimonialItem = async (testi) => {
 
 const saveLocalTestimonial = (payload) => {
   const current = getLocalData('testimonials', defaultTestimonials)
-  const index = current.findIndex((t) => t.id === payload.id)
+  const index = current.findIndex((t) => String(t.id) === String(payload.id))
   if (index >= 0) {
     const updated = [...current]
     updated[index] = { ...updated[index], ...payload }
@@ -590,7 +641,7 @@ export const deleteTestimonialItem = async (id) => {
 
 const deleteLocalTestimonial = (id) => {
   const current = getLocalData('testimonials', defaultTestimonials)
-  setLocalData('testimonials', current.filter((t) => t.id !== id))
+  setLocalData('testimonials', current.filter((t) => String(t.id) !== String(id)))
 }
 
 export const getCompanySettings = async () => {
@@ -599,7 +650,11 @@ export const getCompanySettings = async () => {
       const snap = await getDocs(collection(db, 'settings'))
       if (!snap.empty) {
         const found = snap.docs.find((d) => d.id === 'general')
-        if (found) return found.data()
+        if (found) {
+          const data = found.data()
+          setLocalData('settings', data)
+          return data
+        }
       }
     } catch {
       return getLocalData('settings', companyInfo)
@@ -617,6 +672,7 @@ export const saveCompanySettings = async (settings) => {
   if (isFirebaseConfigured && db) {
     try {
       await setDoc(doc(db, 'settings', 'general'), payload, { merge: true })
+      setLocalData('settings', payload)
     } catch {
       setLocalData('settings', payload)
     }
@@ -638,7 +694,7 @@ export const seedInitialDataToFirestore = async () => {
   }
 
   for (const p of portfolioProducts) {
-    await setDoc(doc(db, 'products', p.id), {
+    await setDoc(doc(db, 'products', String(p.id)), {
       ...p,
       createdAt: serverTimestamp()
     })
@@ -646,7 +702,7 @@ export const seedInitialDataToFirestore = async () => {
   }
 
   for (const c of clientsData) {
-    await setDoc(doc(db, 'clients', c.id), {
+    await setDoc(doc(db, 'clients', String(c.id)), {
       ...c,
       createdAt: serverTimestamp()
     })
@@ -654,7 +710,7 @@ export const seedInitialDataToFirestore = async () => {
   }
 
   for (const s of servicesData) {
-    await setDoc(doc(db, 'services', s.id), {
+    await setDoc(doc(db, 'services', String(s.id)), {
       ...s,
       createdAt: serverTimestamp()
     })
@@ -688,9 +744,11 @@ export const seedInitialDataToFirestore = async () => {
 export const getKatalogById = async (id) => {
   if (isFirebaseConfigured && db) {
     try {
-      const snap = await getDoc(doc(db, 'products', id))
+      const snap = await getDoc(doc(db, 'products', String(id)))
       if (snap.exists()) {
-        return { id: snap.id, ...snap.data() }
+        const item = { id: snap.id, ...snap.data() }
+        saveLocalKatalog(item)
+        return item
       }
     } catch {
       const list = getLocalData('products', portfolioProducts)
@@ -704,9 +762,11 @@ export const getKatalogById = async (id) => {
 export const getKlienById = async (id) => {
   if (isFirebaseConfigured && db) {
     try {
-      const snap = await getDoc(doc(db, 'clients', id))
+      const snap = await getDoc(doc(db, 'clients', String(id)))
       if (snap.exists()) {
-        return { id: snap.id, ...snap.data() }
+        const item = { id: snap.id, ...snap.data() }
+        saveLocalKlien(item)
+        return item
       }
     } catch {
       const list = getLocalData('clients', clientsData)
@@ -720,9 +780,11 @@ export const getKlienById = async (id) => {
 export const getLayananById = async (id) => {
   if (isFirebaseConfigured && db) {
     try {
-      const snap = await getDoc(doc(db, 'services', id))
+      const snap = await getDoc(doc(db, 'services', String(id)))
       if (snap.exists()) {
-        return { id: snap.id, ...snap.data() }
+        const item = { id: snap.id, ...snap.data() }
+        saveLocalLayanan(item)
+        return item
       }
     } catch {
       const list = getLocalData('services', servicesData)
@@ -738,7 +800,9 @@ export const getTestimonialById = async (id) => {
     try {
       const snap = await getDoc(doc(db, 'testimonials', String(id)))
       if (snap.exists()) {
-        return { id: snap.id, ...snap.data() }
+        const item = { id: snap.id, ...snap.data() }
+        saveLocalTestimonial(item)
+        return item
       }
     } catch {
       const list = getLocalData('testimonials', defaultTestimonials)
@@ -752,7 +816,7 @@ export const getTestimonialById = async (id) => {
 export const getInquiryById = async (id) => {
   if (isFirebaseConfigured && db) {
     try {
-      const snap = await getDoc(doc(db, 'inquiries', id))
+      const snap = await getDoc(doc(db, 'inquiries', String(id)))
       if (snap.exists()) {
         return { id: snap.id, ...snap.data() }
       }
@@ -768,17 +832,27 @@ export const getInquiryById = async (id) => {
 export const getBeritaList = async () => {
   if (isFirebaseConfigured && db) {
     try {
+      let docs = []
       try {
         const q = query(collection(db, 'news'), orderBy('createdAt', 'desc'))
         const snap = await getDocs(q)
         if (!snap.empty) {
-          return snap.docs.map((d) => ({ id: d.id, ...d.data() }))
+          docs = snap.docs.map((d) => ({ id: d.id, ...d.data() }))
         }
       } catch {
+        void 0
+      }
+
+      if (docs.length === 0) {
         const snap = await getDocs(collection(db, 'news'))
         if (!snap.empty) {
-          return snap.docs.map((d) => ({ id: d.id, ...d.data() }))
+          docs = snap.docs.map((d) => ({ id: d.id, ...d.data() }))
         }
+      }
+
+      if (docs.length > 0) {
+        setLocalData('news', docs)
+        return docs
       }
     } catch {
       const list = getLocalData('news', defaultGallery)
@@ -796,7 +870,9 @@ export const getBeritaById = async (id) => {
     try {
       const snap = await getDoc(doc(db, 'news', String(id)))
       if (snap.exists()) {
-        return { id: snap.id, ...snap.data() }
+        const item = { id: snap.id, ...snap.data() }
+        saveLocalBerita(item)
+        return item
       }
     } catch {
       const list = getLocalData('news', defaultGallery)
@@ -818,8 +894,10 @@ export const getBeritaBySlug = async (slug) => {
 
 export const saveBeritaItem = async (item) => {
   const payload = {
+    ...item,
     image: item.image || '',
     date: item.date || new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }),
+    createdAt: item.createdAt || new Date().toISOString(),
     updatedAt: new Date().toISOString()
   }
   if (item.id) {
@@ -831,6 +909,7 @@ export const saveBeritaItem = async (item) => {
       if (item.id) {
         const ref = doc(db, 'news', String(item.id))
         await setDoc(ref, payload, { merge: true })
+        saveLocalBerita(payload)
         return item.id
       }
       const colRef = collection(db, 'news')
@@ -838,6 +917,7 @@ export const saveBeritaItem = async (item) => {
         ...payload,
         createdAt: serverTimestamp()
       })
+      saveLocalBerita({ ...payload, id: docRef.id })
       return docRef.id
     } catch {
       return saveLocalBerita(payload)
@@ -850,8 +930,13 @@ const saveLocalBerita = (payload) => {
   const current = getLocalData('news', defaultGallery)
   const effectiveCurrent = current && current.length > 0 ? current : defaultGallery
   if (payload.id) {
-    const updated = effectiveCurrent.map((p) => (String(p.id) === String(payload.id) ? { ...p, ...payload } : p))
-    setLocalData('news', updated)
+    const exists = effectiveCurrent.some((p) => String(p.id) === String(payload.id))
+    if (exists) {
+      const updated = effectiveCurrent.map((p) => (String(p.id) === String(payload.id) ? { ...p, ...payload } : p))
+      setLocalData('news', updated)
+    } else {
+      setLocalData('news', [payload, ...effectiveCurrent])
+    }
     return payload.id
   }
   const newId = `GALERI-${Date.now()}`
@@ -907,17 +992,27 @@ const defaultMarketing = [
 export const getMarketingList = async () => {
   if (isFirebaseConfigured && db) {
     try {
+      let docs = []
       try {
         const q = query(collection(db, 'marketing'), orderBy('order', 'asc'))
         const snap = await getDocs(q)
         if (!snap.empty) {
-          return snap.docs.map((d) => ({ id: d.id, ...d.data() }))
+          docs = snap.docs.map((d) => ({ id: d.id, ...d.data() }))
         }
       } catch {
+        void 0
+      }
+
+      if (docs.length === 0) {
         const snap = await getDocs(collection(db, 'marketing'))
         if (!snap.empty) {
-          return snap.docs.map((d) => ({ id: d.id, ...d.data() }))
+          docs = snap.docs.map((d) => ({ id: d.id, ...d.data() }))
         }
+      }
+
+      if (docs.length > 0) {
+        setLocalData('marketing', docs)
+        return docs
       }
     } catch {
       return getLocalData('marketing', defaultMarketing)
@@ -931,7 +1026,9 @@ export const getMarketingById = async (id) => {
     try {
       const snap = await getDoc(doc(db, 'marketing', String(id)))
       if (snap.exists()) {
-        return { id: snap.id, ...snap.data() }
+        const item = { id: snap.id, ...snap.data() }
+        saveLocalMarketing(item)
+        return item
       }
     } catch {
       const list = getLocalData('marketing', defaultMarketing)
@@ -955,6 +1052,7 @@ export const saveMarketingItem = async (item) => {
     phone: item.phone,
     waUrl,
     order: Number(item.order) || 1,
+    createdAt: item.createdAt || new Date().toISOString(),
     updatedAt: new Date().toISOString()
   }
 
@@ -963,6 +1061,7 @@ export const saveMarketingItem = async (item) => {
       if (item.id) {
         const ref = doc(db, 'marketing', String(item.id))
         await setDoc(ref, payload, { merge: true })
+        saveLocalMarketing(payload)
         return item.id
       }
       const colRef = collection(db, 'marketing')
@@ -970,6 +1069,7 @@ export const saveMarketingItem = async (item) => {
         ...payload,
         createdAt: serverTimestamp()
       })
+      saveLocalMarketing({ ...payload, id: docRef.id })
       return docRef.id
     } catch {
       return saveLocalMarketing(payload)
@@ -981,8 +1081,13 @@ export const saveMarketingItem = async (item) => {
 const saveLocalMarketing = (payload) => {
   const current = getLocalData('marketing', defaultMarketing)
   if (payload.id) {
-    const updated = current.map((p) => (String(p.id) === String(payload.id) ? { ...p, ...payload } : p))
-    setLocalData('marketing', updated)
+    const exists = current.some((p) => String(p.id) === String(payload.id))
+    if (exists) {
+      const updated = current.map((p) => (String(p.id) === String(payload.id) ? { ...p, ...payload } : p))
+      setLocalData('marketing', updated)
+    } else {
+      setLocalData('marketing', [...current, payload])
+    }
     return payload.id
   }
   const newId = `MKT-${Date.now()}`
@@ -1007,4 +1112,5 @@ const deleteLocalMarketing = (id) => {
   const filtered = current.filter((p) => String(p.id) !== String(id))
   setLocalData('marketing', filtered)
 }
+
 
