@@ -27,9 +27,11 @@ export default function AdminKlienCreatePage() {
   })
 
   const categoryOptions = [
-    { label: 'Sekolah Dasar / Madrasah Ibtidaiyah', key: 'sekolah' },
+    { label: 'PAUD / Playgroup (PG) / TK / RA', key: 'paud' },
+    { label: 'Sekolah Dasar (SD) / Madrasah Ibtidaiyah (MI)', key: 'sekolah' },
     { label: 'SMP / MTs', key: 'sekolah' },
     { label: 'SMA / SMK / MA', key: 'sekolah' },
+    { label: 'Yayasan / Pendidikan Swasta & Pesantren', key: 'yayasan' },
     { label: 'Perguruan Tinggi / Universitas', key: 'kampus' },
     { label: 'Instansi Pemerintah / Kedinasan', key: 'instansi' },
     { label: 'Perusahaan Swasta & BUMN', key: 'perusahaan' },

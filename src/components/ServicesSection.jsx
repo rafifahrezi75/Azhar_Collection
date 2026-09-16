@@ -50,10 +50,10 @@ export default function ServicesSection({ limit }) {
     <section id="services" className="services-section">
       <div className="container">
         <div className="services-header">
-          <span className="section-tag">LAYANAN KAMI</span>
-          <h2 className="section-title">Solusi Konveksi & Pakaian Kustom</h2>
+          <span className="section-tag">LAYANAN KONVEKSI UNGGULAN</span>
+          <h2 className="section-title">Solusi Jahit & Konveksi Bergaransi Mutu</h2>
           <p className="section-subtitle">
-            Berbagai layanan penjahitan busana massal dan kustom untuk kebutuhan sekolah, dinas instansi, perkantoran, dan komunitas.
+            Dapatkan hasil jahit presisi rapi, sablon DTF resolusi tinggi, dan garansi ganti produk cacat gratis untuk kebutuhan sekolah serta instansi Anda!
           </p>
         </div>
 

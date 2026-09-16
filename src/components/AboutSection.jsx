@@ -42,15 +42,15 @@ export default function AboutSection() {
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.84375rem', color: 'var(--color-primary-dark)', fontWeight: 600 }}>
                 <CheckCircle2 size={16} style={{ color: 'var(--color-accent)' }} />
-                <span>Kain Asli Bersertifikat</span>
+                <span>Desain Timeless & Mutu Prima</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.84375rem', color: 'var(--color-primary-dark)', fontWeight: 600 }}>
                 <CheckCircle2 size={16} style={{ color: 'var(--color-accent)' }} />
-                <span>Bordir Komputer 12 Kepala</span>
+                <span>Pemberdayaan Penjahit Rumahan</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.84375rem', color: 'var(--color-primary-dark)', fontWeight: 600 }}>
                 <CheckCircle2 size={16} style={{ color: 'var(--color-accent)' }} />
-                <span>Inspeksi QC Tiga Tahap</span>
+                <span>Konsep Zero Waste Kain Perca</span>
               </div>
             </div>
 

@@ -1524,7 +1524,7 @@ img {
 .marketing-avatar {
   width: 3.5rem;
   height: 3.5rem;
-  border-radius: var(--radius-full);
+  border-radius: 50% !important;
   background: var(--color-primary-soft);
   color: var(--color-primary);
   font-size: 1.25rem;
@@ -1535,6 +1535,7 @@ img {
   flex-shrink: 0;
   border: 2px solid #FFFFFF;
   box-shadow: var(--shadow-xs);
+  overflow: hidden;
 }
 
 .marketing-name {
@@ -3778,4 +3779,15 @@ img {
   margin-top: 2rem;
 }
 
+.visi-misi-cards-row {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 1.75rem;
+  align-items: stretch;
+}
 
+@media (max-width: 992px) {
+  .visi-misi-cards-row {
+    grid-template-columns: 1fr;
+  }
+}

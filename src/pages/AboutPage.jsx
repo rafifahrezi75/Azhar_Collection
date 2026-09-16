@@ -39,12 +39,14 @@ export default function AboutPage() {
   }, [])
 
   const visionText = settings?.vision ||
-    'Menjadi produsen konveksi dan garment terdepan di Indonesia yang dipercaya karena keaslian bahan baku, standar jahitan prima, ketepatan waktu distribusi, dan integritas kemitraan jangka panjang bersama lembaga pendidikan maupun instansi kedinasan.'
+    'Menjadi perusahaan konveksi nasional terpercaya untuk seragam olahraga sekolah serta didukung lini mukena, jilbab serta produk hiasan dari kain perca yang berkelanjutan (sustain). Memberdayakan ekonomi masyarakat sekitar dengan jangkauan pasar ke seluruh pulau di Indonesia pada tahun 2032.'
 
-  const defaultMissionText = `Mengutamakan bahan kain otentik bersertifikat (Famatex, Oxford Super, Nagata Drill).
-Menerapkan sistem manajemen produksi terpadu dengan pengawasan mutu tiga lapis.
-Memberdayakan tenaga jahit lokal terampil dengan apresiasi dan lingkungan kerja yang bermartabat.
-Memberikan harga langsung produsen tanpa mata rantai perantara yang membebani sekolah.`
+  const defaultMissionText = `Menjamin kualitas seragam olahraga nomor satu melalui kontrol bahan baku dan proses jahit yang ketat serta sertifikasi standar mutu.
+Menciptakan desain seragam yang timeless (tidak mengikuti fast fashion) sehingga bisa dipakai minimal 3 tahun tanpa perlu ganti model.
+Memperluas pasar ke luar pulau melalui promosi digital dan kemitraan dengan dinas pendidikan.
+Merekrut dan melatih ulang karyawan rumahan dengan sistem insentif berdasarkan ketepatan waktu, bukan hanya jumlah jahitan.
+Memberdayakan minimal 20 ibu-ibu tetangga sebagai penjahit & perajin hiasan dari kain perca.
+Menjalankan pemasaran digital terintegrasi (Instagram, TikTok, WhatsApp Business, website).`
 
   const rawMission = settings?.mission || defaultMissionText
   const missionItems = rawMission
@@ -56,17 +58,17 @@ Memberikan harga langsung produsen tanpa mata rantai perantara yang membebani se
     <div className="about-page">
       <PageHeader
         title="Tentang Azhar Collection"
-        subtitle="Rekam Jejak Dedikasi Perjalanan Usaha, Visi, dan Misi Azhar Collection Sejak 2004 di Sidoarjo"
+        subtitle="Produsen Konveksi & Jahit Kustom Terpercaya dengan Pengawasan Mutu QC Ketat & Garansi Retur 100% Cacat Gratis"
         breadcrumb="Tentang Kami"
       />
 
       <section className="career-journey-section">
         <div className="container">
           <div className="journey-header">
-            <span className="section-tag">REKAM JEJAK & DEDIKASI</span>
-            <h2 className="section-title">Perjalanan Karir & Usaha</h2>
+            <span className="section-tag">PERJALANAN DEDIKASI KUALITAS</span>
+            <h2 className="section-title">Sejarah Usaha Jahit & Rekam Jejak Prestasi</h2>
             <p className="section-subtitle">
-              Tahapan pertumbuhan Azhar Collection dari penjahit mandiri hingga menjadi mitra produsen busana tepercaya bagi ratusan lembaga.
+              Tahapan pertumbuhan Azhar Collection dari tradisi jahit keluarga hingga menjadi produsen konveksi tepercaya bagi ratusan lembaga di seluruh Indonesia.
             </p>
           </div>
 
@@ -102,39 +104,47 @@ Memberikan harga langsung produsen tanpa mata rantai perantara yang membebani se
         </div>
       </section>
 
-      <section style={{ padding: '3.5rem 0', background: 'var(--color-bg-light)' }}>
+      <section style={{ padding: '4.5rem 0', background: 'var(--color-bg-light)' }}>
         <div className="container">
-          <div style={{ textAlign: 'center', maxWidth: '700px', margin: '0 auto 2.5rem auto' }}>
-            <span className="section-tag">NILAI UTAMA KAMI</span>
-            <h2 className="section-title">Visi & Misi Perusahaan</h2>
-            <p className="section-subtitle">
-              Pilar yang melandasi setiap helai jahitan dan kemitraan berkelanjutan bersama sekolah dan instansi di seluruh Indonesia.
+          <div style={{ textAlign: 'left', maxWidth: '720px', marginBottom: '2.5rem' }}>
+            <span className="section-tag" style={{ display: 'inline-block', marginBottom: '0.5rem' }}>
+              NILAI UTAMA KAMI
+            </span>
+            <h2 className="section-title" style={{ textAlign: 'left', marginBottom: '0.75rem' }}>
+              Visi & Misi Perusahaan
+            </h2>
+            <p className="section-subtitle" style={{ textAlign: 'left', margin: 0, lineHeight: 1.7 }}>
+              Pilar strategis yang melandasi setiap helai jahitan, komitmen mutu prima, dan kemitraan berkelanjutan bersama sekolah serta instansi di seluruh Indonesia.
             </p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.75rem' }}>
-            <div style={{ background: '#FFFFFF', padding: '2.25rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--color-border)' }}>
-              <div style={{ width: '48px', height: '48px', borderRadius: '4px', background: 'var(--color-primary-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary)', marginBottom: '1.25rem' }}>
-                <Award size={26} />
+          <div className="visi-misi-cards-row">
+            <div style={{ background: '#FFFFFF', padding: '2.25rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--color-border)', display: 'flex', flexDirection: 'column' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem', marginBottom: '1.25rem' }}>
+                <div style={{ width: '44px', height: '44px', borderRadius: '4px', background: 'var(--color-primary-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary)', flexShrink: 0 }}>
+                  <Award size={24} />
+                </div>
+                <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--color-primary-dark)', margin: 0 }}>
+                  Visi
+                </h3>
               </div>
-              <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--color-primary-dark)', marginBottom: '0.75rem' }}>
-                Visi Azhar Collection
-              </h3>
-              <p style={{ fontSize: '0.875rem', color: 'var(--color-text-muted)', lineHeight: 1.7 }}>
+              <p style={{ fontSize: '0.875rem', color: 'var(--color-text-muted)', lineHeight: 1.75, margin: 0 }}>
                 {visionText}
               </p>
             </div>
 
-            <div style={{ background: '#FFFFFF', padding: '2.25rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--color-border)' }}>
-              <div style={{ width: '48px', height: '48px', borderRadius: '4px', background: 'var(--color-accent-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-accent)', marginBottom: '1.25rem' }}>
-                <ShieldCheck size={26} />
+            <div style={{ background: '#FFFFFF', padding: '2.25rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--color-border)', display: 'flex', flexDirection: 'column' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem', marginBottom: '1.25rem' }}>
+                <div style={{ width: '44px', height: '44px', borderRadius: '4px', background: 'var(--color-accent-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-accent)', flexShrink: 0 }}>
+                  <ShieldCheck size={24} />
+                </div>
+                <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--color-primary-dark)', margin: 0 }}>
+                  Misi
+                </h3>
               </div>
-              <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--color-primary-dark)', marginBottom: '0.75rem' }}>
-                Misi Azhar Collection
-              </h3>
-              <ul style={{ fontSize: '0.875rem', color: 'var(--color-text-muted)', lineHeight: 1.7, paddingLeft: '0', display: 'flex', flexDirection: 'column', gap: '0.625rem', listStyle: 'none' }}>
+              <ul style={{ fontSize: '0.875rem', color: 'var(--color-text-muted)', lineHeight: 1.75, paddingLeft: '0', display: 'flex', flexDirection: 'column', gap: '0.75rem', listStyle: 'none', margin: 0 }}>
                 {missionItems.map((point, i) => (
-                  <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.625rem' }}>
+                  <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
                     <CheckCircle2 size={16} style={{ color: 'var(--color-primary)', marginTop: '0.2rem', flexShrink: 0 }} />
                     <span>{point}</span>
                   </li>

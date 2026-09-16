@@ -94,8 +94,44 @@ const defaultNews = [
   }
 ]
 
+const defaultServices = [
+  {
+    id: "layanan-1",
+    title: "Jahitan Rapi & Berstandar Mutu",
+    shortDesc: "Layanan jahit seragam olahraga, busana muslim, dan mukena dengan standar QC ketat, jahitan obras ganda, serta kelim rapi presisi.",
+    moq: "12 Pcs",
+    leadTime: "7 - 14 Hari",
+    materials: "Katun Combed, Polyester, Rayon, Toyobo, Wolfis",
+    fullDesc: "<p>Menghadirkan layanan penjahitan berkualitas tinggi yang dikerjakan oleh tenaga penjahit terampil dan berpengalaman. Setiap helai pakaian melalui proses inspeksi Quality Control (QC) menyeluruh guna memastikan jahitan kokoh, lurus, tidak mudah robek, dan nyaman dikenakan untuk pemakaian jangka panjang.</p><ul><li>Jahitan obras dan kelim rapi presisi di setiap sisi</li><li>Pemeriksaan QC ketat pada ukuran, kerapian benang, dan kekuatan sambungan</li><li>Finishing lipat rapi dan pengemasan terstandarisasi</li></ul>",
+    image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=800&q=80",
+    icon: "Shirt"
+  },
+  {
+    id: "layanan-2",
+    title: "DTF Sablon (Digital Transfer Film)",
+    shortDesc: "Jasa cetak sablon digital DTF resolusi tinggi yang lentur, warna tajam, dan memiliki ketahanan cuci maksimal.",
+    moq: "12 Pcs",
+    leadTime: "3 - 7 Hari",
+    materials: "Film DTF Premium, Tinta Pigment DTF, Hot Melt Adhesive Powder",
+    fullDesc: "<p>Solusi sablon modern untuk kaos, seragam olahraga, maupun atribut komunitas. Menggunakan teknologi transfer film digital berpresisi tinggi yang mampu mencetak gradasi warna rumit dan logo instansi secara mendetail dengan daya rekat serat kain yang kuat serta tahan lama.</p><ul><li>Warna cerah, tajam, dan tidak mudah retak atau mengelupas saat dicuci</li><li>Cocok untuk penempatan logo sekolah, nama instansi, hingga desain grafis custom</li><li>Proses press panas optimal untuk hasil menempel sempurna</li></ul>",
+    image: "https://images.unsplash.com/photo-1618354691373-d851c5c3a990?auto=format&fit=crop&w=800&q=80",
+    icon: "Cpu"
+  },
+  {
+    id: "layanan-3",
+    title: "Kustom Sesuai Permintaan",
+    shortDesc: "Layanan kustomisasi penuh mulai dari pemilihan pola, kombinasi warna bahan, penentuan ukuran bertingkat, hingga model khusus.",
+    moq: "24 Pcs",
+    leadTime: "7 - 14 Hari",
+    materials: "Pilihan Material Sesuai Request (Katun, Drill, Polyester, Kain Perca Upcycle)",
+    fullDesc: "<p>Fleksibilitas produksi penuh yang disesuaikan dengan kebutuhan dan spesifikasi unik pelanggan, baik untuk kebutuhan sekolah, komunitas, majelis, maupun suvenir kreatif. Kami membantu mewujudkan konsep desain Anda mulai dari pembuatan pola awal hingga produk jadi siap pakai.</p><ul><li>Bebas tentukan desain model kerah, lengan, pola kombinasi, dan variasi saku</li><li>Tersedia rentang ukuran kustom lengkap (anak-anak hingga dewasa/big size)</li><li>Konsultasi pemilihan bahan baku dan aksesori pendukung</li></ul>",
+    image: "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=800&q=80",
+    icon: "Scissors"
+  }
+]
+
 const LOCAL_STORAGE_KEY_PREFIX = 'azhar_admin_'
-const DATA_VERSION_KEY = 'azhar_admin_data_seeded_v10'
+const DATA_VERSION_KEY = 'azhar_admin_data_seeded_v18'
 
 if (typeof window !== 'undefined' && !localStorage.getItem(DATA_VERSION_KEY)) {
   try {
@@ -105,7 +141,20 @@ if (typeof window !== 'undefined' && !localStorage.getItem(DATA_VERSION_KEY)) {
     localStorage.removeItem(LOCAL_STORAGE_KEY_PREFIX + 'testimonials')
     localStorage.removeItem(LOCAL_STORAGE_KEY_PREFIX + 'inquiries')
     localStorage.removeItem(LOCAL_STORAGE_KEY_PREFIX + 'news')
+    localStorage.removeItem(LOCAL_STORAGE_KEY_PREFIX + 'settings')
+    localStorage.removeItem(LOCAL_STORAGE_KEY_PREFIX + 'timeline')
     localStorage.setItem(DATA_VERSION_KEY, 'true')
+
+    if (isFirebaseConfigured && db) {
+      getDocs(collection(db, 'services')).then(async (snap) => {
+        for (const d of snap.docs) {
+          await deleteDoc(doc(db, 'services', d.id)).catch(() => {})
+        }
+        for (const s of defaultServices) {
+          await setDoc(doc(db, 'services', s.id), s).catch(() => {})
+        }
+      }).catch(() => {})
+    }
   } catch (e) {
     void e
   }
@@ -436,10 +485,10 @@ export const getLayananList = async () => {
         return docs
       }
     } catch {
-      return getLocalData('services', servicesData)
+      return getLocalData('services', defaultServices)
     }
   }
-  return getLocalData('services', servicesData)
+  return getLocalData('services', defaultServices)
 }
 
 export const saveLayananItem = async (service) => {
@@ -463,7 +512,7 @@ export const saveLayananItem = async (service) => {
 }
 
 const saveLocalLayanan = (payload) => {
-  const current = getLocalData('services', servicesData)
+  const current = getLocalData('services', defaultServices)
   const index = current.findIndex((s) => String(s.id) === String(payload.id))
   if (index >= 0) {
     const updated = [...current]
@@ -489,7 +538,7 @@ export const deleteLayananItem = async (id) => {
 }
 
 const deleteLocalLayanan = (id) => {
-  const current = getLocalData('services', servicesData)
+  const current = getLocalData('services', defaultServices)
   setLocalData('services', current.filter((s) => String(s.id) !== String(id)))
 }
 
@@ -691,55 +740,76 @@ const deleteLocalTestimonial = (id) => {
 const defaultCompanySettings = {
   name: 'Azhar Collection',
   legalName: 'CV. Azhar Collection Konveksi',
-  tagline: 'Spesialis Konveksi & Jahit Seragam Kustom Sidoarjo',
+  tagline: 'Produsen Konveksi & Jahit Kustom Terpercaya - Garansi Mutu Nomor 1',
+  phonePrimary: '+6281330666807',
+  phoneSecondary: '+6287855476538',
+  contactPersonPrimary: 'Ach. Haris',
+  contactPersonSecondary: 'Lazuardi',
   phone: '+6281330666807',
   whatsapp: '6281330666807',
   email: 'azharcollection@gmail.com',
   address: 'Damarsi Rt.03 Rw.01, Kec. Buduran, Kab. Sidoarjo, Jawa Timur 61252',
+  workingHours: 'Senin - Sabtu: 08.00 - 17.00 WIB',
   hours: 'Senin - Sabtu: 08.00 - 17.00 WIB',
-  vision: 'Menjadi produsen konveksi dan garment terdepan di Indonesia yang dipercaya karena keaslian bahan baku, standar jahitan prima, ketepatan waktu distribusi, dan integritas kemitraan jangka panjang bersama lembaga pendidikan maupun instansi kedinasan.',
-  mission: 'Mengutamakan bahan kain otentik bersertifikat (Famatex, Oxford Super, Nagata Drill).\nMenerapkan sistem manajemen produksi terpadu dengan pengawasan mutu tiga lapis.\nMemberdayakan tenaga jahit lokal terampil dengan apresiasi dan lingkungan kerja yang bermartabat.\nMemberikan harga langsung produsen tanpa mata rantai perantara yang membebani sekolah.'
+  city: 'Sidoarjo',
+  regency: 'Kabupaten Sidoarjo',
+  province: 'Jawa Timur',
+  mapsEmbedUrl: 'https://www.google.com/maps/embed?origin=mfe&pb=!1m3!2m1!1sAzhar+Collection+Buduran!6i17',
+  mapsUrl: 'https://maps.app.goo.gl/BAAqNXmsJQaVS2pn6',
+  socials: {
+    facebook: 'https://facebook.com',
+    instagram: 'https://instagram.com',
+    tiktok: 'https://tiktok.com',
+    whatsapp: 'https://wa.me/6281330666807'
+  },
+  vision: 'Menjadi perusahaan konveksi nasional terpercaya untuk seragam olahraga sekolah serta didukung lini mukena, jilbab serta produk hiasan dari kain perca yang berkelanjutan (sustain). Memberdayakan ekonomi masyarakat sekitar dengan jangkauan pasar ke seluruh pulau di Indonesia pada tahun 2032.',
+  mission: `Menjamin kualitas seragam olahraga nomor satu melalui kontrol bahan baku dan proses jahit yang ketat serta sertifikasi standar mutu.
+Menciptakan desain seragam yang timeless (tidak mengikuti fast fashion) sehingga bisa dipakai minimal 3 tahun tanpa perlu ganti model.
+Memperluas pasar ke luar pulau melalui promosi digital dan kemitraan dengan dinas pendidikan.
+Merekrut dan melatih ulang karyawan rumahan dengan sistem insentif berdasarkan ketepatan waktu, bukan hanya jumlah jahitan.
+Memberdayakan minimal 20 ibu-ibu tetangga sebagai penjahit & perajin hiasan dari kain perca.
+Menjalankan pemasaran digital terintegrasi (Instagram, TikTok, WhatsApp Business, website).`
 }
 
 const defaultTimeline = [
   {
     id: "karir-1",
-    year: "2004",
-    title: "Awal Berdiri & Usaha Jahit Mandiri",
-    badge: "Langkah Pertama",
-    desc: "Memulai usaha jahit rumahan dan pakaian kustom lokal di Damarsi, Buduran, Sidoarjo dengan mengutamakan kerapian potongan jahitan.",
+    year: "Sebelum 1980-an",
+    title: "Warisan Usaha Jahit Keluarga",
+    badge: "Warisan Keluarga",
+    desc: "Usaha dimulai sebagai kelanjutan usaha keluarga, menjahit celana dan seragam militer (termasuk seragam Brimob) hingga sekitar 1.000 potong per pesanan.",
     order: 1
   },
   {
     id: "karir-2",
-    year: "2010",
-    title: "Kemitraan Koperasi Sekolah",
-    badge: "Ekspansi Sekolah",
-    desc: "Dipercaya menjadi rekanan penyedia seragam sekolah reguler merah putih dan pramuka untuk puluhan SD dan SMP di wilayah Sidoarjo.",
+    year: "Akhir 1990-an (±1998)",
+    title: "Usaha Mandiri & Spesialisasi Bolero",
+    badge: "Langkah Mandiri",
+    desc: "Pemilik merintis usaha sendiri (busana muslim & kaos) dengan spesialisasi desain bolero; pesanan mulai berkembang ke skala 30 potong per order di awal 2000-an.",
     order: 2
   },
   {
     id: "karir-3",
-    year: "2015",
-    title: "Modernisasi Mesin Bordir Komputer",
-    badge: "Teknologi Modern",
-    desc: "Pengadaan mesin bordir komputer otomatis 12 kepala multi-head untuk memproses ribuan badge logo dan emblem dengan presisi tinggi.",
+    year: "Tahun 2005",
+    title: "Pindah ke Lokasi Produksi Saat Ini",
+    badge: "Fondasi Baru",
+    desc: "Usaha pindah dari Sidokare ke lokasi workshop sekarang, mulai dikelola bersama oleh pemilik dan iparnya.",
     order: 3
   },
   {
     id: "karir-4",
-    year: "2019",
-    title: "Perluasan Tender Instansi & Kampus",
-    badge: "Skala Nasional",
-    desc: "Memperluas layanan jahit kemeja dinas PDH/PDL instansi pemerintah, jas almamater universitas, dan seragam santri pondok pesantren.",
+    year: "Tahun 2010 - 2016",
+    title: "Penambahan Tim & Perluasan Pasar Luar Pulau",
+    badge: "Ekspansi Pasar",
+    desc: "Jumlah karyawan bertambah menjadi 6 orang (2010); jangkauan pasar meluas hingga NTB, Riau, dan Banjarmasin (2016).",
     order: 4
   },
   {
     id: "karir-5",
-    year: "2024 - Sekarang",
-    title: "Produsen Tepercaya Lebih Dari 500 Mitra",
-    badge: "Masa Kini",
-    desc: "Didukung puluhan penjahit profesional berkapasitas ribuan setel per bulan dengan komitmen harga produsen tangan pertama.",
+    year: "Tahun 2019 - Sekarang",
+    title: "Skala Produksi Besar & Menuju Zero Waste",
+    badge: "Menuju Berkelanjutan",
+    desc: "Mencapai pesanan hingga 1.000 stel dalam satu order (2019); kini mengembangkan lini produk zero waste dari kain perca menuju visi ekspansi nasional 2032.",
     order: 5
   }
 ]
@@ -887,11 +957,11 @@ export const getLayananById = async (id) => {
         return item
       }
     } catch {
-      const list = getLocalData('services', servicesData)
+      const list = getLocalData('services', defaultServices)
       return list.find((item) => String(item.id) === String(id)) || null
     }
   }
-  const list = getLocalData('services', servicesData)
+  const list = getLocalData('services', defaultServices)
   return list.find((item) => String(item.id) === String(id)) || null
 }
 

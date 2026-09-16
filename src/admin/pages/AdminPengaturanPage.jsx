@@ -9,11 +9,26 @@ import {
 export default function AdminPengaturanPage() {
   const [settings, setSettings] = useState({
     name: 'Azhar Collection',
-    phone: '0813-3066-6807',
+    legalName: 'CV. Azhar Collection Konveksi',
+    tagline: 'Produsen Konveksi & Jahit Kustom Terpercaya - Garansi Mutu Nomor 1',
+    phonePrimary: '+6281330666807',
+    phoneSecondary: '+6287855476538',
+    contactPersonPrimary: 'Ach. Haris',
+    contactPersonSecondary: 'Lazuardi',
+    phone: '+6281330666807',
     whatsapp: '6281330666807',
-    email: 'info@azharcollection.com',
-    address: 'Dsn. Sumber, Ds. Sumberrejo, Kec. Pandaan, Kab. Pasuruan / Sidoarjo',
+    email: 'azharcollection@gmail.com',
+    address: 'Damarsi Rt.03 Rw.01, Kec. Buduran, Kab. Sidoarjo, Jawa Timur 61252',
+    workingHours: 'Senin - Sabtu: 08.00 - 17.00 WIB',
     hours: 'Senin - Sabtu: 08.00 - 17.00 WIB',
+    mapsEmbedUrl: 'https://www.google.com/maps/embed?origin=mfe&pb=!1m3!2m1!1sAzhar+Collection+Buduran!6i17',
+    mapsUrl: 'https://maps.app.goo.gl/BAAqNXmsJQaVS2pn6',
+    socials: {
+      facebook: 'https://facebook.com',
+      instagram: 'https://instagram.com',
+      tiktok: 'https://tiktok.com',
+      whatsapp: 'https://wa.me/6281330666807'
+    },
     vision: '',
     mission: ''
   })
@@ -26,7 +41,16 @@ export default function AdminPengaturanPage() {
     const loadSettings = async () => {
       const data = await getCompanySettings()
       if (data) {
-        setSettings((prev) => ({ ...prev, ...data }))
+        setSettings((prev) => ({
+          ...prev,
+          ...data,
+          socials: {
+            facebook: data.socials?.facebook || prev.socials.facebook,
+            instagram: data.socials?.instagram || prev.socials.instagram,
+            tiktok: data.socials?.tiktok || prev.socials.tiktok,
+            whatsapp: data.socials?.whatsapp || prev.socials.whatsapp
+          }
+        }))
         if (data.mission) {
           const points = data.mission.split('\n').map((p) => p.trim()).filter(Boolean)
           setMissionPoints(points.length > 0 ? points : [''])
@@ -60,6 +84,8 @@ export default function AdminPengaturanPage() {
     const formattedMission = missionPoints.map((p) => p.trim()).filter(Boolean).join('\n')
     const payload = {
       ...settings,
+      hours: settings.workingHours || settings.hours,
+      phone: settings.phonePrimary || settings.phone,
       mission: formattedMission
     }
 
@@ -79,7 +105,7 @@ export default function AdminPengaturanPage() {
         <div>
           <h1 className="admin-page-title">Pengaturan Profil Perusahaan</h1>
           <p className="admin-page-desc">
-            Kelola data kontak resmi perusahaan, nomor WhatsApp, alamat workshop, serta Visi & Misi Azhar Collection.
+            Kelola data kontak resmi, penanggung jawab (CP), jam kerja, media sosial, serta Visi & Misi Azhar Collection.
           </p>
         </div>
 
@@ -101,9 +127,9 @@ export default function AdminPengaturanPage() {
         <div className="admin-card" style={{ marginBottom: '1.5rem' }}>
           <div className="admin-card-header">
             <div>
-              <h2 className="admin-card-title">Informasi Kontak & Profil Azhar Collection</h2>
+              <h2 className="admin-card-title">Identitas Brand & Badan Hukum</h2>
               <p className="admin-card-subtitle">
-                Data ini ditampilkan pada header, footer, dan halaman kontak website.
+                Nama brand, legalitas usaha, dan tagline promosi yang ditampilkan pada website.
               </p>
             </div>
           </div>
@@ -122,23 +148,94 @@ export default function AdminPengaturanPage() {
               </div>
 
               <div className="admin-input-group">
-                <label className="admin-label">Nomor WhatsApp Resmi (Awali 62)</label>
+                <label className="admin-label">Nama Badan Hukum (Legal Name)</label>
                 <input
                   type="text"
-                  required
                   className="admin-input"
-                  value={settings.whatsapp}
-                  onChange={(e) => setSettings({ ...settings, whatsapp: e.target.value })}
+                  value={settings.legalName || ''}
+                  onChange={(e) => setSettings({ ...settings, legalName: e.target.value })}
+                />
+              </div>
+            </div>
+
+            <div className="admin-input-group" style={{ marginTop: '1rem' }}>
+              <label className="admin-label">Tagline Promosi Perusahaan</label>
+              <input
+                type="text"
+                className="admin-input"
+                value={settings.tagline || ''}
+                onChange={(e) => setSettings({ ...settings, tagline: e.target.value })}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="admin-card" style={{ marginBottom: '1.5rem' }}>
+          <div className="admin-card-header">
+            <div>
+              <h2 className="admin-card-title">Kontak & Penanggung Jawab (Contact Person)</h2>
+              <p className="admin-card-subtitle">
+                Kelola nomor telepon CP 1, CP 2, WhatsApp resmi, dan jam operasional workshop.
+              </p>
+            </div>
+          </div>
+
+          <div style={{ padding: '1.5rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem' }}>
+              <div className="admin-input-group">
+                <label className="admin-label">Nama CP Utama (Primary CP)</label>
+                <input
+                  type="text"
+                  className="admin-input"
+                  value={settings.contactPersonPrimary || ''}
+                  onChange={(e) => setSettings({ ...settings, contactPersonPrimary: e.target.value })}
+                  placeholder="Contoh: Ach. Haris"
                 />
               </div>
 
               <div className="admin-input-group">
-                <label className="admin-label">Nomor Telepon Kantor</label>
+                <label className="admin-label">Nomor Telepon / WA CP Utama</label>
                 <input
                   type="text"
                   className="admin-input"
-                  value={settings.phone}
-                  onChange={(e) => setSettings({ ...settings, phone: e.target.value })}
+                  value={settings.phonePrimary || ''}
+                  onChange={(e) => setSettings({ ...settings, phonePrimary: e.target.value, phone: e.target.value })}
+                  placeholder="Contoh: +6281330666807"
+                />
+              </div>
+
+              <div className="admin-input-group">
+                <label className="admin-label">Nama CP Sekunder (Secondary CP)</label>
+                <input
+                  type="text"
+                  className="admin-input"
+                  value={settings.contactPersonSecondary || ''}
+                  onChange={(e) => setSettings({ ...settings, contactPersonSecondary: e.target.value })}
+                  placeholder="Contoh: Lazuardi"
+                />
+              </div>
+
+              <div className="admin-input-group">
+                <label className="admin-label">Nomor Telepon / WA CP Sekunder</label>
+                <input
+                  type="text"
+                  className="admin-input"
+                  value={settings.phoneSecondary || ''}
+                  onChange={(e) => setSettings({ ...settings, phoneSecondary: e.target.value })}
+                  placeholder="Contoh: +6287855476538"
+                />
+              </div>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem', marginTop: '1rem' }}>
+              <div className="admin-input-group">
+                <label className="admin-label">Nomor WhatsApp Link Direct (Awali 62)</label>
+                <input
+                  type="text"
+                  className="admin-input"
+                  value={settings.whatsapp || ''}
+                  onChange={(e) => setSettings({ ...settings, whatsapp: e.target.value })}
+                  placeholder="Contoh: 6281330666807"
                 />
               </div>
 
@@ -147,30 +244,97 @@ export default function AdminPengaturanPage() {
                 <input
                   type="email"
                   className="admin-input"
-                  value={settings.email}
+                  value={settings.email || ''}
                   onChange={(e) => setSettings({ ...settings, email: e.target.value })}
+                />
+              </div>
+
+              <div className="admin-input-group">
+                <label className="admin-label">Jam Operasional Workshop</label>
+                <input
+                  type="text"
+                  className="admin-input"
+                  value={settings.workingHours || settings.hours || ''}
+                  onChange={(e) => setSettings({ ...settings, workingHours: e.target.value, hours: e.target.value })}
                 />
               </div>
             </div>
 
-            <div className="admin-input-group">
-              <label className="admin-label">Alamat Workshop / Workshop Konveksi</label>
+            <div className="admin-input-group" style={{ marginTop: '1rem' }}>
+              <label className="admin-label">Alamat Lengkap Workshop</label>
               <input
                 type="text"
                 className="admin-input"
-                value={settings.address}
+                value={settings.address || ''}
                 onChange={(e) => setSettings({ ...settings, address: e.target.value })}
               />
             </div>
+          </div>
+        </div>
 
-            <div className="admin-input-group">
-              <label className="admin-label">Jam Operasional</label>
-              <input
-                type="text"
-                className="admin-input"
-                value={settings.hours}
-                onChange={(e) => setSettings({ ...settings, hours: e.target.value })}
-              />
+        <div className="admin-card" style={{ marginBottom: '1.5rem' }}>
+          <div className="admin-card-header">
+            <div>
+              <h2 className="admin-card-title">Media Sosial Perusahaan</h2>
+              <p className="admin-card-subtitle">
+                Link akun media sosial resmi yang ditampilkan pada footer dan halaman kontak.
+              </p>
+            </div>
+          </div>
+
+          <div style={{ padding: '1.5rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem' }}>
+              <div className="admin-input-group">
+                <label className="admin-label">Facebook URL</label>
+                <input
+                  type="text"
+                  className="admin-input"
+                  value={settings.socials?.facebook || ''}
+                  onChange={(e) => setSettings({
+                    ...settings,
+                    socials: { ...settings.socials, facebook: e.target.value }
+                  })}
+                />
+              </div>
+
+              <div className="admin-input-group">
+                <label className="admin-label">Instagram URL</label>
+                <input
+                  type="text"
+                  className="admin-input"
+                  value={settings.socials?.instagram || ''}
+                  onChange={(e) => setSettings({
+                    ...settings,
+                    socials: { ...settings.socials, instagram: e.target.value }
+                  })}
+                />
+              </div>
+
+              <div className="admin-input-group">
+                <label className="admin-label">TikTok URL</label>
+                <input
+                  type="text"
+                  className="admin-input"
+                  value={settings.socials?.tiktok || ''}
+                  onChange={(e) => setSettings({
+                    ...settings,
+                    socials: { ...settings.socials, tiktok: e.target.value }
+                  })}
+                />
+              </div>
+
+              <div className="admin-input-group">
+                <label className="admin-label">WhatsApp Direct URL (wa.me)</label>
+                <input
+                  type="text"
+                  className="admin-input"
+                  value={settings.socials?.whatsapp || ''}
+                  onChange={(e) => setSettings({
+                    ...settings,
+                    socials: { ...settings.socials, whatsapp: e.target.value }
+                  })}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -252,3 +416,4 @@ export default function AdminPengaturanPage() {
     </div>
   )
 }
+

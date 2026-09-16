@@ -1,12 +1,12 @@
-import { Scissors, ShieldCheck, Clock, BadgePercent } from 'lucide-react'
+import { ShieldCheck, Award, Scissors, Recycle } from 'lucide-react'
 import { whyUsData } from '../data/siteData'
 
 export default function WhyChooseUs() {
   const icons = [
-    <Scissors size={28} />,
     <ShieldCheck size={28} />,
-    <Clock size={28} />,
-    <BadgePercent size={28} />
+    <Award size={28} />,
+    <Scissors size={28} />,
+    <Recycle size={28} />
   ]
 
   return (

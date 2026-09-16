@@ -52,8 +52,8 @@ export default function ClientsPage() {
   return (
     <div className="clients-page">
       <PageHeader
-        title="Daftar Klien & Mitra Kami"
-        subtitle="Institusi Pendidikan, Kampus, Lembaga Pemerintahan, dan Perusahaan yang Mempercayakan Busana & Seragamnya kepada Azhar Collection"
+        title="Daftar Klien & Mitra Langganan Azhar Collection"
+        subtitle="Bukti Kepercayaan Ratusan Sekolah, Lembaga Pendidikan, & Instansi Pemesan dari Seluruh Pulau di Indonesia!"
         breadcrumb="Klien Kami"
       />
 

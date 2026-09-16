@@ -24,10 +24,10 @@ export default function ProductCatalogSection({ limit, showHeader = false, showV
       <div className="container">
         {showHeader && (
           <div style={{ textAlign: 'center', maxWidth: '750px', margin: '0 auto 3rem auto' }}>
-            <span className="section-tag">KATALOG PRODUKSI</span>
+            <span className="section-tag">PORTOFOLIO & HASIL JAHITAN</span>
             <h2 className="section-title">Katalog Baju Yang Pernah Dikerjakan</h2>
             <p className="section-subtitle">
-              Pilihan model busana kustom, seragam sekolah, pakaian dinas lembaga, dan almamater hasil karya konveksi Azhar Collection.
+              Daftar Lengkap Busana & Seragam Hasil Produksi Azhar Collection Beserta Asal Sekolah & Instansi Pemesan
             </p>
           </div>
         )}

@@ -112,13 +112,23 @@ export default function ServiceDetailPage() {
                         <tr>
                           <th style={{ width: '35%' }}>Bahan Kain Rekomendasi</th>
                           <td>
-                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.375rem' }}>
-                              {service.materials?.map((m, idx) => (
-                                <span key={idx} style={{ background: 'var(--color-bg-light)', padding: '0.25rem 0.625rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-primary-dark)' }}>
-                                  {m}
-                                </span>
-                              ))}
-                            </div>
+                             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.375rem' }}>
+                               {Array.isArray(service.materials) ? (
+                                 service.materials.map((m, idx) => (
+                                   <span key={idx} style={{ background: 'var(--color-bg-light)', padding: '0.25rem 0.625rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-primary-dark)' }}>
+                                     {m}
+                                   </span>
+                                 ))
+                               ) : typeof service.materials === 'string' && service.materials.trim() ? (
+                                 service.materials.split(',').map((m, idx) => (
+                                   <span key={idx} style={{ background: 'var(--color-bg-light)', padding: '0.25rem 0.625rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-primary-dark)' }}>
+                                     {m.trim()}
+                                   </span>
+                                 ))
+                               ) : (
+                                 <span style={{ fontSize: '0.8125rem', color: 'var(--color-text-muted)' }}>-</span>
+                               )}
+                             </div>
                           </td>
                         </tr>
                         <tr>

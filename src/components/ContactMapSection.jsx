@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import { PhoneCall, MapPin, Mail, Phone, CheckCircle2, ExternalLink, Image as ImageIcon } from 'lucide-react'
 import { companyInfo } from '../data/siteData'
-import { saveInquiry, getMarketingList } from '../firebase/adminService'
+import { saveInquiry, getMarketingList, getCompanySettings } from '../firebase/adminService'
 
 export default function ContactMapSection({ showForm = true }) {
   const [marketingList, setMarketingList] = useState([])
+  const [info, setInfo] = useState(companyInfo)
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -15,8 +16,11 @@ export default function ContactMapSection({ showForm = true }) {
 
   useEffect(() => {
     let isMounted = true
-    getMarketingList().then((data) => {
-      if (isMounted && data) setMarketingList(data)
+    Promise.all([getMarketingList(), getCompanySettings()]).then(([mList, compSettings]) => {
+      if (isMounted) {
+        if (mList) setMarketingList(mList)
+        if (compSettings) setInfo({ ...companyInfo, ...compSettings })
+      }
     })
     return () => {
       isMounted = false
@@ -50,7 +54,7 @@ export default function ContactMapSection({ showForm = true }) {
       `Pesan:\n${formData.message}\n\n` +
       `---\nPesan dikirim melalui formulir website Azhar Collection`
     )
-    window.location.href = `mailto:${companyInfo.email}?subject=${subject}&body=${body}`
+    window.location.href = `mailto:${info.email}?subject=${subject}&body=${body}`
     setIsSubmitted(true)
   }
 
@@ -73,7 +77,7 @@ export default function ContactMapSection({ showForm = true }) {
               {isSubmitted && (
                 <div style={{ background: 'var(--color-primary-soft)', border: '1px solid var(--color-primary-border)', padding: '0.875rem 1rem', borderRadius: 'var(--radius-md)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.625rem', color: 'var(--color-primary-dark)', fontSize: '0.8125rem' }}>
                   <CheckCircle2 size={18} style={{ color: 'var(--color-primary)', flexShrink: 0 }} />
-                  <span>Pesan telah disiapkan. Silakan kirimkan email yang terbuka di perangkat Anda menuju {companyInfo.email}.</span>
+                  <span>Pesan telah disiapkan. Silakan kirimkan email yang terbuka di perangkat Anda menuju {info.email}.</span>
                 </div>
               )}
 
@@ -189,28 +193,28 @@ export default function ContactMapSection({ showForm = true }) {
 
                 <div style={{ fontSize: '0.84375rem', color: 'var(--color-text-main)', lineHeight: 1.6, marginBottom: '0.75rem' }}>
                   <p style={{ fontWeight: 700, margin: '0 0 0.125rem 0', color: 'var(--color-primary-dark)' }}>
-                    CV. AZHAR COLLECTION
+                    {info.legalName || 'CV. AZHAR COLLECTION'}
                   </p>
                   <p style={{ margin: 0, color: 'var(--color-text-muted)', fontSize: '0.8125rem' }}>
-                    {companyInfo.address}
+                    {info.address}
                   </p>
                 </div>
 
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', fontSize: '0.8125rem' }}>
                   <a
-                    href={`mailto:${companyInfo.email}`}
+                    href={`mailto:${info.email}`}
                     style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-primary-dark)', textDecoration: 'none', fontWeight: 600 }}
                   >
                     <Mail size={15} style={{ color: 'var(--color-accent)' }} />
-                    <span>{companyInfo.email}</span>
+                    <span>{info.email}</span>
                   </a>
 
                   <a
-                    href={`tel:${companyInfo.phonePrimary}`}
+                    href={`tel:${info.phonePrimary || info.phone}`}
                     style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-primary-dark)', textDecoration: 'none', fontWeight: 600 }}
                   >
                     <Phone size={15} style={{ color: 'var(--color-accent)' }} />
-                    <span>{companyInfo.phonePrimary}</span>
+                    <span>{info.phonePrimary || info.phone}</span>
                   </a>
                 </div>
               </div>
@@ -221,7 +225,7 @@ export default function ContactMapSection({ showForm = true }) {
                     Map Lokasi
                   </h2>
                   <a
-                    href={companyInfo.mapsUrl}
+                    href={info.mapsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--color-accent)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}
@@ -233,7 +237,7 @@ export default function ContactMapSection({ showForm = true }) {
 
                 <div style={{ borderRadius: '4px', overflow: 'hidden', border: '1px solid var(--color-border)', height: '185px' }}>
                   <iframe
-                    src={companyInfo.mapsEmbedUrl}
+                    src={info.mapsEmbedUrl}
                     title="Lokasi Azhar Collection Sidoarjo di Google Maps"
                     style={{ width: '100%', height: '100%', border: 0 }}
                     loading="lazy"
@@ -242,41 +246,17 @@ export default function ContactMapSection({ showForm = true }) {
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: '0.75rem', marginTop: '0.25rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.75rem', marginTop: '0.25rem' }}>
                 {marketingList.map((member) => (
-                  <div
-                    key={member.id}
-                    style={{
-                      background: '#FFFFFF',
-                      padding: '0.75rem 1rem',
-                      borderRadius: 'var(--radius-lg)',
-                      border: '1px solid var(--color-border)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      boxShadow: 'var(--shadow-sm)'
-                    }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: 0 }}>
-                      <div
-                        style={{
-                          width: '36px',
-                          height: '36px',
-                          borderRadius: '4px',
-                          background: 'var(--color-primary-soft)',
-                          color: 'var(--color-primary)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          flexShrink: 0,
-                          overflow: 'hidden'
-                        }}
-                      >
+                  <div key={member.id} className="marketing-card" style={{ padding: '0.875rem 1rem' }}>
+                    <div className="marketing-info-left" style={{ gap: '0.75rem', minWidth: 0 }}>
+                      <div className="marketing-avatar" style={{ width: '44px', height: '44px', borderRadius: '50%', overflow: 'hidden', flexShrink: 0 }}>
                         {member.photo ? (
                           <img
                             src={member.photo}
                             alt={member.name}
-                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            className="marketing-avatar-img"
+                            style={{ borderRadius: '50%' }}
                             onError={(e) => {
                               e.currentTarget.style.display = 'none'
                               if (e.currentTarget.nextElementSibling) {
@@ -286,24 +266,25 @@ export default function ContactMapSection({ showForm = true }) {
                           />
                         ) : null}
                         <div
-                          style={{
-                            display: member.photo ? 'none' : 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            width: '100%',
-                            height: '100%'
-                          }}
+                          className="marketing-avatar-placeholder"
+                          style={{ display: member.photo ? 'none' : 'flex', borderRadius: '50%' }}
                         >
-                          <ImageIcon size={18} />
+                          <ImageIcon size={20} />
                         </div>
                       </div>
                       <div style={{ minWidth: 0 }}>
-                        <h4 style={{ fontSize: '0.84375rem', fontWeight: 800, color: 'var(--color-primary-dark)', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        <h3 className="marketing-name" style={{ fontSize: '0.875rem', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                           {member.name}
-                        </h4>
-                        <p style={{ fontSize: '0.6875rem', color: 'var(--color-text-muted)', margin: '0.125rem 0 0 0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                          {member.division}
-                        </p>
+                        </h3>
+                        {member.division && (
+                          <p className="marketing-division" style={{ fontSize: '0.6875rem', margin: '0.125rem 0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                            {member.division}
+                          </p>
+                        )}
+                        <span className="status-badge" style={{ marginTop: '0.2rem' }}>
+                          <span className="status-dot" />
+                          <span>{member.status || 'Online Siap Melayani'}</span>
+                        </span>
                       </div>
                     </div>
 
@@ -311,22 +292,12 @@ export default function ContactMapSection({ showForm = true }) {
                       href={member.waUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="btn-primary"
-                      aria-label={`Hubungi ${member.name} via WhatsApp`}
-                      title={`Hubungi ${member.name} via WhatsApp`}
-                      style={{
-                        width: '36px',
-                        height: '36px',
-                        borderRadius: '4px',
-                        padding: 0,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexShrink: 0,
-                        marginLeft: '0.5rem'
-                      }}
+                      className="wa-action-btn"
+                      title={`Chat WhatsApp dengan ${member.name}`}
+                      aria-label={`Chat WhatsApp dengan ${member.name}`}
+                      style={{ width: '38px', height: '38px', borderRadius: '50%', flexShrink: 0 }}
                     >
-                      <Phone size={16} />
+                      <PhoneCall size={16} />
                     </a>
                   </div>
                 ))}
@@ -348,12 +319,13 @@ export default function ContactMapSection({ showForm = true }) {
                 {marketingList.map((member) => (
                   <div key={member.id} className="marketing-card">
                     <div className="marketing-info-left">
-                      <div className="marketing-avatar">
+                      <div className="marketing-avatar" style={{ borderRadius: '50%', overflow: 'hidden' }}>
                         {member.photo ? (
                           <img
                             src={member.photo}
                             alt={member.name}
                             className="marketing-avatar-img"
+                            style={{ borderRadius: '50%' }}
                             onError={(e) => {
                               e.currentTarget.style.display = 'none'
                               if (e.currentTarget.nextElementSibling) {
@@ -364,7 +336,7 @@ export default function ContactMapSection({ showForm = true }) {
                         ) : null}
                         <div
                           className="marketing-avatar-placeholder"
-                          style={{ display: member.photo ? 'none' : 'flex' }}
+                          style={{ display: member.photo ? 'none' : 'flex', borderRadius: '50%' }}
                         >
                           <ImageIcon size={22} />
                         </div>
@@ -394,7 +366,7 @@ export default function ContactMapSection({ showForm = true }) {
 
                 <div className="marketing-card marketing-address-card">
                   <div className="marketing-info-left" style={{ width: '100%' }}>
-                    <div className="marketing-avatar" style={{ background: 'var(--color-accent-soft)', color: 'var(--color-accent)' }}>
+                    <div className="marketing-avatar" style={{ background: 'var(--color-accent-soft)', color: 'var(--color-accent)', borderRadius: '50%', overflow: 'hidden' }}>
                       <MapPin size={20} />
                     </div>
                     <div style={{ flex: 1 }}>

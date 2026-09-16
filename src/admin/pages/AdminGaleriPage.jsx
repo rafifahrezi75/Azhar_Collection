@@ -262,15 +262,13 @@ export default function AdminGaleriPage() {
           </table>
         </div>
 
-        {totalPages > 1 && (
-          <div className="admin-card-footer">
-            <AdminPagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
-            />
-          </div>
-        )}
+        <AdminPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={filteredItems.length}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+        />
       </div>
     </div>
   )

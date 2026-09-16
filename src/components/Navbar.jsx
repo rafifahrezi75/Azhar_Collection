@@ -9,10 +9,24 @@ import {
   MessageSquare
 } from 'lucide-react'
 import { companyInfo } from '../data/siteData'
+import { getCompanySettings } from '../firebase/adminService'
 
 export default function Navbar({ onOpenQuote }) {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileOpen, setIsMobileOpen] = useState(false)
+  const [info, setInfo] = useState(companyInfo)
+
+  useEffect(() => {
+    let isMounted = true
+    getCompanySettings().then((compSettings) => {
+      if (isMounted && compSettings) {
+        setInfo((prev) => ({ ...prev, ...compSettings }))
+      }
+    })
+    return () => {
+      isMounted = false
+    }
+  }, [])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -46,20 +60,20 @@ export default function Navbar({ onOpenQuote }) {
                 <MapPin size={14} />
                 <span>Damarsi, Buduran - Sidoarjo</span>
               </div>
-              <a href={`mailto:${companyInfo.email}`} className="top-bar-item">
+              <a href={`mailto:${info.email}`} className="top-bar-item">
                 <Mail size={14} />
-                <span>{companyInfo.email}</span>
+                <span>{info.email}</span>
               </a>
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem', marginLeft: 'auto' }}>
               <a
-                href={`tel:${companyInfo.phonePrimary}`}
+                href={`tel:${info.phonePrimary || info.phone}`}
                 className="top-bar-item"
                 style={{ fontSize: '0.75rem', fontWeight: 600, textDecoration: 'none' }}
               >
                 <Phone size={13} />
-                <span>{companyInfo.phonePrimary}</span>
+                <span>{info.phonePrimary || info.phone}</span>
               </a>
 
               <button
@@ -150,13 +164,13 @@ export default function Navbar({ onOpenQuote }) {
 
           <div style={{ padding: '1rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             <a
-              href={`tel:${companyInfo.phonePrimary}`}
+              href={`tel:${info.phonePrimary || info.phone}`}
               onClick={() => setIsMobileOpen(false)}
               className="btn-secondary"
               style={{ width: '100%', fontSize: '0.8125rem', padding: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', textDecoration: 'none' }}
             >
               <Phone size={16} />
-              <span>{companyInfo.phonePrimary}</span>
+              <span>{info.phonePrimary || info.phone}</span>
             </a>
             <button
               type="button"
@@ -180,11 +194,11 @@ export default function Navbar({ onOpenQuote }) {
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Phone size={14} style={{ color: 'var(--color-accent)', flexShrink: 0 }} />
-            <span>{companyInfo.phonePrimary}</span>
+            <span>{info.phonePrimary || info.phone}</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Mail size={14} style={{ color: 'var(--color-accent)', flexShrink: 0 }} />
-            <span>{companyInfo.email}</span>
+            <span>{info.email}</span>
           </div>
         </div>
       </aside>

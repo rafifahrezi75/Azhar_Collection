@@ -2,13 +2,18 @@ import { useState, useRef, useEffect, useMemo } from 'react'
 import { UploadCloud, X, CheckCircle, AlertCircle } from 'lucide-react'
 
 export default function AdminImageUploader({
+  value,
+  imageUrl,
   currentImageUrl,
   currentImage,
   selectedFile: controlledSelectedFile,
   onSelectFile,
   onFileSelected,
-  onRemove,
+  onFileSelect,
+  onChange,
   onUrlChanged,
+  onUrlChange,
+  onRemove,
   label = 'Foto / Gambar',
   ratioHint = ''
 }) {
@@ -18,7 +23,7 @@ export default function AdminImageUploader({
   const [isDragOver, setIsDragOver] = useState(false)
   const fileInputRef = useRef(null)
 
-  const activeImageUrl = currentImageUrl || currentImage || ''
+  const activeImageUrl = currentImageUrl || currentImage || imageUrl || value || ''
 
   const localPreview = useMemo(() => {
     return activeFile ? URL.createObjectURL(activeFile) : ''
@@ -42,6 +47,7 @@ export default function AdminImageUploader({
     setInternalFile(file)
     if (onFileSelected) onFileSelected(file)
     if (onSelectFile) onSelectFile(file)
+    if (onFileSelect) onFileSelect(file)
   }
 
   const handleRemove = () => {
@@ -49,7 +55,10 @@ export default function AdminImageUploader({
     if (fileInputRef.current) fileInputRef.current.value = ''
     if (onFileSelected) onFileSelected(null)
     if (onSelectFile) onSelectFile(null)
+    if (onFileSelect) onFileSelect(null)
     if (onUrlChanged) onUrlChanged('')
+    if (onUrlChange) onUrlChange('')
+    if (onChange) onChange('')
     if (onRemove) onRemove()
   }
 

@@ -253,15 +253,13 @@ export default function AdminMarketingPage() {
           </table>
         </div>
 
-        {totalPages > 1 && (
-          <div style={{ padding: '1rem 1.25rem', borderTop: '1px solid var(--admin-border)' }}>
-            <AdminPagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={(p) => setCurrentPage(p)}
-            />
-          </div>
-        )}
+        <AdminPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={filteredTeam.length}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+        />
       </div>
     </div>
   )
