@@ -72,7 +72,7 @@ export default function AdminBeritaDetailPage() {
               <ArrowLeft size={18} />
             </Link>
             <div>
-              <h1 className="admin-page-title" style={{ margin: 0 }}>Dokumentasi #{item.id}</h1>
+              <h1 className="admin-page-title" style={{ margin: 0 }}>{item.title || `Dokumentasi Foto #${item.id}`}</h1>
               <p className="admin-page-desc" style={{ margin: '0.25rem 0 0 0' }}>
                 Foto dokumentasi pengerjaan dan hasil produksi seragam konveksi.
               </p>

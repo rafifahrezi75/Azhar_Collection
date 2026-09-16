@@ -8,6 +8,7 @@ import { showDeleteConfirm, showToast, showErrorAlert } from '../utils/swal'
 const toInputDateFormat = (dateStr) => {
   if (!dateStr) return ''
   if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return dateStr
+  if (/^\d{4}-\d{2}$/.test(dateStr)) return dateStr
   const months = {
     januari: '01', februari: '02', maret: '03', april: '04',
     mei: '05', juni: '06', juli: '07', agustus: '08',
@@ -19,6 +20,11 @@ const toInputDateFormat = (dateStr) => {
     const month = months[parts[1].toLowerCase()] || '01'
     const year = parts[2]
     return `${year}-${month}-${day}`
+  }
+  if (parts.length === 2) {
+    const month = months[parts[0].toLowerCase()] || '01'
+    const year = parts[1]
+    return `${year}-${month}`
   }
   const parsed = new Date(dateStr)
   if (!isNaN(parsed.getTime())) {
@@ -66,9 +72,11 @@ export default function AdminBeritaPage() {
 
   const filteredItems = items
     .filter((item) => {
-      const matchSearch = (item.date || '').toLowerCase().includes(search.toLowerCase()) ||
+      const matchSearch = (item.title || '').toLowerCase().includes(search.toLowerCase()) ||
+        (item.date || '').toLowerCase().includes(search.toLowerCase()) ||
         String(item.id || '').toLowerCase().includes(search.toLowerCase())
-      const matchDate = !dateFilter || toInputDateFormat(item.date) === dateFilter
+      const formattedItemDate = toInputDateFormat(item.date)
+      const matchDate = !dateFilter || formattedItemDate.startsWith(dateFilter)
       return matchSearch && matchDate
     })
 
@@ -210,7 +218,7 @@ export default function AdminBeritaPage() {
                             className="admin-table-title-link"
                             style={{ fontWeight: 700, color: 'var(--admin-text-main)', display: 'block', lineHeight: 1.3 }}
                           >
-                            Dokumentasi #{item.id}
+                            {item.title || `Dokumentasi Foto #${item.id}`}
                           </Link>
                         </div>
                       </div>

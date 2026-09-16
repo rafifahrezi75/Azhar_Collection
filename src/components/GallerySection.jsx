@@ -1,20 +1,19 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { Link } from 'react-router-dom'
 import { getGalleryList } from '../firebase/adminService'
-import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react'
 
 export default function GallerySection() {
-  const [items, setItems] = useState([])
+  const [rawItems, setRawItems] = useState([])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isHovered, setIsHovered] = useState(false)
-  const [slidesToShow, setSlidesToShow] = useState(5)
+  const [slidesToShow, setSlidesToShow] = useState(4)
   const autoPlayRef = useRef(null)
 
   useEffect(() => {
     let isMounted = true
     getGalleryList().then((data) => {
       if (isMounted && data) {
-        setItems(data.slice(0, 8))
+        setRawItems(data.slice(0, 5))
       }
     })
     return () => {
@@ -26,12 +25,10 @@ export default function GallerySection() {
     const handleResize = () => {
       const width = window.innerWidth
       if (width >= 1200) {
-        setSlidesToShow(5)
-      } else if (width >= 992) {
         setSlidesToShow(4)
-      } else if (width >= 768) {
+      } else if (width >= 992) {
         setSlidesToShow(3)
-      } else if (width >= 480) {
+      } else if (width >= 640) {
         setSlidesToShow(2)
       } else {
         setSlidesToShow(1)
@@ -43,20 +40,34 @@ export default function GallerySection() {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  const maxIndex = Math.max(0, items.length - slidesToShow)
+  let items = []
+  if (rawItems.length > 0) {
+    let count = 0
+    while (items.length < 5) {
+      const it = rawItems[count % rawItems.length]
+      items.push({
+        ...it,
+        uniqueKey: `${it.id || 'item'}-${items.length}`
+      })
+      count++
+    }
+  }
+
+  const visibleCount = Math.min(slidesToShow, items.length)
+  const maxIndex = Math.max(0, items.length - visibleCount)
 
   const handleNext = useCallback(() => {
-    if (items.length <= slidesToShow) return
+    if (maxIndex <= 0) return
     setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1))
-  }, [items.length, slidesToShow, maxIndex])
+  }, [maxIndex])
 
   const handlePrev = useCallback(() => {
-    if (items.length <= slidesToShow) return
+    if (maxIndex <= 0) return
     setCurrentIndex((prev) => (prev <= 0 ? maxIndex : prev - 1))
-  }, [items.length, slidesToShow, maxIndex])
+  }, [maxIndex])
 
   useEffect(() => {
-    if (items.length <= slidesToShow || isHovered) {
+    if (maxIndex <= 0 || isHovered) {
       if (autoPlayRef.current) clearInterval(autoPlayRef.current)
       return
     }
@@ -68,14 +79,14 @@ export default function GallerySection() {
     return () => {
       if (autoPlayRef.current) clearInterval(autoPlayRef.current)
     }
-  }, [items.length, slidesToShow, isHovered, handleNext])
+  }, [maxIndex, isHovered, handleNext])
 
-  if (items.length === 0) {
+  if (rawItems.length === 0) {
     return null
   }
 
-  const slideWidthPercent = 100 / slidesToShow
-  const translateX = currentIndex * slideWidthPercent
+  const gapPx = 20
+  const translateXPercent = currentIndex * (100 / visibleCount)
 
   return (
     <section
@@ -87,8 +98,10 @@ export default function GallerySection() {
         <div className="section-header-flex">
           <div>
             <span className="section-tag">DOKUMENTASI & GALERI</span>
-            <h2 className="section-title">Galeri Foto Produksi</h2>
-            <p className="section-subtitle">
+            <h2 className="section-title" style={{ textAlign: 'left', margin: '0.25rem 0 0.5rem 0' }}>
+              Galeri Foto Produksi
+            </h2>
+            <p className="section-subtitle" style={{ textAlign: 'left', margin: 0, maxWidth: '640px' }}>
               Dokumentasi pengerjaan seragam sekolah, pakaian dinas, dan proses bordir komputer di workshop Azhar Collection.
             </p>
           </div>
@@ -112,46 +125,67 @@ export default function GallerySection() {
                 <ChevronRight size={20} />
               </button>
             </div>
-
-            <Link to="/galeri" className="btn-outline-primary">
-              <span>Lihat Semua</span>
-              <ArrowRight size={15} />
-            </Link>
           </div>
         </div>
 
-        <div className="gallery-carousel-viewport">
-          <div
-            className="gallery-carousel-track"
-            style={{
-              transform: `translateX(-${translateX}%)`,
-              transition: 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)'
-            }}
-          >
-            {items.map((item) => (
-              <div
-                key={item.id}
-                className="gallery-carousel-slide"
-                style={{ flex: `0 0 ${slideWidthPercent}%`, maxWidth: `${slideWidthPercent}%` }}
-              >
-                <div className="gallery-card">
-                  <div className="gallery-card-img-wrap">
-                    <img
-                      src={item.image}
-                      alt={item.date ? `Foto dokumentasi ${item.date}` : 'Foto galeri'}
-                      className="gallery-card-img"
-                      loading="lazy"
-                    />
-                    {item.date && (
-                      <span className="gallery-card-date-badge">{item.date}</span>
-                    )}
+        <div>
+          <div className="gallery-carousel-viewport">
+            <div
+              className="gallery-carousel-track"
+              style={{
+                transform: `translateX(-${translateXPercent}%)`,
+                transition: 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)'
+              }}
+            >
+              {items.map((item) => (
+                <div
+                  key={item.uniqueKey}
+                  className="gallery-carousel-slide"
+                  style={{
+                    flex: `0 0 calc(${100 / visibleCount}% - ${(gapPx * (visibleCount - 1)) / visibleCount}px)`,
+                    maxWidth: `calc(${100 / visibleCount}% - ${(gapPx * (visibleCount - 1)) / visibleCount}px)`
+                  }}
+                >
+                  <div className="gallery-card">
+                    <div className="gallery-card-img-wrap" style={{ height: '220px' }}>
+                      <img
+                        src={item.image}
+                        alt={item.title || (item.date ? `Foto dokumentasi ${item.date}` : 'Foto galeri')}
+                        className="gallery-card-img"
+                        loading="lazy"
+                      />
+                      {item.date && (
+                        <span className="gallery-card-date-badge">
+                          <Calendar size={13} />
+                          <span>{item.date}</span>
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
+
+          {maxIndex > 0 && (
+            <div className="gallery-carousel-indicators">
+              {Array.from({ length: maxIndex + 1 }).map((_, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  className={`gallery-indicator-dot ${idx === currentIndex ? 'active' : ''}`}
+                  onClick={() => setCurrentIndex(idx)}
+                  aria-label={`Lihat slide galeri ${idx + 1}`}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </section>
   )
 }
+
+
+
+

@@ -58,7 +58,7 @@ export default function GalleryPage() {
                   <div className="gallery-card-img-wrap" style={{ height: '220px' }}>
                     <img
                       src={item.image}
-                      alt={item.date ? `Foto dokumentasi ${item.date}` : 'Foto galeri'}
+                      alt={item.title || (item.date ? `Foto dokumentasi ${item.date}` : 'Foto galeri')}
                       className="gallery-card-img"
                       loading="lazy"
                     />

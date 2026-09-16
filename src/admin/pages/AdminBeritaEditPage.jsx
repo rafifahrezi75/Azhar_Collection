@@ -6,36 +6,66 @@ import { getBeritaById, saveBeritaItem } from '../../firebase/adminService'
 import { uploadToCloudinary } from '../../firebase/cloudinaryService'
 import { showSuccessAlert, showErrorAlert } from '../utils/swal'
 
-const formatDateToIndonesian = (val) => {
+const monthsMap = {
+  januari: '01', februari: '02', maret: '03', april: '04',
+  mei: '05', juni: '06', juli: '07', agustus: '08',
+  september: '09', oktober: '10', november: '11', desember: '12'
+}
+
+const parseDateInfo = (dateStr) => {
+  if (!dateStr) {
+    return { type: 'full', value: new Date().toISOString().split('T')[0] }
+  }
+  const str = dateStr.trim()
+  if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
+    return { type: 'full', value: str }
+  }
+  if (/^\d{4}-\d{2}$/.test(str)) {
+    return { type: 'month', value: str }
+  }
+
+  const parts = str.split(/\s+/)
+  if (parts.length >= 3) {
+    const day = parts[0].padStart(2, '0')
+    const month = monthsMap[parts[1].toLowerCase()] || '01'
+    const year = parts[2]
+    return { type: 'full', value: `${year}-${month}-${day}` }
+  }
+  if (parts.length === 2) {
+    const month = monthsMap[parts[0].toLowerCase()] || '01'
+    const year = parts[1]
+    return { type: 'month', value: `${year}-${month}` }
+  }
+
+  return { type: 'full', value: str }
+}
+
+const formatDateToIndonesian = (val, type = 'full') => {
   if (!val) return ''
+  if (type === 'month') {
+    if (/^\d{4}-\d{2}$/.test(val)) {
+      const [y, m] = val.split('-').map(Number)
+      const dateObj = new Date(y, m - 1, 1)
+      return dateObj.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })
+    }
+    if (/^\d{4}-\d{2}-\d{2}$/.test(val)) {
+      const [y, m] = val.split('-').map(Number)
+      const dateObj = new Date(y, m - 1, 1)
+      return dateObj.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })
+    }
+    return val
+  }
   if (/^\d{4}-\d{2}-\d{2}$/.test(val)) {
     const [y, m, d] = val.split('-').map(Number)
     const dateObj = new Date(y, m - 1, d)
     return dateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
   }
+  if (/^\d{4}-\d{2}$/.test(val)) {
+    const [y, m] = val.split('-').map(Number)
+    const dateObj = new Date(y, m - 1, 1)
+    return dateObj.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })
+  }
   return val
-}
-
-const toInputDateFormat = (dateStr) => {
-  if (!dateStr) return ''
-  if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return dateStr
-  const months = {
-    januari: '01', februari: '02', maret: '03', april: '04',
-    mei: '05', juni: '06', juli: '07', agustus: '08',
-    september: '09', oktober: '10', november: '11', desember: '12'
-  }
-  const parts = dateStr.trim().split(/\s+/)
-  if (parts.length >= 3) {
-    const day = parts[0].padStart(2, '0')
-    const month = months[parts[1].toLowerCase()] || '01'
-    const year = parts[2]
-    return `${year}-${month}-${day}`
-  }
-  const parsed = new Date(dateStr)
-  if (!isNaN(parsed.getTime())) {
-    return parsed.toISOString().split('T')[0]
-  }
-  return ''
 }
 
 export default function AdminBeritaEditPage() {
@@ -46,8 +76,10 @@ export default function AdminBeritaEditPage() {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
 
+  const [dateType, setDateType] = useState('full')
+  const [dateValue, setDateValue] = useState('')
   const [formData, setFormData] = useState({
-    date: '',
+    title: '',
     image: ''
   })
 
@@ -59,8 +91,11 @@ export default function AdminBeritaEditPage() {
       .then((data) => {
         if (!isMounted) return
         if (data) {
+          const info = parseDateInfo(data.date)
+          setDateType(info.type)
+          setDateValue(info.value)
           setFormData({
-            date: toInputDateFormat(data.date),
+            title: data.title || '',
             image: data.image || ''
           })
         } else {
@@ -95,10 +130,13 @@ export default function AdminBeritaEditPage() {
         finalImageUrl = await uploadToCloudinary(imageFile, 'azhar_gallery')
       }
 
+      const formattedDate = formatDateToIndonesian(dateValue, dateType)
+
       await saveBeritaItem({
         id,
+        title: formData.title.trim() || 'Dokumentasi Produksi',
         image: finalImageUrl,
-        date: formatDateToIndonesian(formData.date)
+        date: formattedDate
       })
 
       await showSuccessAlert('Perubahan Tersimpan', 'Foto galeri berhasil diperbarui.')
@@ -160,18 +198,65 @@ export default function AdminBeritaEditPage() {
           <div className="admin-single-card-grid">
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div className="admin-form-group">
-                <label className="admin-label" htmlFor="gallery-date">
-                  <Calendar size={14} style={{ display: 'inline', marginRight: '0.35rem' }} />
-                  Tanggal Upload <span style={{ color: 'var(--admin-danger)' }}>*</span>
+                <label className="admin-label">
+                  Nama / Judul Foto Galeri
                 </label>
                 <input
-                  id="gallery-date"
-                  type="date"
+                  type="text"
                   className="admin-input"
-                  value={formData.date}
-                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                  required
+                  placeholder="Contoh: Proses Bordir Komputer Logo Sekolah"
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 />
+              </div>
+
+              <div className="admin-form-group">
+                <label className="admin-label">
+                  <Calendar size={14} style={{ display: 'inline', marginRight: '0.35rem' }} />
+                  Format Tanggal Upload <span style={{ color: 'var(--admin-danger)' }}>*</span>
+                </label>
+                <div style={{ display: 'flex', gap: '1.25rem', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
+                  <label style={{ display: 'inline-flex', alignItems: 'center', gap: '0.375rem', cursor: 'pointer', fontSize: '0.8125rem', fontWeight: 600 }}>
+                    <input
+                      type="radio"
+                      name="dateType"
+                      value="full"
+                      checked={dateType === 'full'}
+                      onChange={() => setDateType('full')}
+                    />
+                    <span>Tanggal Lengkap (misal: 10 September 2024)</span>
+                  </label>
+                  <label style={{ display: 'inline-flex', alignItems: 'center', gap: '0.375rem', cursor: 'pointer', fontSize: '0.8125rem', fontWeight: 600 }}>
+                    <input
+                      type="radio"
+                      name="dateType"
+                      value="month"
+                      checked={dateType === 'month'}
+                      onChange={() => setDateType('month')}
+                    />
+                    <span>Hanya Bulan & Tahun (misal: September 2024)</span>
+                  </label>
+                </div>
+
+                {dateType === 'full' ? (
+                  <input
+                    id="gallery-date"
+                    type="date"
+                    className="admin-input"
+                    value={dateValue}
+                    onChange={(e) => setDateValue(e.target.value)}
+                    required
+                  />
+                ) : (
+                  <input
+                    id="gallery-date"
+                    type="month"
+                    className="admin-input"
+                    value={dateValue.length > 7 ? dateValue.slice(0, 7) : dateValue}
+                    onChange={(e) => setDateValue(e.target.value)}
+                    required
+                  />
+                )}
               </div>
             </div>
 
@@ -206,3 +291,4 @@ export default function AdminBeritaEditPage() {
     </form>
   )
 }
+

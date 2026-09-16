@@ -40,38 +40,33 @@ const defaultTestimonials = testimonialsData.map((t) => ({
 const defaultGallery = [
   {
     id: "galeri-1",
+    title: "Proses Jahit & Pemotongan Bahan Seragam",
     image: "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&w=1200&q=80",
     date: "10 September 2024"
   },
   {
+    id: "galeri-2",
+    title: "Bordir Komputer Emblem & Logo Instansi",
+    image: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80",
+    date: "08 September 2024"
+  },
+  {
     id: "galeri-3",
+    title: "Produksi Kemeja PDH / PDL Kerja",
     image: "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=1200&q=80",
     date: "05 September 2024"
   },
   {
     id: "galeri-4",
+    title: "Pemeriksaan Kualitas (Quality Control)",
     image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=1200&q=80",
     date: "02 September 2024"
   },
   {
     id: "galeri-5",
+    title: "Pengemasan & Finisihing Busana",
     image: "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=1200&q=80",
     date: "28 Agustus 2024"
-  },
-  {
-    id: "galeri-6",
-    image: "https://images.unsplash.com/photo-1582738411706-bfc8e691d1c2?auto=format&fit=crop&w=1200&q=80",
-    date: "25 Agustus 2024"
-  },
-  {
-    id: "galeri-7",
-    image: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=1200&q=80",
-    date: "20 Agustus 2024"
-  },
-  {
-    id: "galeri-8",
-    image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1200&q=80",
-    date: "18 Agustus 2024"
   }
 ]
 
@@ -895,6 +890,7 @@ export const getBeritaBySlug = async (slug) => {
 export const saveBeritaItem = async (item) => {
   const payload = {
     ...item,
+    title: item.title || '',
     image: item.image || '',
     date: item.date || new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }),
     createdAt: item.createdAt || new Date().toISOString(),
