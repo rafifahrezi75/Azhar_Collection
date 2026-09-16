@@ -137,14 +137,13 @@ export default function AdminKlienPage() {
                 <th>Kategori</th>
                 <th>Kota / Wilayah</th>
                 <th>Sejak</th>
-                <th>Volume Pesanan</th>
                 <th style={{ textAlign: 'right' }}>Aksi</th>
               </tr>
             </thead>
             <tbody>
               {filteredClients.length === 0 ? (
                 <tr>
-                  <td colSpan={6} style={{ textAlign: 'center', padding: '3rem 1rem', color: 'var(--admin-text-muted)' }}>
+                  <td colSpan={5} style={{ textAlign: 'center', padding: '3rem 1rem', color: 'var(--admin-text-muted)' }}>
                     <Users size={36} style={{ margin: '0 auto 0.75rem auto', opacity: 0.4 }} />
                     <p style={{ margin: 0, fontWeight: 600 }}>Tidak ada data mitra ditemukan.</p>
                   </td>
@@ -180,9 +179,6 @@ export default function AdminKlienPage() {
                         </div>
                         <div>
                           <div style={{ fontWeight: 700 }}>{client.name}</div>
-                          <div style={{ fontSize: '0.71875rem', color: 'var(--admin-text-subtle)' }}>
-                            PIC: {client.contactPerson || '-'}
-                          </div>
                         </div>
                       </div>
                     </td>
@@ -193,11 +189,6 @@ export default function AdminKlienPage() {
                     </td>
                     <td>{client.city || '-'}</td>
                     <td>{client.since || '-'}</td>
-                    <td>
-                      <span className="admin-badge admin-badge-success">
-                        {client.totalPcs || client.totalOrders || 'Rutin'}
-                      </span>
-                    </td>
                     <td style={{ textAlign: 'right' }}>
                       <div style={{ display: 'inline-flex', gap: '0.375rem' }}>
                         <Link

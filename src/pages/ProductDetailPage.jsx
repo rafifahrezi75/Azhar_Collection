@@ -127,7 +127,7 @@ export default function ProductDetailPage() {
       <section style={{ padding: '3rem 0 5rem 0' }}>
         <div className="container">
           <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.1fr) minmax(0, 1.3fr)', gap: '3rem', alignItems: 'start', background: '#FFFFFF', padding: '2.5rem', borderRadius: 'var(--radius-xl)', border: '1px solid var(--color-border)', boxShadow: 'var(--shadow-sm)', marginBottom: '4rem' }}>
-            <div>
+            <div className="reveal-left">
               <div style={{ position: 'relative', borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid var(--color-border)', height: '420px', background: 'var(--color-bg-light)' }}>
                 <img
                   src={galleryImages[activeImageIndex]}
@@ -213,7 +213,7 @@ export default function ProductDetailPage() {
               </div>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div className="reveal-right delay-150" style={{ display: 'flex', flexDirection: 'column' }}>
               <div style={{ marginBottom: '0.75rem' }}>
                 <span className="section-tag" style={{ margin: 0 }}>{product.categoryLabel}</span>
               </div>
@@ -294,7 +294,7 @@ export default function ProductDetailPage() {
             </div>
           </div>
 
-          <div>
+          <div className="reveal-up">
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.75rem' }}>
               <div>
                 <span className="section-tag">PORTOFOLIO LAINNYA</span>
@@ -308,11 +308,11 @@ export default function ProductDetailPage() {
             </div>
 
             <div className="products-grid">
-              {relatedProducts.map((item) => (
+              {relatedProducts.map((item, idx) => (
                 <Link
                   key={item.id}
                   to={`/katalog/${item.id}`}
-                  className="product-card product-card-clean"
+                  className={`product-card product-card-clean reveal-up delay-${Math.min((idx % 3) * 100 + 100, 300)}`}
                 >
                   <div className="product-img-wrapper">
                     <img

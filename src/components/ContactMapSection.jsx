@@ -63,7 +63,7 @@ export default function ContactMapSection({ showForm = true }) {
       <div className="container">
         {showForm ? (
           <div className="contact-form-layout-grid">
-            <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+            <div className="reveal-left" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
               <div style={{ paddingBottom: '0.625rem', borderBottom: '2px solid var(--color-border)', marginBottom: '0.875rem' }}>
                 <h2 style={{ fontSize: '1.375rem', fontWeight: 800, color: 'var(--color-primary-dark)', margin: 0 }}>
                   Leave us your info
@@ -183,7 +183,7 @@ export default function ContactMapSection({ showForm = true }) {
               </form>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div className="reveal-right delay-150" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div>
                 <div style={{ paddingBottom: '0.625rem', borderBottom: '2px solid var(--color-border)', marginBottom: '0.875rem' }}>
                   <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--color-primary-dark)', margin: 0 }}>
@@ -306,7 +306,7 @@ export default function ContactMapSection({ showForm = true }) {
           </div>
         ) : (
           <div>
-            <div className="contact-map-header">
+            <div className="contact-map-header reveal-up">
               <span className="section-tag">LOKASI & KONTAK KAMI</span>
               <h2 className="section-title">Lokasi Workshop & Tim Marketing</h2>
               <p className="section-subtitle">
@@ -315,7 +315,7 @@ export default function ContactMapSection({ showForm = true }) {
             </div>
 
             <div className="contact-map-grid">
-              <div className="marketing-cards-column">
+              <div className="marketing-cards-column reveal-left">
                 {marketingList.map((member) => (
                   <div key={member.id} className="marketing-card">
                     <div className="marketing-info-left">
@@ -384,7 +384,7 @@ export default function ContactMapSection({ showForm = true }) {
                 </div>
               </div>
 
-              <div className="map-container">
+              <div className="map-container reveal-right delay-150">
                 <iframe
                   src={companyInfo.mapsEmbedUrl}
                   title="Lokasi Azhar Collection Sidoarjo di Google Maps"

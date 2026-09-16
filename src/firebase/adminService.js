@@ -433,10 +433,19 @@ export const saveKlienItem = async (client) => {
 
   if (isFirebaseConfigured && db) {
     try {
-      const ref = doc(db, 'clients', String(client.id))
-      await setDoc(ref, payload, { merge: true })
-      saveLocalKlien(payload)
-      return client.id
+      if (client.id) {
+        const ref = doc(db, 'clients', String(client.id))
+        await setDoc(ref, payload, { merge: true })
+        saveLocalKlien(payload)
+        return client.id
+      }
+      const colRef = collection(db, 'clients')
+      const docRef = await addDoc(colRef, {
+        ...payload,
+        createdAt: serverTimestamp()
+      })
+      saveLocalKlien({ ...payload, id: docRef.id })
+      return docRef.id
     } catch {
       return saveLocalKlien(payload)
     }
@@ -446,16 +455,19 @@ export const saveKlienItem = async (client) => {
 
 const saveLocalKlien = (payload) => {
   const current = getLocalData('clients', clientsData)
-  const index = current.findIndex((c) => String(c.id) === String(payload.id))
-  if (index >= 0) {
-    const updated = [...current]
-    updated[index] = { ...updated[index], ...payload }
-    setLocalData('clients', updated)
+  if (payload.id) {
+    const exists = current.some((c) => String(c.id) === String(payload.id))
+    if (exists) {
+      const updated = current.map((c) => (String(c.id) === String(payload.id) ? { ...c, ...payload } : c))
+      setLocalData('clients', updated)
+    } else {
+      setLocalData('clients', [payload, ...current])
+    }
     return payload.id
   }
-  const newId = payload.id || `klien-${Date.now()}`
+  const newId = `klien-${Date.now()}`
   const newItem = { ...payload, id: newId }
-  setLocalData('clients', [...current, newItem])
+  setLocalData('clients', [newItem, ...current])
   return newId
 }
 
@@ -500,10 +512,19 @@ export const saveLayananItem = async (service) => {
 
   if (isFirebaseConfigured && db) {
     try {
-      const ref = doc(db, 'services', String(service.id))
-      await setDoc(ref, payload, { merge: true })
-      saveLocalLayanan(payload)
-      return service.id
+      if (service.id) {
+        const ref = doc(db, 'services', String(service.id))
+        await setDoc(ref, payload, { merge: true })
+        saveLocalLayanan(payload)
+        return service.id
+      }
+      const colRef = collection(db, 'services')
+      const docRef = await addDoc(colRef, {
+        ...payload,
+        createdAt: serverTimestamp()
+      })
+      saveLocalLayanan({ ...payload, id: docRef.id })
+      return docRef.id
     } catch {
       return saveLocalLayanan(payload)
     }
@@ -513,16 +534,19 @@ export const saveLayananItem = async (service) => {
 
 const saveLocalLayanan = (payload) => {
   const current = getLocalData('services', defaultServices)
-  const index = current.findIndex((s) => String(s.id) === String(payload.id))
-  if (index >= 0) {
-    const updated = [...current]
-    updated[index] = { ...updated[index], ...payload }
-    setLocalData('services', updated)
+  if (payload.id) {
+    const exists = current.some((s) => String(s.id) === String(payload.id))
+    if (exists) {
+      const updated = current.map((s) => (String(s.id) === String(payload.id) ? { ...s, ...payload } : s))
+      setLocalData('services', updated)
+    } else {
+      setLocalData('services', [payload, ...current])
+    }
     return payload.id
   }
-  const newId = payload.id || payload.slug || `layanan-${Date.now()}`
+  const newId = payload.slug || `layanan-${Date.now()}`
   const newItem = { ...payload, id: newId }
-  setLocalData('services', [...current, newItem])
+  setLocalData('services', [newItem, ...current])
   return newId
 }
 
@@ -695,10 +719,19 @@ export const saveTestimonialItem = async (testi) => {
 
   if (isFirebaseConfigured && db) {
     try {
-      const ref = doc(db, 'testimonials', String(testi.id))
-      await setDoc(ref, payload, { merge: true })
-      saveLocalTestimonial(payload)
-      return testi.id
+      if (testi.id) {
+        const ref = doc(db, 'testimonials', String(testi.id))
+        await setDoc(ref, payload, { merge: true })
+        saveLocalTestimonial(payload)
+        return testi.id
+      }
+      const colRef = collection(db, 'testimonials')
+      const docRef = await addDoc(colRef, {
+        ...payload,
+        createdAt: serverTimestamp()
+      })
+      saveLocalTestimonial({ ...payload, id: docRef.id })
+      return docRef.id
     } catch {
       return saveLocalTestimonial(payload)
     }
@@ -708,14 +741,17 @@ export const saveTestimonialItem = async (testi) => {
 
 const saveLocalTestimonial = (payload) => {
   const current = getLocalData('testimonials', defaultTestimonials)
-  const index = current.findIndex((t) => String(t.id) === String(payload.id))
-  if (index >= 0) {
-    const updated = [...current]
-    updated[index] = { ...updated[index], ...payload }
-    setLocalData('testimonials', updated)
+  if (payload.id) {
+    const exists = current.some((t) => String(t.id) === String(payload.id))
+    if (exists) {
+      const updated = current.map((t) => (String(t.id) === String(payload.id) ? { ...t, ...payload } : t))
+      setLocalData('testimonials', updated)
+    } else {
+      setLocalData('testimonials', [...current, payload])
+    }
     return payload.id
   }
-  const newId = payload.id || Date.now()
+  const newId = `TESTI-${Date.now()}`
   const newItem = { ...payload, id: newId }
   setLocalData('testimonials', [...current, newItem])
   return newId
@@ -1538,7 +1574,7 @@ export const reorderTimelineList = async (items) => {
       updatedItems.forEach((item) => {
         if (item.id) {
           const ref = doc(db, 'timeline', String(item.id))
-          batch.update(ref, { order: item.order, updatedAt: new Date().toISOString() })
+          batch.set(ref, item, { merge: true })
         }
       })
       await batch.commit()

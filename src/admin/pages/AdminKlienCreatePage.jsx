@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ArrowLeft, Save, Sparkles, AlertCircle, Loader2 } from 'lucide-react'
 import AdminImageUploader from '../components/AdminImageUploader'
-import AdminRichEditor from '../components/AdminRichEditor'
 import { uploadToCloudinary } from '../../firebase/cloudinaryService'
 import { saveKlienItem } from '../../firebase/adminService'
 import { showSuccessAlert, showErrorAlert } from '../utils/swal'
@@ -18,12 +17,8 @@ export default function AdminKlienCreatePage() {
     category: 'Sekolah Dasar',
     categoryKey: 'sekolah',
     city: 'Kabupaten Sidoarjo',
-    since: new Date().getFullYear().toString(),
-    summary: '',
-    image: '',
-    totalOrders: 'Rutin Tiap Tahun Ajaran Baru',
-    totalPcs: '1.000+ Setel',
-    contactPerson: ''
+    since: '',
+    image: ''
   })
 
   const categoryOptions = [
@@ -131,23 +126,23 @@ export default function AdminKlienCreatePage() {
                   />
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
-                  <div className="admin-form-group">
-                    <label className="admin-label" htmlFor="client-category">Kategori Lembaga</label>
-                    <select
-                      id="client-category"
-                      className="admin-select"
-                      value={formData.category}
-                      onChange={handleCategorySelect}
-                    >
-                      {categoryOptions.map((opt) => (
-                        <option key={opt.label} value={opt.label}>
-                          {opt.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                <div className="admin-form-group">
+                  <label className="admin-label" htmlFor="client-category">Kategori Lembaga</label>
+                  <select
+                    id="client-category"
+                    className="admin-select"
+                    value={formData.category}
+                    onChange={handleCategorySelect}
+                  >
+                    {categoryOptions.map((opt) => (
+                      <option key={opt.label} value={opt.label}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
                   <div className="admin-form-group">
                     <label className="admin-label" htmlFor="client-city">Kota / Kabupaten</label>
                     <input
@@ -159,69 +154,18 @@ export default function AdminKlienCreatePage() {
                       onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                     />
                   </div>
-                </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
                   <div className="admin-form-group">
                     <label className="admin-label" htmlFor="client-since">Tahun Mulai Kemitraan</label>
                     <input
                       id="client-since"
                       type="text"
                       className="admin-input"
-                      placeholder="Contoh: 2021"
+                      placeholder="Contoh: 2021 (opsional)"
                       value={formData.since}
                       onChange={(e) => setFormData({ ...formData, since: e.target.value })}
                     />
                   </div>
-
-                  <div className="admin-form-group">
-                    <label className="admin-label" htmlFor="client-contact">Kontak PIC / Pejabat Lembaga</label>
-                    <input
-                      id="client-contact"
-                      type="text"
-                      className="admin-input"
-                      placeholder="Contoh: Bpk. Bambang - Koordinator Pengadaan"
-                      value={formData.contactPerson}
-                      onChange={(e) => setFormData({ ...formData, contactPerson: e.target.value })}
-                    />
-                  </div>
-                </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
-                  <div className="admin-form-group">
-                    <label className="admin-label" htmlFor="client-total-orders">Frekuensi Pemesanan</label>
-                    <input
-                      id="client-total-orders"
-                      type="text"
-                      className="admin-input"
-                      placeholder="Contoh: 5 Tahun Berturut-turut"
-                      value={formData.totalOrders}
-                      onChange={(e) => setFormData({ ...formData, totalOrders: e.target.value })}
-                    />
-                  </div>
-
-                  <div className="admin-form-group">
-                    <label className="admin-label" htmlFor="client-total-pcs">Estimasi Akumulasi Volume</label>
-                    <input
-                      id="client-total-pcs"
-                      type="text"
-                      className="admin-input"
-                      placeholder="Contoh: 3.500+ Setel"
-                      value={formData.totalPcs}
-                      onChange={(e) => setFormData({ ...formData, totalPcs: e.target.value })}
-                    />
-                  </div>
-                </div>
-
-                <div className="admin-form-group">
-                  <AdminRichEditor
-                    id="client-summary-editor"
-                    label="Ringkasan Kemitraan & Deskripsi Profil (TinyMCE)"
-                    value={formData.summary}
-                    onChange={(html) => setFormData((prev) => ({ ...prev, summary: html }))}
-                    placeholder="Tuliskan riwayat pemesanan seragam OSIS, batik identitas, jas almamater, atau baju kerja yang dikerjakan untuk mitra ini..."
-                    height={260}
-                  />
                 </div>
               </div>
 

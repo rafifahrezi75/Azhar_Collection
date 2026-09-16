@@ -50,7 +50,7 @@ export default function OrderProcessSection() {
       }}
     >
       <div className="container">
-        <div style={{ textAlign: 'center', maxWidth: '700px', margin: '0 auto 3rem auto' }}>
+        <div className="reveal-up" style={{ textAlign: 'center', maxWidth: '700px', margin: '0 auto 3rem auto' }}>
           <span
             className="section-tag"
             style={{
@@ -77,6 +77,7 @@ export default function OrderProcessSection() {
           {steps.map((item, idx) => (
             <div
               key={idx}
+              className={`reveal-up delay-${Math.min((idx % 5) * 100 + 100, 500)}`}
               style={{
                 background: 'rgba(255, 255, 255, 0.96)',
                 padding: '1.75rem 1.25rem',

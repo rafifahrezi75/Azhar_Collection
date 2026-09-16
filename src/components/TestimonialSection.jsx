@@ -46,7 +46,7 @@ export default function TestimonialSection() {
   return (
     <section id="testimonials" className="testimonials-section">
       <div className="container">
-        <div className="testimonials-mobile-header">
+        <div className="testimonials-mobile-header reveal-up">
           <span className="section-tag">TESTIMONI PELANGGAN</span>
           <h2 className="section-title">Apa Kata Mitra & Pelanggan Kami</h2>
         </div>
@@ -59,7 +59,7 @@ export default function TestimonialSection() {
           </div>
         ) : (
           <div className="testimonials-layout">
-            <div className="testimonials-desktop-intro">
+            <div className="testimonials-desktop-intro reveal-left">
               <span className="section-tag">TESTIMONI PELANGGAN</span>
               <h2 className="section-title" style={{ textAlign: 'left', marginTop: '0.5rem', lineHeight: 1.25 }}>
                 Apa Kata Mitra & Pelanggan Kami
@@ -69,7 +69,7 @@ export default function TestimonialSection() {
               </p>
             </div>
 
-            <div className="testimonials-cards-wrapper">
+            <div className="testimonials-cards-wrapper reveal-right delay-150">
               <button
                 type="button"
                 className="testimonial-arrow-btn arrow-prev"

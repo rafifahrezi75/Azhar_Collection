@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
 :root {
+  color-scheme: light;
+  supported-color-schemes: light;
   --color-primary: #800080;
   --color-primary-dark: #4A0E4E;
   --color-primary-darker: #2D0831;
@@ -46,6 +48,7 @@
 }
 
 html {
+  color-scheme: light;
   scroll-behavior: smooth;
   font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   color: var(--color-text-main);
@@ -54,9 +57,11 @@ html {
 }
 
 body {
+  color-scheme: light;
   line-height: 1.6;
   overflow-x: hidden;
   background-color: var(--color-bg-light);
+  color: var(--color-text-main);
 }
 
 a {
@@ -3791,3 +3796,204 @@ img {
     grid-template-columns: 1fr;
   }
 }
+
+.page-transition-enter {
+  animation: pageFadeSlideIn 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes pageFadeSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal-up,
+.reveal-down,
+.reveal-left,
+.reveal-right,
+.reveal-scale,
+.reveal-fade {
+  opacity: 0;
+  will-change: transform, opacity;
+  transition-property: opacity, transform;
+  transition-duration: 1.15s;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal-up {
+  transform: translateY(40px);
+}
+
+.reveal-down {
+  transform: translateY(-40px);
+}
+
+.reveal-left {
+  transform: translateX(-45px);
+}
+
+.reveal-right {
+  transform: translateX(45px);
+}
+
+.reveal-scale {
+  transform: scale(0.93);
+}
+
+.reveal-fade {
+  transform: none;
+}
+
+.is-revealed,
+.reveal-up.is-revealed,
+.reveal-down.is-revealed,
+.reveal-left.is-revealed,
+.reveal-right.is-revealed,
+.reveal-scale.is-revealed,
+.reveal-fade.is-revealed {
+  opacity: 1;
+  transform: translate(0, 0) scale(1);
+}
+
+.delay-75 {
+  transition-delay: 120ms;
+}
+
+.delay-100 {
+  transition-delay: 160ms;
+}
+
+.delay-150 {
+  transition-delay: 240ms;
+}
+
+.delay-200 {
+  transition-delay: 320ms;
+}
+
+.delay-250 {
+  transition-delay: 400ms;
+}
+
+.delay-300 {
+  transition-delay: 480ms;
+}
+
+.delay-350 {
+  transition-delay: 560ms;
+}
+
+.delay-400 {
+  transition-delay: 640ms;
+}
+
+.delay-500 {
+  transition-delay: 750ms;
+}
+
+.delay-600 {
+  transition-delay: 850ms;
+}
+
+.subpage-header-content .subpage-title {
+  animation: heroTextIn 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.subpage-header-content .subpage-subtitle {
+  animation: heroTextIn 0.95s 0.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.subpage-header-content .subpage-breadcrumb {
+  animation: heroTextIn 0.95s 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes heroTextIn {
+  0% {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.product-card-clean,
+.service-card,
+.why-card,
+.client-clean-card,
+.info-box-white,
+.info-box-dark {
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.35s ease;
+}
+
+.product-card-clean:hover,
+.client-clean-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-xl);
+}
+
+.why-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-xl);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-transition-enter,
+  .reveal-up,
+  .reveal-down,
+  .reveal-left,
+  .reveal-right,
+  .reveal-scale,
+  .reveal-fade,
+  .subpage-header-content .subpage-title,
+  .subpage-header-content .subpage-subtitle,
+  .subpage-header-content .subpage-breadcrumb {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+.app-root {
+  color-scheme: light !important;
+  background-color: var(--color-bg-light) !important;
+  color: var(--color-text-main) !important;
+  min-height: 100vh;
+}
+
+.app-root *,
+.app-root *::before,
+.app-root *::after {
+  color-scheme: light !important;
+}
+
+.app-root input,
+.app-root textarea,
+.app-root select,
+.app-root button {
+  color-scheme: light !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.admin-dark),
+  html:not(.admin-dark),
+  body:not(.admin-dark),
+  .app-root,
+  .app-root * {
+    color-scheme: light !important;
+  }
+
+  .app-root {
+    background-color: var(--color-bg-light) !important;
+    color: var(--color-text-main) !important;
+  }
+}
+
+

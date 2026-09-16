@@ -79,7 +79,7 @@ export default function ServiceDetailPage() {
       <section style={{ padding: '3rem 0 4rem 0' }}>
         <div className="container">
           <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 2fr) minmax(0, 1fr)', gap: '2.5rem', alignItems: 'start' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            <div className="reveal-left" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
               <div style={{ background: '#FFFFFF', borderRadius: 'var(--radius-xl)', overflow: 'hidden', border: '1px solid var(--color-border)', boxShadow: 'var(--shadow-sm)' }}>
                 <img
                   src={service.image}
@@ -154,7 +154,7 @@ export default function ServiceDetailPage() {
               </div>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
+            <div className="reveal-right delay-150" style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
               {otherServices.length > 0 && (
                 <div style={{ background: '#FFFFFF', borderRadius: 'var(--radius-lg)', padding: '1.75rem', border: '1px solid var(--color-border)', boxShadow: 'var(--shadow-sm)' }}>
                   <h3 style={{ fontSize: '1.125rem', fontWeight: 800, color: 'var(--color-primary-dark)', marginBottom: '1.25rem' }}>

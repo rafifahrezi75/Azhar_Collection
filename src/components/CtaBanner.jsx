@@ -6,7 +6,7 @@ export default function CtaBanner() {
     <section className="cta-banner-section">
       <div className="cta-banner-overlay" />
       <div className="container">
-        <div className="cta-banner-content">
+        <div className="cta-banner-content reveal-scale">
           <h2 className="cta-title">Siap Memproduksi Seragam Bergaransi Kualitas Nomor 1?</h2>
           <p className="cta-subtitle">
             Dapatkan sampel gratis, penawaran harga terbaik, dan garansi retur gratis 100% dari produsen konveksi Azhar Collection hari ini!

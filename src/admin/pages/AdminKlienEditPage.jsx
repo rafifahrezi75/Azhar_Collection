@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ArrowLeft, Save, AlertCircle, Loader2 } from 'lucide-react'
 import AdminImageUploader from '../components/AdminImageUploader'
-import AdminRichEditor from '../components/AdminRichEditor'
 import { uploadToCloudinary } from '../../firebase/cloudinaryService'
 import { getKlienById, saveKlienItem } from '../../firebase/adminService'
 import { showSuccessAlert, showErrorAlert } from '../utils/swal'
@@ -20,12 +19,8 @@ export default function AdminKlienEditPage() {
     category: 'Sekolah Dasar',
     categoryKey: 'sekolah',
     city: 'Kabupaten Sidoarjo',
-    since: '2020',
-    summary: '',
-    image: '',
-    totalOrders: 'Rutin Tiap Tahun Ajaran Baru',
-    totalPcs: '1.000+ Setel',
-    contactPerson: ''
+    since: '',
+    image: ''
   })
 
   const categoryOptions = [
@@ -52,12 +47,8 @@ export default function AdminKlienEditPage() {
             category: data.category || 'Sekolah Dasar',
             categoryKey: data.categoryKey || 'sekolah',
             city: data.city || 'Kabupaten Sidoarjo',
-            since: data.since || '2020',
-            summary: data.summary || '',
-            image: data.image || '',
-            totalOrders: data.totalOrders || '',
-            totalPcs: data.totalPcs || '',
-            contactPerson: data.contactPerson || ''
+            since: data.since || '',
+            image: data.image || ''
           })
         } else {
           setError('Data mitra tidak ditemukan')
@@ -135,7 +126,7 @@ export default function AdminKlienEditPage() {
             <div>
               <h1 className="admin-page-title" style={{ margin: 0 }}>Ubah Data Mitra Lembaga</h1>
               <p className="admin-page-desc" style={{ margin: '0.25rem 0 0 0' }}>
-                Perbarui profil instansi, logo, kontak PIC, dan riwayat volume pesanan.
+                Perbarui profil instansi, logo, dan tahun kemitraan.
               </p>
             </div>
           </div>
@@ -153,7 +144,7 @@ export default function AdminKlienEditPage() {
           </div>
         </div>
 
-        <div style={{ padding: '1.25rem' }}>
+        <div className="admin-card-body" style={{ padding: '1.25rem' }}>
           {error && (
             <div className="admin-alert admin-alert-danger" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.25rem' }}>
               <AlertCircle size={16} />
@@ -161,128 +152,79 @@ export default function AdminKlienEditPage() {
             </div>
           )}
 
-          <div className="admin-single-card-grid">
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <div className="admin-form-group">
-                  <label className="admin-label" htmlFor="client-name">
-                    Nama Instansi / Sekolah <span style={{ color: 'var(--admin-danger)' }}>*</span>
-                  </label>
-                  <input
-                    id="client-name"
-                    type="text"
-                    className="admin-input"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    required
-                  />
-                </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
-                  <div className="admin-form-group">
-                    <label className="admin-label" htmlFor="client-category">Kategori Lembaga</label>
-                    <select
-                      id="client-category"
-                      className="admin-select"
-                      value={formData.category}
-                      onChange={handleCategorySelect}
-                    >
-                      {categoryOptions.map((opt) => (
-                        <option key={opt.label} value={opt.label}>
-                          {opt.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="admin-form-group">
-                    <label className="admin-label" htmlFor="client-city">Kota / Kabupaten</label>
-                    <input
-                      id="client-city"
-                      type="text"
-                      className="admin-input"
-                      value={formData.city}
-                      onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                    />
-                  </div>
-                </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
-                  <div className="admin-form-group">
-                    <label className="admin-label" htmlFor="client-since">Tahun Mulai Kemitraan</label>
-                    <input
-                      id="client-since"
-                      type="text"
-                      className="admin-input"
-                      value={formData.since}
-                      onChange={(e) => setFormData({ ...formData, since: e.target.value })}
-                    />
-                  </div>
-
-                  <div className="admin-form-group">
-                    <label className="admin-label" htmlFor="client-contact">Kontak PIC / Pejabat Lembaga</label>
-                    <input
-                      id="client-contact"
-                      type="text"
-                      className="admin-input"
-                      value={formData.contactPerson}
-                      onChange={(e) => setFormData({ ...formData, contactPerson: e.target.value })}
-                    />
-                  </div>
-                </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
-                  <div className="admin-form-group">
-                    <label className="admin-label" htmlFor="client-total-orders">Frekuensi Pemesanan</label>
-                    <input
-                      id="client-total-orders"
-                      type="text"
-                      className="admin-input"
-                      value={formData.totalOrders}
-                      onChange={(e) => setFormData({ ...formData, totalOrders: e.target.value })}
-                    />
-                  </div>
-
-                  <div className="admin-form-group">
-                    <label className="admin-label" htmlFor="client-total-pcs">Estimasi Akumulasi Volume</label>
-                    <input
-                      id="client-total-pcs"
-                      type="text"
-                      className="admin-input"
-                      value={formData.totalPcs}
-                      onChange={(e) => setFormData({ ...formData, totalPcs: e.target.value })}
-                    />
-                  </div>
-                </div>
-
-                <div className="admin-form-group">
-                  <AdminRichEditor
-                    id="client-summary-editor"
-                    label="Ringkasan Kemitraan & Deskripsi Profil (TinyMCE)"
-                    value={formData.summary}
-                    onChange={(html) => setFormData((prev) => ({ ...prev, summary: html }))}
-                    placeholder="Tuliskan riwayat pemesanan seragam OSIS, batik identitas, jas almamater, atau baju kerja yang dikerjakan untuk mitra ini..."
-                    height={260}
-                  />
-                </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.8fr) minmax(0, 1.2fr)', gap: '1.5rem', alignItems: 'start' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div className="admin-form-group">
+                <label className="admin-label" htmlFor="client-name">Nama Lembaga / Mitra</label>
+                <input
+                  id="client-name"
+                  type="text"
+                  className="admin-input"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  required
+                />
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                <div style={{ padding: '1rem', border: '1px solid var(--admin-border)', borderRadius: '6px', backgroundColor: 'var(--admin-surface-hover)' }}>
-                  <div style={{ fontWeight: 700, fontSize: '0.8125rem', marginBottom: '0.75rem', color: 'var(--admin-text-main)' }}>
-                    Logo / Foto Mitra
-                  </div>
-                  <AdminImageUploader
-                    label="Unggah Logo Instansi"
-                    ratioHint="Rasio 1:1 (Pas Foto 3x3, misal 600 x 600 px)"
-                    currentImage={formData.image}
-                    onFileSelected={(file) => setImageFile(file)}
-                    onUrlChanged={(url) => setFormData({ ...formData, image: url })}
-                    folder="azhar/clients"
+              <div className="admin-form-group">
+                <label className="admin-label" htmlFor="client-category">Kategori Lembaga</label>
+                <select
+                  id="client-category"
+                  className="admin-select"
+                  value={formData.category}
+                  onChange={handleCategorySelect}
+                >
+                  {categoryOptions.map((opt) => (
+                    <option key={opt.label} value={opt.label}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
+                <div className="admin-form-group">
+                  <label className="admin-label" htmlFor="client-city">Kota / Kabupaten</label>
+                  <input
+                    id="client-city"
+                    type="text"
+                    className="admin-input"
+                    value={formData.city}
+                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                  />
+                </div>
+
+                <div className="admin-form-group">
+                  <label className="admin-label" htmlFor="client-since">Tahun Mulai Kemitraan</label>
+                  <input
+                    id="client-since"
+                    type="text"
+                    className="admin-input"
+                    placeholder="Contoh: 2021 (opsional)"
+                    value={formData.since}
+                    onChange={(e) => setFormData({ ...formData, since: e.target.value })}
                   />
                 </div>
               </div>
             </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <div style={{ padding: '1rem', border: '1px solid var(--admin-border)', borderRadius: '6px', backgroundColor: 'var(--admin-surface-hover)' }}>
+                <div style={{ fontWeight: 700, fontSize: '0.8125rem', marginBottom: '0.75rem', color: 'var(--admin-text-main)' }}>
+                  Logo / Foto Mitra
+                </div>
+                <AdminImageUploader
+                  label="Unggah Logo Instansi"
+                  ratioHint="Rasio 1:1 (Pas Foto 3x3, misal 600 x 600 px)"
+                  currentImage={formData.image}
+                  onFileSelected={(file) => setImageFile(file)}
+                  onUrlChanged={(url) => setFormData({ ...formData, image: url })}
+                  folder="azhar/clients"
+                />
+              </div>
+            </div>
           </div>
+        </div>
       </div>
     </form>
   )

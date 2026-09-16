@@ -104,7 +104,7 @@ export default function GallerySection() {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="container">
-        <div style={{ textAlign: 'center', maxWidth: '700px', margin: '0 auto 2.5rem auto' }}>
+        <div className="reveal-up" style={{ textAlign: 'center', maxWidth: '700px', margin: '0 auto 2.5rem auto' }}>
           <span className="section-tag">DOKUMENTASI & GALERI</span>
           <h2 className="section-title">Galeri Foto Produksi</h2>
           <p className="section-subtitle">
@@ -112,7 +112,7 @@ export default function GallerySection() {
           </p>
         </div>
 
-        <div className="gallery-carousel-viewport">
+        <div className="gallery-carousel-viewport reveal-scale delay-150">
           <div
             className="gallery-carousel-track"
             onTransitionEnd={handleTransitionEnd}

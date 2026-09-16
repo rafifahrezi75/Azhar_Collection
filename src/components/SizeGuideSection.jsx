@@ -11,7 +11,7 @@ export default function SizeGuideSection() {
   return (
     <section id="panduan-ukuran" className="size-guide-section" style={{ padding: '4.5rem 0', background: '#FFFFFF', borderTop: '1px solid var(--color-border)' }}>
       <div className="container">
-        <div style={{ textAlign: 'center', maxWidth: '720px', margin: '0 auto 3rem auto' }}>
+        <div className="reveal-up" style={{ textAlign: 'center', maxWidth: '720px', margin: '0 auto 3rem auto' }}>
           <span className="section-tag">STANDAR NASIONAL (SNI)</span>
           <h2 className="section-title">Pedoman Ukuran Umum Busana & Seragam</h2>
           <p className="section-subtitle">
@@ -20,9 +20,10 @@ export default function SizeGuideSection() {
         </div>
 
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-          {sections.map((sec) => (
+          {sections.map((sec, idx) => (
             <div
               key={sec.key}
+              className={`reveal-up delay-${(idx % 3) * 100 + 100}`}
               style={{
                 background: '#FFFFFF',
                 border: '1px solid var(--color-border)',

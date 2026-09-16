@@ -7,7 +7,7 @@ export default function InfoBoxes() {
     <section className="info-boxes-section">
       <div className="container">
         <div className="info-boxes-grid">
-          <div className="info-box-white">
+          <div className="info-box-white reveal-up delay-100">
             <div className="info-box-icon">
               <Scissors size={26} />
             </div>
@@ -21,7 +21,7 @@ export default function InfoBoxes() {
             </div>
           </div>
 
-          <div className="info-box-dark">
+          <div className="info-box-dark reveal-up delay-250">
             <div className="info-box-icon">
               <ShieldCheck size={26} />
             </div>

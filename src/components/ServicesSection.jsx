@@ -49,7 +49,7 @@ export default function ServicesSection({ limit }) {
   return (
     <section id="services" className="services-section">
       <div className="container">
-        <div className="services-header">
+        <div className="services-header reveal-up">
           <span className="section-tag">LAYANAN KONVEKSI UNGGULAN</span>
           <h2 className="section-title">Solusi Jahit & Konveksi Bergaransi Mutu</h2>
           <p className="section-subtitle">
@@ -65,11 +65,11 @@ export default function ServicesSection({ limit }) {
           </div>
         ) : (
           <div className="services-grid">
-            {displayedServices.map((item) => (
+            {displayedServices.map((item, idx) => (
               <Link
                 key={item.id}
                 to={`/layanan/${item.slug || item.id}`}
-                className="service-card"
+                className={`service-card reveal-up delay-${Math.min((idx % 3) * 100 + 100, 400)}`}
               >
                 <div className="service-card-bg">
                   {item.image && <img src={item.image} alt={item.title} />}

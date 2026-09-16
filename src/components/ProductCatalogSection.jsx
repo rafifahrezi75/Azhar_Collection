@@ -23,7 +23,7 @@ export default function ProductCatalogSection({ limit, showHeader = false, showV
     <section id="products" className="catalog-section" style={{ padding: showHeader ? '4.5rem 0' : '2rem 0 4rem 0' }}>
       <div className="container">
         {showHeader && (
-          <div style={{ textAlign: 'center', maxWidth: '750px', margin: '0 auto 3rem auto' }}>
+          <div className="reveal-up" style={{ textAlign: 'center', maxWidth: '750px', margin: '0 auto 3rem auto' }}>
             <span className="section-tag">PORTOFOLIO & HASIL JAHITAN</span>
             <h2 className="section-title">Katalog Baju Yang Pernah Dikerjakan</h2>
             <p className="section-subtitle">
@@ -40,11 +40,11 @@ export default function ProductCatalogSection({ limit, showHeader = false, showV
           </div>
         ) : (
           <div className="products-grid">
-            {displayedItems.map((product) => (
+            {displayedItems.map((product, idx) => (
               <Link
                 key={product.id}
                 to={`/katalog/${product.id}`}
-                className="product-card product-card-clean"
+                className={`product-card product-card-clean reveal-up delay-${Math.min((idx % 4) * 100 + 100, 400)}`}
               >
                 <div className="product-img-wrapper">
                   {product.image ? (
@@ -76,7 +76,7 @@ export default function ProductCatalogSection({ limit, showHeader = false, showV
         )}
 
         {showViewAll && displayedItems.length > 0 && (
-          <div style={{ textAlign: 'center', marginTop: '3rem' }}>
+          <div className="reveal-up delay-200" style={{ textAlign: 'center', marginTop: '3rem' }}>
             <Link to="/katalog" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.625rem', padding: '0.875rem 2.25rem' }}>
               <span>Lihat Semua Katalog Lebih Lengkap</span>
               <ArrowRight size={18} />

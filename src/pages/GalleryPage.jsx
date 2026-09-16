@@ -33,7 +33,7 @@ export default function GalleryPage() {
 
       <section style={{ padding: '4rem 0' }}>
         <div className="container">
-          <div style={{ textAlign: 'center', maxWidth: '750px', margin: '0 auto 2.5rem auto' }}>
+          <div className="reveal-up" style={{ textAlign: 'center', maxWidth: '750px', margin: '0 auto 2.5rem auto' }}>
             <span className="section-tag">DOKUMENTASI FOTO</span>
             <h2 className="section-title">Foto Aktivitas & Pengerjaan</h2>
             <p className="section-subtitle">
@@ -53,8 +53,8 @@ export default function GalleryPage() {
             </div>
           ) : (
             <div className="gallery-page-grid">
-              {items.map((item) => (
-                <div key={item.id} className="gallery-card">
+              {items.map((item, idx) => (
+                <div key={item.id} className={`gallery-card reveal-up delay-${Math.min((idx % 4) * 100 + 100, 400)}`}>
                   <div className="gallery-card-img-wrap" style={{ height: '220px' }}>
                     <img
                       src={item.image}

@@ -64,7 +64,7 @@ Menjalankan pemasaran digital terintegrasi (Instagram, TikTok, WhatsApp Business
 
       <section className="career-journey-section">
         <div className="container">
-          <div className="journey-header">
+          <div className="journey-header reveal-up">
             <span className="section-tag">PERJALANAN DEDIKASI KUALITAS</span>
             <h2 className="section-title">Sejarah Usaha Jahit & Rekam Jejak Prestasi</h2>
             <p className="section-subtitle">
@@ -82,7 +82,7 @@ Menjalankan pemasaran digital terintegrasi (Instagram, TikTok, WhatsApp Business
                 return (
                   <div
                     key={item.id || idx}
-                    className={`journey-zigzag-row ${isEven ? 'row-left' : 'row-right'}`}
+                    className={`journey-zigzag-row ${isEven ? 'row-left reveal-left' : 'row-right reveal-right'}`}
                   >
                     <div className="journey-center-node">
                       <IconComponent size={20} />
@@ -106,7 +106,7 @@ Menjalankan pemasaran digital terintegrasi (Instagram, TikTok, WhatsApp Business
 
       <section style={{ padding: '4.5rem 0', background: 'var(--color-bg-light)' }}>
         <div className="container">
-          <div style={{ textAlign: 'left', maxWidth: '720px', marginBottom: '2.5rem' }}>
+          <div className="reveal-up" style={{ textAlign: 'left', maxWidth: '720px', marginBottom: '2.5rem' }}>
             <span className="section-tag" style={{ display: 'inline-block', marginBottom: '0.5rem' }}>
               NILAI UTAMA KAMI
             </span>
@@ -119,7 +119,7 @@ Menjalankan pemasaran digital terintegrasi (Instagram, TikTok, WhatsApp Business
           </div>
 
           <div className="visi-misi-cards-row">
-            <div style={{ background: '#FFFFFF', padding: '2.25rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--color-border)', display: 'flex', flexDirection: 'column' }}>
+            <div className="reveal-left delay-100" style={{ background: '#FFFFFF', padding: '2.25rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--color-border)', display: 'flex', flexDirection: 'column' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem', marginBottom: '1.25rem' }}>
                 <div style={{ width: '44px', height: '44px', borderRadius: '4px', background: 'var(--color-primary-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary)', flexShrink: 0 }}>
                   <Award size={24} />
@@ -133,7 +133,7 @@ Menjalankan pemasaran digital terintegrasi (Instagram, TikTok, WhatsApp Business
               </p>
             </div>
 
-            <div style={{ background: '#FFFFFF', padding: '2.25rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--color-border)', display: 'flex', flexDirection: 'column' }}>
+            <div className="reveal-right delay-200" style={{ background: '#FFFFFF', padding: '2.25rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--color-border)', display: 'flex', flexDirection: 'column' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem', marginBottom: '1.25rem' }}>
                 <div style={{ width: '44px', height: '44px', borderRadius: '4px', background: 'var(--color-accent-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-accent)', flexShrink: 0 }}>
                   <ShieldCheck size={24} />

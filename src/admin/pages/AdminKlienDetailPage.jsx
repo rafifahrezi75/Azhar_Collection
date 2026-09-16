@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { ArrowLeft, Edit2, ExternalLink, MapPin, Calendar, Users, PackageCheck, AlertCircle, Loader2, School, FileText } from 'lucide-react'
+import { ArrowLeft, Edit2, ExternalLink, MapPin, Calendar, AlertCircle, Loader2, School } from 'lucide-react'
 import { getKlienById } from '../../firebase/adminService'
 
 export default function AdminKlienDetailPage() {
@@ -134,44 +134,6 @@ export default function AdminKlienDetailPage() {
                   {client.since || '-'}
                 </div>
               </div>
-
-              <div className="admin-detail-meta-card">
-                <div className="admin-detail-meta-header">
-                  <Users size={13} />
-                  <span>Kontak PIC</span>
-                </div>
-                <div className="admin-detail-meta-body">
-                  {client.contactPerson || '-'}
-                </div>
-              </div>
-
-              <div className="admin-detail-meta-card">
-                <div className="admin-detail-meta-header">
-                  <PackageCheck size={13} />
-                  <span>Akumulasi Pesanan</span>
-                </div>
-                <div className="admin-detail-meta-body">
-                  {client.totalPcs || client.totalOrders || '-'}
-                </div>
-              </div>
-            </div>
-
-            <div className="admin-detail-specs-section">
-              <div className="admin-detail-specs-title">
-                <FileText size={16} style={{ color: 'var(--admin-primary)' }} />
-                <span>Ringkasan Kemitraan & Rekam Jejak Produksi</span>
-              </div>
-
-              {client.summary ? (
-                <div
-                  className="rich-content-view"
-                  dangerouslySetInnerHTML={{ __html: client.summary }}
-                />
-              ) : (
-                <p style={{ color: 'var(--admin-text-muted)', fontStyle: 'italic', margin: 0, fontSize: '0.8125rem' }}>
-                  Belum ada ringkasan kemitraan tertulis untuk mitra ini.
-                </p>
-              )}
             </div>
           </div>
         </div>

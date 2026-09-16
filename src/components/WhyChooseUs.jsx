@@ -12,7 +12,7 @@ export default function WhyChooseUs() {
   return (
     <section id="why-us" className="why-us-section">
       <div className="container">
-        <div className="why-us-header">
+        <div className="why-us-header reveal-up">
           <span className="section-tag">{whyUsData.tag}</span>
           <h2 className="section-title">{whyUsData.title}</h2>
           <p className="section-subtitle">{whyUsData.subtitle}</p>
@@ -20,7 +20,7 @@ export default function WhyChooseUs() {
 
         <div className="why-us-grid">
           {whyUsData.items.map((item, index) => (
-            <div key={index} className="why-card">
+            <div key={index} className={`why-card reveal-up delay-${(index % 4) * 100 + 100}`}>
               <div className="why-card-icon">
                 {icons[index]}
               </div>

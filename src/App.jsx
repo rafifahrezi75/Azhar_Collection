@@ -1,7 +1,8 @@
-import { BrowserRouter, Routes, Route, Outlet, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Outlet, Navigate, useLocation } from 'react-router-dom'
 import ScrollToTop from './components/ScrollToTop'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
+import { useScrollReveal } from './hooks/useScrollReveal'
 
 import HomePage from './pages/HomePage'
 import AboutPage from './pages/AboutPage'
@@ -53,14 +54,18 @@ import AdminPengaturanPage from './admin/pages/AdminPengaturanPage'
 import { trackPublicVisit } from './firebase/visitorService'
 
 function PublicLayout({ onOpenQuote }) {
+  const location = useLocation()
+  useScrollReveal()
+
   useEffect(() => {
     trackPublicVisit()
+    document.documentElement.classList.remove('admin-dark')
   }, [])
 
   return (
     <div className="app-root">
       <Navbar onOpenQuote={onOpenQuote} />
-      <main>
+      <main key={location.pathname} className="page-transition-enter">
         <Outlet />
       </main>
       <Footer onOpenQuote={onOpenQuote} />

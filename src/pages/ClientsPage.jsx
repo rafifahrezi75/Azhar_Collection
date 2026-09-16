@@ -67,10 +67,10 @@ export default function ClientsPage() {
             </div>
           ) : (
             <div className="clients-clean-grid">
-              {clients.map((client) => {
+              {clients.map((client, idx) => {
                 const clientImg = client.image || client.orderedProducts?.[0]?.image
                 return (
-                  <div key={client.id} className="client-clean-card">
+                  <div key={client.id} className={`client-clean-card reveal-up delay-${Math.min((idx % 4) * 100 + 100, 400)}`}>
                     <div className="client-clean-img-wrap">
                       <ClientLogo src={clientImg} alt={client.name} />
                     </div>
@@ -85,10 +85,10 @@ export default function ClientsPage() {
                             <span className="client-meta-text">{client.city}</span>
                           </div>
                         )}
-                        {client.since && (
+                        {client.since && client.since.trim() && (
                           <div className="client-meta-row">
                             <Calendar size={14} className="client-meta-icon" />
-                            <span className="client-meta-text">Mitra Sejak {client.since}</span>
+                            <span className="client-meta-text">Mitra Sejak {client.since.trim()}</span>
                           </div>
                         )}
                       </div>

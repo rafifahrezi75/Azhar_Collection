@@ -7,7 +7,7 @@ export default function AboutSection() {
     <section id="about" className="about-section">
       <div className="container">
         <div className="about-grid">
-          <div className="about-image-wrapper">
+          <div className="about-image-wrapper reveal-left">
             <img
               src="https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=1000&q=80"
               alt="Produksi Busana Azhar Collection"
@@ -17,7 +17,7 @@ export default function AboutSection() {
               }}
             />
 
-            <div className="about-stats-card">
+            <div className="about-stats-card reveal-up delay-200">
               {aboutData.stats.slice(0, 3).map((stat, idx) => (
                 <div key={idx} className="stat-item">
                   <p className="stat-value">{stat.value}</p>
@@ -27,7 +27,7 @@ export default function AboutSection() {
             </div>
           </div>
 
-          <div className="about-text-content">
+          <div className="about-text-content reveal-right delay-150">
             <span className="section-tag">{aboutData.tag}</span>
             <h2 className="section-title" style={{ textAlign: 'left' }}>
               {aboutData.title}
