@@ -4,6 +4,12 @@ import { companyInfo } from '../data/siteData'
 import { saveInquiry, getMarketingList, getCompanySettings } from '../firebase/adminService'
 import SliderCaptchaModal from './SliderCaptchaModal'
 
+function getFirstWord(name) {
+  if (!name) return ''
+  const words = name.trim().split(/\s+/)
+  return words[0] || ''
+}
+
 export default function ContactMapSection({ showForm = true }) {
   const [marketingList, setMarketingList] = useState([])
   const [info, setInfo] = useState(companyInfo)
@@ -251,62 +257,73 @@ export default function ContactMapSection({ showForm = true }) {
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.75rem', marginTop: '0.25rem' }}>
-                {marketingList.map((member) => (
-                  <div key={member.id} className="marketing-card" style={{ padding: '0.875rem 1rem' }}>
-                    <div className="marketing-info-left" style={{ gap: '0.75rem', minWidth: 0 }}>
-                      <div className="marketing-avatar" style={{ width: '44px', height: '44px', borderRadius: '50%', overflow: 'hidden', flexShrink: 0 }}>
-                        {member.photo ? (
-                          <img
-                            src={member.photo}
-                            alt={member.name}
-                            className="marketing-avatar-img"
-                            style={{ borderRadius: '50%' }}
-                            onError={(e) => {
-                              e.currentTarget.style.display = 'none'
-                              if (e.currentTarget.nextElementSibling) {
-                                e.currentTarget.nextElementSibling.style.display = 'flex'
-                              }
-                            }}
-                          />
-                        ) : null}
-                        <div
-                          className="marketing-avatar-placeholder"
-                          style={{ display: member.photo ? 'none' : 'flex', borderRadius: '50%' }}
-                        >
-                          <ImageIcon size={20} />
-                        </div>
-                      </div>
-                      <div style={{ minWidth: 0 }}>
-                        <h3 className="marketing-name" style={{ fontSize: '0.875rem', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                          {member.name}
-                        </h3>
-                        {member.division && (
-                          <p className="marketing-division" style={{ fontSize: '0.6875rem', margin: '0.125rem 0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                            {member.division}
-                          </p>
-                        )}
-                        <span className="status-badge" style={{ marginTop: '0.2rem' }}>
-                          <span className="status-dot" />
-                          <span>{member.status || 'Online Siap Melayani'}</span>
-                        </span>
-                      </div>
-                    </div>
-
-                    <a
-                      href={member.waUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="wa-action-btn"
-                      title={`Chat WhatsApp dengan ${member.name}`}
-                      aria-label={`Chat WhatsApp dengan ${member.name}`}
-                      style={{ width: '38px', height: '38px', borderRadius: '6px', flexShrink: 0 }}
-                    >
-                      <PhoneCall size={16} />
-                    </a>
+              {marketingList && marketingList.length > 0 && (
+                <div style={{ marginTop: '0.5rem' }}>
+                  <div style={{ paddingBottom: '0.375rem', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--color-primary-dark)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                      Tim Marketing
+                    </span>
+                    <span style={{ fontSize: '0.6875rem', color: 'var(--color-text-muted)', fontWeight: 500 }}>
+                      Siap Melayani Konsultasi
+                    </span>
                   </div>
-                ))}
-              </div>
+
+                  <div className={`contact-marketing-grid ${marketingList.length === 3 ? 'cols-3' : marketingList.length === 2 ? 'cols-2' : ''}`}>
+                    {marketingList.map((member) => (
+                      <div key={member.id} className="marketing-card marketing-card-compact">
+                        <div className="marketing-info-left">
+                          <div className="marketing-avatar">
+                            {member.photo ? (
+                              <img
+                                src={member.photo}
+                                alt={member.name}
+                                className="marketing-avatar-img"
+                                onError={(e) => {
+                                  e.currentTarget.style.display = 'none'
+                                  if (e.currentTarget.nextElementSibling) {
+                                    e.currentTarget.nextElementSibling.style.display = 'flex'
+                                  }
+                                }}
+                              />
+                            ) : null}
+                            <div
+                              className="marketing-avatar-placeholder"
+                              style={{ display: member.photo ? 'none' : 'flex' }}
+                            >
+                              <ImageIcon size={18} />
+                            </div>
+                          </div>
+                          <div className="marketing-text-wrap">
+                            <h4 className="marketing-name" title={member.name}>
+                              {getFirstWord(member.name)}
+                            </h4>
+                            {member.division && (
+                              <p className="marketing-division" title={member.division}>
+                                {member.division}
+                              </p>
+                            )}
+                            <span className="status-badge">
+                              <span className="status-dot" />
+                              <span>{member.status?.toLowerCase().includes('online') ? 'Online' : (member.status || 'Online')}</span>
+                            </span>
+                          </div>
+                        </div>
+
+                        <a
+                          href={member.waUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="wa-action-btn"
+                          title={`Chat WhatsApp dengan ${member.name}`}
+                          aria-label={`Chat WhatsApp dengan ${member.name}`}
+                        >
+                          <PhoneCall size={15} />
+                        </a>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         ) : (

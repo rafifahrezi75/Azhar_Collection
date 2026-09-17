@@ -131,7 +131,7 @@ const defaultServices = [
 ]
 
 const LOCAL_STORAGE_KEY_PREFIX = 'azhar_admin_'
-const DATA_VERSION_KEY = 'azhar_admin_data_seeded_v18'
+const DATA_VERSION_KEY = 'azhar_admin_data_seeded_v19'
 
 if (typeof window !== 'undefined' && !localStorage.getItem(DATA_VERSION_KEY)) {
   try {
@@ -143,6 +143,7 @@ if (typeof window !== 'undefined' && !localStorage.getItem(DATA_VERSION_KEY)) {
     localStorage.removeItem(LOCAL_STORAGE_KEY_PREFIX + 'news')
     localStorage.removeItem(LOCAL_STORAGE_KEY_PREFIX + 'settings')
     localStorage.removeItem(LOCAL_STORAGE_KEY_PREFIX + 'timeline')
+    localStorage.removeItem(LOCAL_STORAGE_KEY_PREFIX + 'marketing')
     localStorage.setItem(DATA_VERSION_KEY, 'true')
 
     if (isFirebaseConfigured && db) {
