@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { PhoneCall, MapPin, Mail, Phone, CheckCircle2, ExternalLink, Image as ImageIcon } from 'lucide-react'
 import { companyInfo } from '../data/siteData'
 import { saveInquiry, getMarketingList, getCompanySettings } from '../firebase/adminService'
@@ -21,6 +21,7 @@ export default function ContactMapSection({ showForm = true }) {
   })
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [isCaptchaOpen, setIsCaptchaOpen] = useState(false)
+  const submitTimerRef = useRef(null)
 
   useEffect(() => {
     let isMounted = true
@@ -32,6 +33,9 @@ export default function ContactMapSection({ showForm = true }) {
     })
     return () => {
       isMounted = false
+      if (submitTimerRef.current) {
+        clearTimeout(submitTimerRef.current)
+      }
     }
   }, [])
 
@@ -67,6 +71,12 @@ export default function ContactMapSection({ showForm = true }) {
     )
     window.location.href = `mailto:${info.email}?subject=${subject}&body=${body}`
     setIsSubmitted(true)
+    if (submitTimerRef.current) {
+      clearTimeout(submitTimerRef.current)
+    }
+    submitTimerRef.current = setTimeout(() => {
+      setIsSubmitted(false)
+    }, 3000)
   }
 
   return (
@@ -86,7 +96,7 @@ export default function ContactMapSection({ showForm = true }) {
               </p>
 
               {isSubmitted && (
-                <div style={{ background: 'var(--color-primary-soft)', border: '1px solid var(--color-primary-border)', padding: '0.875rem 1rem', borderRadius: 'var(--radius-md)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.625rem', color: 'var(--color-primary-dark)', fontSize: '0.8125rem' }}>
+                <div style={{ background: 'var(--color-primary-soft)', border: '1px solid var(--color-primary-border)', padding: '0.875rem 1rem', borderRadius: 'var(--radius-md)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.625rem', color: 'var(--color-primary-dark)', fontSize: '0.8125rem', animation: 'fadeIn 0.2s ease' }}>
                   <CheckCircle2 size={18} style={{ color: 'var(--color-primary)', flexShrink: 0 }} />
                   <span>Pesan telah disiapkan. Silakan kirimkan email yang terbuka di perangkat Anda menuju {info.email}.</span>
                 </div>
@@ -430,11 +440,13 @@ export default function ContactMapSection({ showForm = true }) {
         )}
       </div>
 
-      <SliderCaptchaModal
-        isOpen={isCaptchaOpen}
-        onClose={() => setIsCaptchaOpen(false)}
-        onSuccess={handleCaptchaSuccess}
-      />
+      {isCaptchaOpen && (
+        <SliderCaptchaModal
+          isOpen={isCaptchaOpen}
+          onClose={() => setIsCaptchaOpen(false)}
+          onSuccess={handleCaptchaSuccess}
+        />
+      )}
     </section>
   )
 }

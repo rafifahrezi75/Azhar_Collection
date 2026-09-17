@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import { X, RotateCw, Check, ArrowRight, ShieldCheck } from 'lucide-react'
 
 const CAPTCHA_IMAGES = [
@@ -154,6 +155,67 @@ export default function SliderCaptchaModal({ isOpen, onClose, onSuccess }) {
     }
   }, [isOpen, loadCaptcha])
 
+  useEffect(() => {
+    if (!isOpen) return
+
+    if (document.activeElement && typeof document.activeElement.blur === 'function') {
+      document.activeElement.blur()
+    }
+
+    const root = document.getElementById('root')
+    if (root) {
+      root.setAttribute('inert', '')
+      root.style.pointerEvents = 'none'
+      root.style.userSelect = 'none'
+    }
+
+    document.documentElement.classList.add('captcha-locked')
+    document.body.classList.add('captcha-locked')
+
+    const prevBodyOverflow = document.body.style.overflow
+    const prevHtmlOverflow = document.documentElement.style.overflow
+    const prevTouchAction = document.body.style.touchAction
+
+    document.body.style.overflow = 'hidden'
+    document.documentElement.style.overflow = 'hidden'
+    document.body.style.touchAction = 'none'
+
+    const preventAllScroll = (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+    }
+
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape' && !verifiedRef.current) {
+        onClose()
+        return
+      }
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space', ' ', 'PageUp', 'PageDown', 'Home', 'End'].includes(e.key)) {
+        e.preventDefault()
+      }
+    }
+
+    window.addEventListener('wheel', preventAllScroll, { passive: false, capture: true })
+    window.addEventListener('touchmove', preventAllScroll, { passive: false, capture: true })
+    window.addEventListener('keydown', onKeyDown, { capture: true })
+
+    return () => {
+      if (root) {
+        root.removeAttribute('inert')
+        root.style.pointerEvents = ''
+        root.style.userSelect = ''
+      }
+      document.documentElement.classList.remove('captcha-locked')
+      document.body.classList.remove('captcha-locked')
+      document.body.style.overflow = prevBodyOverflow
+      document.documentElement.style.overflow = prevHtmlOverflow
+      document.body.style.touchAction = prevTouchAction
+      window.removeEventListener('wheel', preventAllScroll, { capture: true })
+      window.removeEventListener('touchmove', preventAllScroll, { capture: true })
+      window.removeEventListener('keydown', onKeyDown, { capture: true })
+    }
+  }, [isOpen, onClose])
+
   const handleStart = (clientX) => {
     if (verifiedRef.current || isLoading) return
     isDraggingRef.current = true
@@ -265,36 +327,53 @@ export default function SliderCaptchaModal({ isOpen, onClose, onSuccess }) {
     return 'linear-gradient(90deg, var(--color-primary, #800080), #9D4EDD)'
   }
 
-  return (
+  const modalContent = (
     <div
+      className="captcha-modal-overlay"
       style={{
         position: 'fixed',
-        inset: 0,
-        zIndex: 9999,
-        background: 'rgba(15, 23, 42, 0.65)',
-        backdropFilter: 'blur(4px)',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        width: '100vw',
+        height: '100vh',
+        zIndex: 2147483647,
+        background: 'rgba(15, 23, 42, 0.75)',
+        backdropFilter: 'blur(6px)',
+        WebkitBackdropFilter: 'blur(6px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         padding: '1rem',
-        animation: 'fadeIn 0.2s ease'
+        animation: 'fadeIn 0.2s ease',
+        boxSizing: 'border-box',
+        overflow: 'hidden',
+        touchAction: 'none'
       }}
       onClick={(e) => {
         if (e.target === e.currentTarget && !verifiedRef.current) onClose()
       }}
     >
       <div
+        className="captcha-modal-card"
         style={{
           background: '#FFFFFF',
           borderRadius: '16px',
-          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.2)',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.4)',
           width: '360px',
-          maxWidth: '100%',
+          maxWidth: 'calc(100vw - 2rem)',
+          maxHeight: 'calc(100vh - 2rem)',
           padding: '1.5rem',
           position: 'relative',
           display: 'flex',
           flexDirection: 'column',
-          border: '1px solid #E2E8F0'
+          border: '1px solid #E2E8F0',
+          animation: 'slideUp 0.2s ease',
+          margin: 'auto',
+          boxSizing: 'border-box',
+          touchAction: 'auto',
+          zIndex: 2147483647
         }}
       >
         <button
@@ -523,4 +602,6 @@ export default function SliderCaptchaModal({ isOpen, onClose, onSuccess }) {
       </div>
     </div>
   )
+
+  return typeof document !== 'undefined' ? createPortal(modalContent, document.body) : null
 }
