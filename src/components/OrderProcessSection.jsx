@@ -93,7 +93,18 @@ export default function OrderProcessSection() {
                 <div style={{ width: '44px', height: '44px', borderRadius: '6px', background: 'var(--color-primary-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary)' }}>
                   {item.icon}
                 </div>
-                <span style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--color-primary-light)', opacity: 0.7, letterSpacing: '0.05em' }}>
+                <span
+                  style={{
+                    fontSize: '1.125rem',
+                    fontWeight: 900,
+                    color: 'var(--color-primary)',
+                    background: 'var(--color-primary-soft)',
+                    padding: '0.25rem 0.65rem',
+                    borderRadius: '6px',
+                    border: '1px solid rgba(128, 0, 128, 0.15)',
+                    letterSpacing: '0.05em'
+                  }}
+                >
                   {item.step}
                 </span>
               </div>

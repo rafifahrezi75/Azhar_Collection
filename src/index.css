@@ -1582,9 +1582,9 @@ img {
 }
 
 .wa-action-btn {
-  width: 3rem;
-  height: 3rem;
-  border-radius: var(--radius-md);
+  width: 2.375rem;
+  height: 2.375rem;
+  border-radius: 6px;
   background-color: var(--color-primary-dark);
   color: #FFFFFF;
   display: flex;
@@ -3993,6 +3993,24 @@ img {
   .app-root {
     background-color: var(--color-bg-light) !important;
     color: var(--color-text-main) !important;
+  }
+}
+
+@keyframes scShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-6px);
+  }
+  40% {
+    transform: translateX(6px);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(4px);
   }
 }
 

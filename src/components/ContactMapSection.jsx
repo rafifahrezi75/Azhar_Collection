@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { PhoneCall, MapPin, Mail, Phone, CheckCircle2, ExternalLink, Image as ImageIcon } from 'lucide-react'
 import { companyInfo } from '../data/siteData'
 import { saveInquiry, getMarketingList, getCompanySettings } from '../firebase/adminService'
+import SliderCaptchaModal from './SliderCaptchaModal'
 
 export default function ContactMapSection({ showForm = true }) {
   const [marketingList, setMarketingList] = useState([])
@@ -13,6 +14,7 @@ export default function ContactMapSection({ showForm = true }) {
     message: ''
   })
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [isCaptchaOpen, setIsCaptchaOpen] = useState(false)
 
   useEffect(() => {
     let isMounted = true
@@ -34,7 +36,10 @@ export default function ContactMapSection({ showForm = true }) {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    setIsCaptchaOpen(true)
+  }
 
+  const handleCaptchaSuccess = () => {
     saveInquiry({
       name: formData.fullName,
       institution: formData.email || '',
@@ -295,7 +300,7 @@ export default function ContactMapSection({ showForm = true }) {
                       className="wa-action-btn"
                       title={`Chat WhatsApp dengan ${member.name}`}
                       aria-label={`Chat WhatsApp dengan ${member.name}`}
-                      style={{ width: '38px', height: '38px', borderRadius: '50%', flexShrink: 0 }}
+                      style={{ width: '38px', height: '38px', borderRadius: '6px', flexShrink: 0 }}
                     >
                       <PhoneCall size={16} />
                     </a>
@@ -407,6 +412,12 @@ export default function ContactMapSection({ showForm = true }) {
           </div>
         )}
       </div>
+
+      <SliderCaptchaModal
+        isOpen={isCaptchaOpen}
+        onClose={() => setIsCaptchaOpen(false)}
+        onSuccess={handleCaptchaSuccess}
+      />
     </section>
   )
 }
