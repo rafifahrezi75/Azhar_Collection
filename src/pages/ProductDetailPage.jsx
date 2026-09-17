@@ -9,8 +9,16 @@ import {
   ChevronLeft,
   ChevronRight,
   MapPin,
-  Calendar
+  Calendar,
+  Package
 } from 'lucide-react'
+
+function formatPcs(val) {
+  if (!val) return ''
+  const trimmed = String(val).trim()
+  if (!trimmed) return ''
+  return /pcs|setel|buah|lembar/i.test(trimmed) ? trimmed : `${trimmed} Pcs`
+}
 
 export default function ProductDetailPage() {
   const { productId } = useParams()
@@ -243,6 +251,12 @@ export default function ProductDetailPage() {
                           <Calendar size={14} style={{ color: 'var(--color-accent)', flexShrink: 0 }} />
                           <span>Mitra Sejak {client.since}</span>
                         </div>
+                        {client.totalPcs && client.totalPcs.trim() && (
+                          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+                            <Package size={14} style={{ color: 'var(--color-accent)', flexShrink: 0 }} />
+                            <span>Pesanan: {formatPcs(client.totalPcs)}</span>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>

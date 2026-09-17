@@ -20,6 +20,7 @@ export default function AdminKlienEditPage() {
     categoryKey: 'sekolah',
     city: 'Kabupaten Sidoarjo',
     since: '',
+    totalPcs: '',
     image: ''
   })
 
@@ -48,6 +49,7 @@ export default function AdminKlienEditPage() {
             categoryKey: data.categoryKey || 'sekolah',
             city: data.city || 'Kabupaten Sidoarjo',
             since: data.since || '',
+            totalPcs: data.totalPcs || '',
             image: data.image || ''
           })
         } else {
@@ -203,6 +205,18 @@ export default function AdminKlienEditPage() {
                     placeholder="Contoh: 2021 (opsional)"
                     value={formData.since}
                     onChange={(e) => setFormData({ ...formData, since: e.target.value })}
+                  />
+                </div>
+
+                <div className="admin-form-group">
+                  <label className="admin-label" htmlFor="client-total-pcs">Total Pesanan (Pcs / Setel)</label>
+                  <input
+                    id="client-total-pcs"
+                    type="text"
+                    className="admin-input"
+                    placeholder="Contoh: 1.500 Pcs atau 850 Setel (opsional)"
+                    value={formData.totalPcs}
+                    onChange={(e) => setFormData({ ...formData, totalPcs: e.target.value })}
                   />
                 </div>
               </div>

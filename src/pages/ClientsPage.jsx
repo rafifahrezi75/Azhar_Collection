@@ -2,7 +2,14 @@ import { useState, useEffect } from 'react'
 import PageHeader from '../components/PageHeader'
 import { getKlienList } from '../firebase/adminService'
 import { clientsData as fallbackClients } from '../data/siteData'
-import { MapPin, Calendar, School } from 'lucide-react'
+import { MapPin, Calendar, School, Package } from 'lucide-react'
+
+function formatPcs(val) {
+  if (!val) return ''
+  const trimmed = String(val).trim()
+  if (!trimmed) return ''
+  return /pcs|setel|buah|lembar/i.test(trimmed) ? trimmed : `${trimmed} Pcs`
+}
 
 function ClientLogo({ src, alt }) {
   const [hasError, setHasError] = useState(false)
@@ -93,6 +100,13 @@ export default function ClientsPage() {
                         )}
                       </div>
                     </div>
+
+                    {client.totalPcs && client.totalPcs.trim() && (
+                      <div className="client-order-badge" title="Total Volume Pesanan">
+                        <Package size={13} />
+                        <span>Pesanan: {formatPcs(client.totalPcs)}</span>
+                      </div>
+                    )}
                   </div>
                 )
               })}

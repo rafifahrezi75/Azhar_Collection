@@ -5,6 +5,13 @@ import AdminPagination from '../components/AdminPagination'
 import { getKlienList, deleteKlienItem } from '../../firebase/adminService'
 import { showDeleteConfirm, showToast, showErrorAlert } from '../utils/swal'
 
+function formatPcs(val) {
+  if (!val) return ''
+  const trimmed = String(val).trim()
+  if (!trimmed) return ''
+  return /pcs|setel|buah|lembar/i.test(trimmed) ? trimmed : `${trimmed} Pcs`
+}
+
 export default function AdminKlienPage() {
   const [clients, setClients] = useState([])
   const [search, setSearch] = useState('')
@@ -136,6 +143,7 @@ export default function AdminKlienPage() {
                 <th>Lembaga Mitra</th>
                 <th>Kategori</th>
                 <th>Kota / Wilayah</th>
+                <th>Total Pesanan</th>
                 <th>Sejak</th>
                 <th style={{ textAlign: 'right' }}>Aksi</th>
               </tr>
@@ -143,7 +151,7 @@ export default function AdminKlienPage() {
             <tbody>
               {filteredClients.length === 0 ? (
                 <tr>
-                  <td colSpan={5} style={{ textAlign: 'center', padding: '3rem 1rem', color: 'var(--admin-text-muted)' }}>
+                  <td colSpan={6} style={{ textAlign: 'center', padding: '3rem 1rem', color: 'var(--admin-text-muted)' }}>
                     <Users size={36} style={{ margin: '0 auto 0.75rem auto', opacity: 0.4 }} />
                     <p style={{ margin: 0, fontWeight: 600 }}>Tidak ada data mitra ditemukan.</p>
                   </td>
@@ -188,6 +196,11 @@ export default function AdminKlienPage() {
                       </span>
                     </td>
                     <td>{client.city || '-'}</td>
+                    <td>
+                      <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: client.totalPcs ? 'var(--admin-text-main)' : 'var(--admin-text-subtle)' }}>
+                        {client.totalPcs ? formatPcs(client.totalPcs) : '-'}
+                      </span>
+                    </td>
                     <td>{client.since || '-'}</td>
                     <td style={{ textAlign: 'right' }}>
                       <div style={{ display: 'inline-flex', gap: '0.375rem' }}>

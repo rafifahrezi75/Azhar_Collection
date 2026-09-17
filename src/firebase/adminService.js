@@ -131,7 +131,7 @@ const defaultServices = [
 ]
 
 const LOCAL_STORAGE_KEY_PREFIX = 'azhar_admin_'
-const DATA_VERSION_KEY = 'azhar_admin_data_seeded_v19'
+const DATA_VERSION_KEY = 'azhar_admin_data_seeded_v20'
 
 if (typeof window !== 'undefined' && !localStorage.getItem(DATA_VERSION_KEY)) {
   try {

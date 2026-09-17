@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { ArrowLeft, Edit2, ExternalLink, MapPin, Calendar, AlertCircle, Loader2, School } from 'lucide-react'
+import { ArrowLeft, Edit2, ExternalLink, MapPin, Calendar, AlertCircle, Loader2, School, Package } from 'lucide-react'
 import { getKlienById } from '../../firebase/adminService'
 
 export default function AdminKlienDetailPage() {
@@ -132,6 +132,16 @@ export default function AdminKlienDetailPage() {
                 </div>
                 <div className="admin-detail-meta-body">
                   {client.since || '-'}
+                </div>
+              </div>
+
+              <div className="admin-detail-meta-card">
+                <div className="admin-detail-meta-header">
+                  <Package size={13} />
+                  <span>Total Pesanan</span>
+                </div>
+                <div className="admin-detail-meta-body">
+                  {client.totalPcs || '-'}
                 </div>
               </div>
             </div>
