@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import { ArrowLeft, Save, AlertCircle, Loader2, Calendar, Sparkles } from 'lucide-react'
 import AdminImageUploader from '../components/AdminImageUploader'
 import { getGalleryById, saveGalleryItem } from '../../firebase/adminService'
-import { uploadToCloudinary } from '../../firebase/cloudinaryService'
+import { uploadToCloudinary, deleteFromCloudinary } from '../../firebase/cloudinaryService'
 import { showSuccessAlert, showErrorAlert } from '../utils/swal'
 
 const monthsMap = {
@@ -140,6 +140,7 @@ export default function AdminGaleriEditPage() {
     setError('')
 
     try {
+      const oldImage = formData.image
       let finalImageUrl = formData.image
       if (imageFile) {
         finalImageUrl = await uploadToCloudinary(imageFile, 'azhar_gallery')
@@ -153,6 +154,10 @@ export default function AdminGaleriEditPage() {
         image: finalImageUrl,
         date: formattedDate
       })
+
+      if (imageFile && oldImage && oldImage !== finalImageUrl) {
+        await deleteFromCloudinary(oldImage).catch(() => {})
+      }
 
       await showSuccessAlert('Perubahan Tersimpan', 'Foto galeri berhasil diperbarui.')
       navigate('/admin/galeri')

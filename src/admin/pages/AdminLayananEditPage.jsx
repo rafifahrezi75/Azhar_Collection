@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ArrowLeft, Save, AlertCircle, Loader2 } from 'lucide-react'
 import AdminImageUploader from '../components/AdminImageUploader'
 import AdminRichEditor from '../components/AdminRichEditor'
-import { uploadToCloudinary } from '../../firebase/cloudinaryService'
+import { uploadToCloudinary, deleteFromCloudinary } from '../../firebase/cloudinaryService'
 import { getLayananById, saveLayananItem } from '../../firebase/adminService'
 import { showSuccessAlert, showErrorAlert } from '../utils/swal'
 
@@ -69,6 +69,7 @@ export default function AdminLayananEditPage() {
     setSubmitting(true)
     setError('')
     try {
+      const oldImage = formData.image
       let finalImageUrl = formData.image
       if (imageFile) {
         finalImageUrl = await uploadToCloudinary(imageFile)
@@ -79,6 +80,10 @@ export default function AdminLayananEditPage() {
         id,
         image: finalImageUrl
       })
+
+      if (imageFile && oldImage && oldImage !== finalImageUrl) {
+        await deleteFromCloudinary(oldImage).catch(() => {})
+      }
 
       await showSuccessAlert('Berhasil Diperbarui', 'Perubahan layanan konveksi berhasil disimpan.')
       navigate('/admin/layanan')

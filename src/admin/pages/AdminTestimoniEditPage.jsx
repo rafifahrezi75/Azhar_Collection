@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ArrowLeft, Save, Star, AlertCircle, Loader2 } from 'lucide-react'
 import AdminImageUploader from '../components/AdminImageUploader'
 import AdminRichEditor from '../components/AdminRichEditor'
-import { uploadToCloudinary } from '../../firebase/cloudinaryService'
+import { uploadToCloudinary, deleteFromCloudinary } from '../../firebase/cloudinaryService'
 import { getTestimonialById, saveTestimonialItem } from '../../firebase/adminService'
 import { showSuccessAlert, showErrorAlert } from '../utils/swal'
 
@@ -63,6 +63,7 @@ export default function AdminTestimoniEditPage() {
     setSubmitting(true)
     setError('')
     try {
+      const oldAvatar = formData.avatar
       let finalAvatarUrl = formData.avatar
       if (imageFile) {
         finalAvatarUrl = await uploadToCloudinary(imageFile)
@@ -73,6 +74,10 @@ export default function AdminTestimoniEditPage() {
         id,
         avatar: finalAvatarUrl
       })
+
+      if (imageFile && oldAvatar && oldAvatar !== finalAvatarUrl) {
+        await deleteFromCloudinary(oldAvatar).catch(() => {})
+      }
 
       await showSuccessAlert('Berhasil Diperbarui', 'Perubahan ulasan testimoni berhasil disimpan.')
       navigate('/admin/testimoni')

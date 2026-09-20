@@ -38,7 +38,7 @@ export default function AdminTestimoniPage() {
     })
     if (res.isConfirmed) {
       try {
-        await deleteTestimonialItem(t.id)
+        await deleteTestimonialItem(t.id, t.avatar || t.image)
         setTestis((prev) => prev.filter((item) => item.id !== t.id))
         showToast({ icon: 'success', title: 'Testimoni berhasil dihapus' })
       } catch (err) {

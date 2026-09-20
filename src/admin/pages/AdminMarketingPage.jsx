@@ -32,7 +32,7 @@ export default function AdminMarketingPage() {
     })
     if (res.isConfirmed) {
       try {
-        await deleteMarketingItem(member.id)
+        await deleteMarketingItem(member.id, member.photo || member.image)
         setTeam((prev) => prev.filter((item) => item.id !== member.id))
         showToast({ icon: 'success', title: 'Petugas marketing berhasil dihapus' })
       } catch (err) {

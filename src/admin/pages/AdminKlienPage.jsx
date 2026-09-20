@@ -45,7 +45,7 @@ export default function AdminKlienPage() {
     })
     if (res.isConfirmed) {
       try {
-        await deleteKlienItem(client.id)
+        await deleteKlienItem(client.id, client.image || client.logo)
         setClients((prev) => prev.filter((c) => c.id !== client.id))
         showToast({ icon: 'success', title: 'Profil mitra berhasil dihapus' })
       } catch (err) {

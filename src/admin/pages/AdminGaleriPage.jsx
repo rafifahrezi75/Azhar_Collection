@@ -61,7 +61,7 @@ export default function AdminGaleriPage() {
     })
     if (res.isConfirmed) {
       try {
-        await deleteGalleryItem(item.id)
+        await deleteGalleryItem(item.id, item.image)
         setItems((prev) => prev.filter((it) => String(it.id) !== String(item.id)))
         showToast({ icon: 'success', title: 'Foto galeri berhasil dihapus' })
       } catch (err) {

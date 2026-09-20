@@ -21,12 +21,12 @@ import {
   writeBatch
 } from 'firebase/firestore'
 import { auth, db, isFirebaseConfigured } from './config'
+import { deleteFromCloudinary } from './cloudinaryService'
 import {
   portfolioProducts,
   clientsData,
   servicesData,
   testimonialsData,
-  newsData,
   companyInfo
 } from '../data/siteData'
 
@@ -392,7 +392,15 @@ const saveLocalKatalog = (payload) => {
   return newId
 }
 
-export const deleteKatalogItem = async (id) => {
+export const deleteKatalogItem = async (id, imageUrl) => {
+  let targetImageUrl = imageUrl
+  if (!targetImageUrl) {
+    const item = await getKatalogById(id).catch(() => null)
+    if (item && item.image) targetImageUrl = item.image
+  }
+  if (targetImageUrl) {
+    await deleteFromCloudinary(targetImageUrl).catch(() => {})
+  }
   if (isFirebaseConfigured && db) {
     try {
       await deleteDoc(doc(db, 'products', String(id)))
@@ -472,7 +480,15 @@ const saveLocalKlien = (payload) => {
   return newId
 }
 
-export const deleteKlienItem = async (id) => {
+export const deleteKlienItem = async (id, imageUrl) => {
+  let targetImageUrl = imageUrl
+  if (!targetImageUrl) {
+    const item = await getKlienById(id).catch(() => null)
+    if (item) targetImageUrl = item.image || item.logo
+  }
+  if (targetImageUrl) {
+    await deleteFromCloudinary(targetImageUrl).catch(() => {})
+  }
   if (isFirebaseConfigured && db) {
     try {
       await deleteDoc(doc(db, 'clients', String(id)))
@@ -551,7 +567,15 @@ const saveLocalLayanan = (payload) => {
   return newId
 }
 
-export const deleteLayananItem = async (id) => {
+export const deleteLayananItem = async (id, imageUrl) => {
+  let targetImageUrl = imageUrl
+  if (!targetImageUrl) {
+    const item = await getLayananById(id).catch(() => null)
+    if (item && item.image) targetImageUrl = item.image
+  }
+  if (targetImageUrl) {
+    await deleteFromCloudinary(targetImageUrl).catch(() => {})
+  }
   if (isFirebaseConfigured && db) {
     try {
       await deleteDoc(doc(db, 'services', String(id)))
@@ -758,7 +782,15 @@ const saveLocalTestimonial = (payload) => {
   return newId
 }
 
-export const deleteTestimonialItem = async (id) => {
+export const deleteTestimonialItem = async (id, imageUrl) => {
+  let targetImageUrl = imageUrl
+  if (!targetImageUrl) {
+    const item = await getTestimonialById(id).catch(() => null)
+    if (item) targetImageUrl = item.avatar || item.image
+  }
+  if (targetImageUrl) {
+    await deleteFromCloudinary(targetImageUrl).catch(() => {})
+  }
   if (isFirebaseConfigured && db) {
     try {
       await deleteDoc(doc(db, 'testimonials', String(id)))
@@ -1153,7 +1185,15 @@ const saveLocalBerita = (payload) => {
   return newId
 }
 
-export const deleteBeritaItem = async (id) => {
+export const deleteBeritaItem = async (id, imageUrl) => {
+  let targetImageUrl = imageUrl
+  if (!targetImageUrl) {
+    const item = await getBeritaById(id).catch(() => null)
+    if (item && item.image) targetImageUrl = item.image
+  }
+  if (targetImageUrl) {
+    await deleteFromCloudinary(targetImageUrl).catch(() => {})
+  }
   if (isFirebaseConfigured && db) {
     try {
       await deleteDoc(doc(db, 'news', String(id)))
@@ -1280,7 +1320,15 @@ const saveLocalGallery = (payload) => {
   return newId
 }
 
-export const deleteGalleryItem = async (id) => {
+export const deleteGalleryItem = async (id, imageUrl) => {
+  let targetImageUrl = imageUrl
+  if (!targetImageUrl) {
+    const item = await getGalleryById(id).catch(() => null)
+    if (item && item.image) targetImageUrl = item.image
+  }
+  if (targetImageUrl) {
+    await deleteFromCloudinary(targetImageUrl).catch(() => {})
+  }
   if (isFirebaseConfigured && db) {
     try {
       await deleteDoc(doc(db, 'gallery', String(id)))
@@ -1428,7 +1476,15 @@ const saveLocalMarketing = (payload) => {
   return newId
 }
 
-export const deleteMarketingItem = async (id) => {
+export const deleteMarketingItem = async (id, imageUrl) => {
+  let targetImageUrl = imageUrl
+  if (!targetImageUrl) {
+    const item = await getMarketingById(id).catch(() => null)
+    if (item) targetImageUrl = item.photo || item.image
+  }
+  if (targetImageUrl) {
+    await deleteFromCloudinary(targetImageUrl).catch(() => {})
+  }
   if (isFirebaseConfigured && db) {
     try {
       await deleteDoc(doc(db, 'marketing', String(id)))

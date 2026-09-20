@@ -37,7 +37,7 @@ export default function AdminLayananPage() {
     })
     if (res.isConfirmed) {
       try {
-        await deleteLayananItem(service.id)
+        await deleteLayananItem(service.id, service.image)
         setServicesList((prev) => prev.filter((s) => s.id !== service.id))
         showToast({ icon: 'success', title: 'Layanan berhasil dihapus' })
       } catch (err) {

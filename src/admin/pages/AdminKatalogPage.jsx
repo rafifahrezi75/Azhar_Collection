@@ -38,7 +38,7 @@ export default function AdminKatalogPage() {
     })
     if (res.isConfirmed) {
       try {
-        await deleteKatalogItem(item.id)
+        await deleteKatalogItem(item.id, item.image)
         setItems((prev) => prev.filter((it) => it.id !== item.id))
         showToast({ icon: 'success', title: 'Model busana berhasil dihapus' })
       } catch (err) {

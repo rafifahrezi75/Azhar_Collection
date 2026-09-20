@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { ArrowLeft, Save, AlertCircle, Loader2 } from 'lucide-react'
 import AdminImageUploader from '../components/AdminImageUploader'
-import { uploadToCloudinary } from '../../firebase/cloudinaryService'
+import { uploadToCloudinary, deleteFromCloudinary } from '../../firebase/cloudinaryService'
 import { getMarketingById, saveMarketingItem } from '../../firebase/adminService'
 import { showSuccessAlert, showErrorAlert } from '../utils/swal'
 
@@ -68,6 +68,7 @@ export default function AdminMarketingEditPage() {
     setSubmitting(true)
     setError('')
     try {
+      const oldPhoto = formData.photo
       let finalPhotoUrl = formData.photo
       if (imageFile) {
         finalPhotoUrl = await uploadToCloudinary(imageFile)
@@ -78,6 +79,10 @@ export default function AdminMarketingEditPage() {
         id,
         photo: finalPhotoUrl
       })
+
+      if (imageFile && oldPhoto && oldPhoto !== finalPhotoUrl) {
+        await deleteFromCloudinary(oldPhoto).catch(() => {})
+      }
 
       await showSuccessAlert('Berhasil Disimpan', 'Data petugas marketing berhasil diperbarui.')
       navigate('/admin/marketing')

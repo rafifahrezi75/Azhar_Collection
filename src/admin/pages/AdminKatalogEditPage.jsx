@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ArrowLeft, Save, AlertCircle, Loader2, Plus, Trash2 } from 'lucide-react'
 import AdminImageUploader from '../components/AdminImageUploader'
-import { uploadToCloudinary } from '../../firebase/cloudinaryService'
+import { uploadToCloudinary, deleteFromCloudinary } from '../../firebase/cloudinaryService'
 import { getKatalogById, saveKatalogItem } from '../../firebase/adminService'
 import { showSuccessAlert, showErrorAlert } from '../utils/swal'
 
@@ -109,6 +109,7 @@ export default function AdminKatalogEditPage() {
     setSubmitting(true)
     setError('')
     try {
+      const oldImage = formData.image
       let finalImageUrl = formData.image
       if (imageFile) {
         finalImageUrl = await uploadToCloudinary(imageFile)
@@ -123,6 +124,10 @@ export default function AdminKatalogEditPage() {
         material: validMaterials.join(', '),
         image: finalImageUrl
       })
+
+      if (imageFile && oldImage && oldImage !== finalImageUrl) {
+        await deleteFromCloudinary(oldImage).catch(() => {})
+      }
 
       await showSuccessAlert('Berhasil Diperbarui', 'Perubahan model busana berhasil disimpan.')
       navigate('/admin/katalog')
