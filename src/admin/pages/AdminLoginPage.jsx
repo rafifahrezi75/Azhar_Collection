@@ -2,12 +2,16 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useLocation, Link } from 'react-router-dom'
 import { loginAdmin, subscribeToAuth } from '../../firebase/adminService'
 import { isFirebaseConfigured } from '../../firebase/config'
-import { Lock, Mail, ArrowRight, ShieldCheck, Eye, EyeOff, Clock, AlertCircle } from 'lucide-react'
+import { Lock, Mail, ArrowRight, ArrowLeft, ShieldCheck, Eye, EyeOff, Clock, AlertCircle, Sun, Moon } from 'lucide-react'
 import '../styles/admin.css'
 
 export default function AdminLoginPage() {
   const location = useLocation()
   const navigate = useNavigate()
+
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    return document.documentElement.classList.contains('admin-dark') || localStorage.getItem('azhar_admin_theme') === 'dark'
+  })
 
   const [rememberMe, setRememberMe] = useState(() => {
     return Boolean(localStorage.getItem('azhar_admin_remember_email'))
@@ -21,6 +25,31 @@ export default function AdminLoginPage() {
   const [loading, setLoading] = useState(false)
 
   const isIdleLogout = location.state?.reason === 'idle'
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('azhar_admin_theme')
+    if (savedTheme === 'dark') {
+      document.documentElement.classList.add('admin-dark')
+      setIsDarkMode(true)
+    } else if (savedTheme === 'light') {
+      document.documentElement.classList.remove('admin-dark')
+      setIsDarkMode(false)
+    }
+  }, [])
+
+  const handleToggleTheme = () => {
+    setIsDarkMode((prev) => {
+      const next = !prev
+      if (next) {
+        document.documentElement.classList.add('admin-dark')
+        localStorage.setItem('azhar_admin_theme', 'dark')
+      } else {
+        document.documentElement.classList.remove('admin-dark')
+        localStorage.setItem('azhar_admin_theme', 'light')
+      }
+      return next
+    })
+  }
 
   useEffect(() => {
     const unsubscribe = subscribeToAuth((user) => {
@@ -55,29 +84,26 @@ export default function AdminLoginPage() {
 
   return (
     <div className="admin-login-wrapper">
+      <button
+        type="button"
+        onClick={handleToggleTheme}
+        className="admin-login-theme-toggle"
+        title={isDarkMode ? 'Beralih ke Mode Terang' : 'Beralih ke Mode Gelap'}
+        aria-label="Toggle Mode Gelap atau Terang"
+      >
+        {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+      </button>
+
       <div className="admin-login-card">
         <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-          <div
-            style={{
-              width: '48px',
-              height: '48px',
-              margin: '0 auto 0.875rem auto',
-              borderRadius: '4px',
-              background: 'linear-gradient(135deg, #5C005C 0%, #800080 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#FFFFFF',
-              boxShadow: '0 8px 16px -4px rgba(128, 0, 128, 0.3)'
-            }}
-          >
+          <div className="admin-login-brand-icon">
             <ShieldCheck size={26} />
           </div>
 
-          <h1 style={{ fontSize: 'clamp(1.1875rem, 3.5vw, 1.375rem)', fontWeight: 800, margin: '0 0 0.375rem 0', color: 'var(--admin-text)' }}>
+          <h1 className="admin-login-title">
             Masuk ke Admin Panel
           </h1>
-          <p style={{ fontSize: 'clamp(0.75rem, 2.5vw, 0.8125rem)', color: 'var(--admin-text-muted)', margin: 0, lineHeight: 1.45 }}>
+          <p className="admin-login-subtitle">
             Azhar Collection: Konveksi & Bordir Komputer Sidoarjo
           </p>
         </div>
@@ -97,17 +123,7 @@ export default function AdminLoginPage() {
         )}
 
         {!isFirebaseConfigured && (
-          <div
-            style={{
-              padding: '0.625rem 0.75rem',
-              borderRadius: '4px',
-              background: 'var(--admin-primary-soft)',
-              color: 'var(--admin-primary)',
-              fontSize: '0.71875rem',
-              marginBottom: '1.25rem',
-              lineHeight: 1.45
-            }}
-          >
+          <div className="admin-login-demo-badge">
             <strong>Mode Demo Aktif:</strong> Firebase belum dikonfigurasi di .env. Anda dapat langsung masuk dengan kredensial bawaan untuk mencoba dashboard.
           </div>
         )}
@@ -117,7 +133,7 @@ export default function AdminLoginPage() {
             <label className="admin-label" htmlFor="admin-email" style={{ fontSize: '0.8125rem', fontWeight: 600 }}>
               Email Administrator
             </label>
-            <div style={{ position: 'relative' }}>
+            <div className="admin-login-field">
               <input
                 id="admin-email"
                 name="admin_login_email"
@@ -125,22 +141,11 @@ export default function AdminLoginPage() {
                 required
                 autoComplete="off"
                 className="admin-input"
-                style={{ paddingLeft: '2.5rem', minHeight: '44px', fontSize: '0.875rem' }}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="email@gmail.com"
               />
-              <Mail
-                size={16}
-                style={{
-                  position: 'absolute',
-                  left: '0.875rem',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  color: 'var(--admin-text-subtle)',
-                  pointerEvents: 'none'
-                }}
-              />
+              <Mail size={16} className="admin-login-icon" />
             </div>
           </div>
 
@@ -148,7 +153,7 @@ export default function AdminLoginPage() {
             <label className="admin-label" htmlFor="admin-password" style={{ fontSize: '0.8125rem', fontWeight: 600 }}>
               Kata Sandi
             </label>
-            <div style={{ position: 'relative' }}>
+            <div className="admin-login-field">
               <input
                 id="admin-password"
                 name="admin_login_password"
@@ -156,39 +161,16 @@ export default function AdminLoginPage() {
                 required
                 autoComplete="new-password"
                 className="admin-input"
-                style={{ paddingLeft: '2.5rem', paddingRight: '2.5rem', minHeight: '44px', fontSize: '0.875rem' }}
+                style={{ paddingRight: '2.5rem' }}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="password"
               />
-              <Lock
-                size={16}
-                style={{
-                  position: 'absolute',
-                  left: '0.875rem',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  color: 'var(--admin-text-subtle)',
-                  pointerEvents: 'none'
-                }}
-              />
+              <Lock size={16} className="admin-login-icon" />
               <button
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
-                style={{
-                  position: 'absolute',
-                  right: '0.75rem',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  background: 'none',
-                  border: 'none',
-                  padding: '4px',
-                  cursor: 'pointer',
-                  color: 'var(--admin-text-subtle)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
+                className="admin-login-btn-password"
                 aria-label={showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
               >
                 {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -212,7 +194,7 @@ export default function AdminLoginPage() {
                 gap: '0.5rem',
                 cursor: 'pointer',
                 fontSize: '0.8125rem',
-                color: 'var(--admin-text)',
+                color: 'var(--admin-text-main)',
                 userSelect: 'none'
               }}
             >
@@ -221,7 +203,7 @@ export default function AdminLoginPage() {
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
                 style={{
-                  accentColor: '#800080',
+                  accentColor: 'var(--admin-primary)',
                   width: '16px',
                   height: '16px',
                   cursor: 'pointer'
@@ -234,18 +216,7 @@ export default function AdminLoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="admin-btn admin-btn-primary"
-            style={{
-              width: '100%',
-              marginTop: '0.25rem',
-              minHeight: '44px',
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '0.5rem',
-              fontSize: '0.875rem',
-              fontWeight: 600
-            }}
+            className="admin-login-submit"
           >
             {loading ? 'Memverifikasi...' : 'Masuk ke Dashboard'}
             <ArrowRight size={16} />
@@ -255,15 +226,9 @@ export default function AdminLoginPage() {
         <div style={{ textAlign: 'center', marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem', alignItems: 'center' }}>
           <Link
             to="/"
-            style={{
-              fontSize: '0.8125rem',
-              color: 'var(--admin-text-muted)',
-              textDecoration: 'none',
-              display: 'inline-flex',
-              alignItems: 'center',
-              padding: '0.25rem 0.5rem'
-            }}
+            className="admin-login-back-link"
           >
+            <ArrowLeft size={14} />
             Kembali ke Website Utama
           </Link>
           <div style={{ fontSize: '0.75rem', color: 'var(--admin-text-subtle)' }}>
