@@ -50,9 +50,6 @@ export default function AdminGaleriPage() {
     }
   }, [])
 
-  useEffect(() => {
-    setCurrentPage(1)
-  }, [search, dateFilter])
 
   const handleDelete = async (item) => {
     const res = await showDeleteConfirm({
@@ -111,7 +108,10 @@ export default function AdminGaleriPage() {
                 type="text"
                 placeholder="Cari kata kunci..."
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => {
+                  setSearch(e.target.value)
+                  setCurrentPage(1)
+                }}
                 className="admin-input"
                 style={{ paddingLeft: '2.25rem' }}
               />
@@ -131,7 +131,10 @@ export default function AdminGaleriPage() {
               <input
                 type="date"
                 value={dateFilter}
-                onChange={(e) => setDateFilter(e.target.value)}
+                onChange={(e) => {
+                  setDateFilter(e.target.value)
+                  setCurrentPage(1)
+                }}
                 className="admin-input"
                 title="Filter berdasarkan tanggal upload"
                 style={{ minWidth: '150px' }}
@@ -139,7 +142,10 @@ export default function AdminGaleriPage() {
               {dateFilter && (
                 <button
                   type="button"
-                  onClick={() => setDateFilter('')}
+                  onClick={() => {
+                    setDateFilter('')
+                    setCurrentPage(1)
+                  }}
                   className="admin-icon-btn"
                   title="Reset filter tanggal"
                   aria-label="Reset filter tanggal"

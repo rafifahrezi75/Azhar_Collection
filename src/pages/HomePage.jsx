@@ -9,7 +9,7 @@ import GallerySection from '../components/GallerySection'
 import ContactMapSection from '../components/ContactMapSection'
 import CtaBanner from '../components/CtaBanner'
 
-export default function HomePage() {
+export default function HomePage({ onOpenQuote }) {
   return (
     <>
       <HeroSlider />

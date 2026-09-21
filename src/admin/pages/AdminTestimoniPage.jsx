@@ -26,9 +26,6 @@ export default function AdminTestimoniPage() {
     }
   }, [])
 
-  useEffect(() => {
-    setCurrentPage(1)
-  }, [search])
 
   const handleDelete = async (t) => {
     const name = t.clientName || t.name || 'Klien'
@@ -87,7 +84,10 @@ export default function AdminTestimoniPage() {
                 type="text"
                 placeholder="Cari ulasan / klien..."
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => {
+                  setSearch(e.target.value)
+                  setCurrentPage(1)
+                }}
                 className="admin-input"
                 style={{ paddingLeft: '2.25rem' }}
               />

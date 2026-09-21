@@ -75,6 +75,16 @@ export default function AdminPesanDetailPage() {
       )}`
     : null
 
+  const normalizeStatus = (s) => {
+    const st = (s || '').toLowerCase()
+    if (st === 'baru') return 'baru'
+    if (st === 'dihubungi' || st === 'proses') return 'proses'
+    if (st === 'deal' || st === 'selesai') return 'selesai'
+    return 'baru'
+  }
+
+  const currentStatus = normalizeStatus(inquiry.status)
+
   return (
     <div className="admin-card">
       <div className="admin-card-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap', padding: '1rem 1.25rem' }}>
@@ -87,14 +97,14 @@ export default function AdminPesanDetailPage() {
               <h1 className="admin-page-title" style={{ margin: 0 }}>Pesan dari {inquiry.name}</h1>
               <span
                 className={`admin-badge ${
-                  inquiry.status === 'baru'
+                  currentStatus === 'baru'
                     ? 'admin-badge-danger'
-                    : inquiry.status === 'proses'
+                    : currentStatus === 'proses'
                     ? 'admin-badge-warning'
                     : 'admin-badge-success'
                 }`}
               >
-                {inquiry.status === 'baru' ? 'Belum Dibaca' : inquiry.status === 'proses' ? 'Sedang Diproses' : 'Selesai'}
+                {currentStatus === 'baru' ? 'Belum Dibaca' : currentStatus === 'proses' ? 'Sedang Diproses' : 'Selesai'}
               </span>
             </div>
             <p className="admin-page-desc" style={{ margin: '0.25rem 0 0 0' }}>
@@ -195,9 +205,9 @@ export default function AdminPesanDetailPage() {
           <div style={{ display: 'flex', gap: '0.625rem', alignItems: 'center', flexWrap: 'wrap' }}>
             <button
               type="button"
-              disabled={updatingStatus || inquiry.status === 'baru'}
+              disabled={updatingStatus || currentStatus === 'baru'}
               onClick={() => handleStatusChange('baru')}
-              className={`admin-btn ${inquiry.status === 'baru' ? 'admin-btn-primary' : 'admin-btn-secondary'} admin-btn-sm`}
+              className={`admin-btn ${currentStatus === 'baru' ? 'admin-btn-primary' : 'admin-btn-secondary'} admin-btn-sm`}
             >
               <Clock size={13} />
               <span>Tandai Belum Dibaca</span>
@@ -205,9 +215,9 @@ export default function AdminPesanDetailPage() {
 
             <button
               type="button"
-              disabled={updatingStatus || inquiry.status === 'proses'}
+              disabled={updatingStatus || currentStatus === 'proses'}
               onClick={() => handleStatusChange('proses')}
-              className={`admin-btn ${inquiry.status === 'proses' ? 'admin-btn-primary' : 'admin-btn-secondary'} admin-btn-sm`}
+              className={`admin-btn ${currentStatus === 'proses' ? 'admin-btn-primary' : 'admin-btn-secondary'} admin-btn-sm`}
             >
               <Clock size={13} />
               <span>Sedang Diproses (Follow Up)</span>
@@ -215,9 +225,9 @@ export default function AdminPesanDetailPage() {
 
             <button
               type="button"
-              disabled={updatingStatus || inquiry.status === 'selesai'}
+              disabled={updatingStatus || currentStatus === 'selesai'}
               onClick={() => handleStatusChange('selesai')}
-              className={`admin-btn ${inquiry.status === 'selesai' ? 'admin-btn-primary' : 'admin-btn-secondary'} admin-btn-sm`}
+              className={`admin-btn ${currentStatus === 'selesai' ? 'admin-btn-primary' : 'admin-btn-secondary'} admin-btn-sm`}
             >
               <CheckCircle size={13} />
               <span>Selesai Ditindaklanjuti</span>

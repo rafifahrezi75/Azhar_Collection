@@ -19,9 +19,11 @@ export default function AdminLayout() {
   const navigate = useNavigate()
   const location = useLocation()
 
-  useEffect(() => {
+  const [prevPath, setPrevPath] = useState(location.pathname)
+  if (prevPath !== location.pathname) {
+    setPrevPath(location.pathname)
     setIsMobileOpen(false)
-  }, [location.pathname])
+  }
 
   useEffect(() => {
     localStorage.setItem('azhar_admin_sidebar_collapsed', isCollapsed ? 'true' : 'false')

@@ -218,6 +218,11 @@
   font-weight: 700;
 }
 
+.admin-nav-link:focus-visible {
+  outline: 2px solid var(--admin-primary);
+  outline-offset: 1px;
+}
+
 .admin-nav-link.active::before {
   content: '';
   position: absolute;
@@ -314,6 +319,11 @@
 
 .admin-icon-btn:active {
   transform: translateY(1px);
+}
+
+.admin-icon-btn:focus-visible {
+  outline: 2px solid var(--admin-primary);
+  outline-offset: 1px;
 }
 
 .admin-table .admin-icon-btn {
@@ -674,6 +684,16 @@
 .admin-btn-secondary:hover {
   background-color: var(--admin-surface-hover);
   border-color: var(--admin-text-subtle);
+}
+
+.admin-user-menu-btn:hover {
+  background-color: var(--admin-surface-hover);
+  border-color: var(--admin-text-subtle);
+}
+
+.admin-user-menu-btn:focus-visible {
+  outline: 2px solid var(--admin-primary);
+  outline-offset: 2px;
 }
 
 .admin-btn-secondary:active {
@@ -1256,58 +1276,15 @@
   color: var(--admin-text-muted);
 }
 
-.admin-status-dot-pulse {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 8px;
-  height: 8px;
+.admin-status-dot-pulse,
+.admin-status-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
   margin-right: 6px;
+  border-radius: 50%;
+  background-color: #10B981;
   flex-shrink: 0;
-}
-
-.admin-status-dot-pulse::before {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background-color: #10B981;
-  animation: adminStatusPing 1.6s cubic-bezier(0, 0, 0.2, 1) infinite;
-}
-
-.admin-status-dot-pulse::after {
-  content: '';
-  position: relative;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background-color: #10B981;
-  box-shadow: 0 0 6px rgba(16, 185, 129, 0.7);
-  animation: adminStatusBlink 1.4s ease-in-out infinite alternate;
-}
-
-@keyframes adminStatusPing {
-  0% {
-    transform: scale(0.95);
-    opacity: 0.9;
-  }
-  75%, 100% {
-    transform: scale(2.5);
-    opacity: 0;
-  }
-}
-
-@keyframes adminStatusBlink {
-  0% {
-    opacity: 0.5;
-    transform: scale(0.85);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1.05);
-  }
 }
 
 .admin-table-card-header {

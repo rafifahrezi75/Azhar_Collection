@@ -24,9 +24,6 @@ export default function AdminTimelinePage() {
     }
   }, [])
 
-  useEffect(() => {
-    setCurrentPage(1)
-  }, [search])
 
   const handleDelete = async (item) => {
     const res = await showDeleteConfirm({
@@ -131,7 +128,10 @@ export default function AdminTimelinePage() {
                 type="text"
                 placeholder="Cari tahun, judul, atau kata kunci..."
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => {
+                  setSearch(e.target.value)
+                  setCurrentPage(1)
+                }}
                 className="admin-input"
                 style={{ paddingLeft: '2.25rem' }}
               />

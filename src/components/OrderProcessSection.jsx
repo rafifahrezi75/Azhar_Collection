@@ -51,18 +51,7 @@ export default function OrderProcessSection() {
     >
       <div className="container">
         <div className="reveal-up" style={{ textAlign: 'center', maxWidth: '700px', margin: '0 auto 3rem auto' }}>
-          <span
-            className="section-tag"
-            style={{
-              background: 'transparent',
-              border: 'none',
-              boxShadow: 'none',
-              color: 'var(--color-accent)',
-              padding: 0,
-              marginBottom: '0.5rem',
-              display: 'inline-block'
-            }}
-          >
+          <span className="section-tag">
             CARA MUDAH PESAN SERAGAM BERGARANSI
           </span>
           <h2 className="section-title" style={{ color: '#FFFFFF' }}>

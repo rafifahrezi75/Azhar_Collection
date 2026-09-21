@@ -87,12 +87,12 @@ export default function ContactMapSection({ showForm = true }) {
             <div className="reveal-left" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
               <div style={{ paddingBottom: '0.625rem', borderBottom: '2px solid var(--color-border)', marginBottom: '0.875rem' }}>
                 <h2 style={{ fontSize: '1.375rem', fontWeight: 800, color: 'var(--color-primary-dark)', margin: 0 }}>
-                  Leave us your info
+                  Kirim Pesan & Konsultasi
                 </h2>
               </div>
 
               <p style={{ fontSize: '0.84375rem', color: 'var(--color-text-muted)', margin: '0 0 1.25rem 0' }}>
-                Dapatkan penawaran menarik dari kami
+                Konsultasikan kebutuhan seragam, pilihan bahan, atau estimasi jumlah pesanan Anda bersama kami.
               </p>
 
               {isSubmitted && (
@@ -109,17 +109,9 @@ export default function ContactMapSection({ showForm = true }) {
                   required
                   value={formData.fullName}
                   onChange={handleChange}
-                  placeholder="Full Name*"
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem 1rem',
-                    background: '#F1F5F9',
-                    border: '1px solid #E2E8F0',
-                    borderRadius: '6px',
-                    fontSize: '0.84375rem',
-                    color: 'var(--color-text-main)',
-                    outline: 'none'
-                  }}
+                  placeholder="Nama Lengkap*"
+                  aria-label="Nama Lengkap"
+                  className="contact-form-input"
                 />
 
                 <input
@@ -128,17 +120,9 @@ export default function ContactMapSection({ showForm = true }) {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="Email*"
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem 1rem',
-                    background: '#F1F5F9',
-                    border: '1px solid #E2E8F0',
-                    borderRadius: '6px',
-                    fontSize: '0.84375rem',
-                    color: 'var(--color-text-main)',
-                    outline: 'none'
-                  }}
+                  placeholder="Alamat Email*"
+                  aria-label="Alamat Email"
+                  className="contact-form-input"
                 />
 
                 <input
@@ -147,39 +131,20 @@ export default function ContactMapSection({ showForm = true }) {
                   required
                   value={formData.telephone}
                   onChange={handleChange}
-                  placeholder="Telephone*"
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem 1rem',
-                    background: '#F1F5F9',
-                    border: '1px solid #E2E8F0',
-                    borderRadius: '6px',
-                    fontSize: '0.84375rem',
-                    color: 'var(--color-text-main)',
-                    outline: 'none'
-                  }}
+                  placeholder="Nomor Telepon / WhatsApp*"
+                  aria-label="Nomor Telepon atau WhatsApp"
+                  className="contact-form-input"
                 />
 
                 <textarea
                   name="message"
                   required
-                  rows={4}
                   value={formData.message}
                   onChange={handleChange}
-                  placeholder="Message*"
-                  style={{
-                    width: '100%',
-                    flex: 1,
-                    minHeight: '110px',
-                    padding: '0.75rem 1rem',
-                    background: '#F1F5F9',
-                    border: '1px solid #E2E8F0',
-                    borderRadius: '6px',
-                    fontSize: '0.84375rem',
-                    color: 'var(--color-text-main)',
-                    outline: 'none',
-                    resize: 'vertical'
-                  }}
+                  placeholder="Detail Kebutuhan Pesanan (Jenis seragam, perkiraan jumlah, bahan, logo)*"
+                  aria-label="Detail Kebutuhan Pesanan"
+                  className="contact-form-input contact-form-textarea"
+                  style={{ flex: 1, minHeight: '130px', resize: 'none' }}
                 />
 
                 <button
@@ -194,21 +159,21 @@ export default function ContactMapSection({ showForm = true }) {
                     fontSize: '0.875rem',
                     fontWeight: 700,
                     cursor: 'pointer',
-                    marginTop: '0.25rem',
+                    marginTop: 'auto',
                     boxShadow: 'var(--shadow-sm)',
                     transition: 'all var(--transition-fast)'
                   }}
                 >
-                  Kirim Pesan
+                  Kirim Pesan Konsultasi
                 </button>
               </form>
             </div>
 
-            <div className="reveal-right delay-150" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div className="reveal-right delay-150" style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: '1rem' }}>
               <div>
                 <div style={{ paddingBottom: '0.625rem', borderBottom: '2px solid var(--color-border)', marginBottom: '0.875rem' }}>
-                  <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--color-primary-dark)', margin: 0 }}>
-                    Location
+                  <h2 style={{ fontSize: '1.375rem', fontWeight: 800, color: 'var(--color-primary-dark)', margin: 0 }}>
+                    Lokasi Workshop
                   </h2>
                 </div>
 
@@ -240,23 +205,37 @@ export default function ContactMapSection({ showForm = true }) {
                 </div>
               </div>
 
-              <div>
+              <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: '230px' }}>
                 <div style={{ paddingBottom: '0.625rem', borderBottom: '2px solid var(--color-border)', marginBottom: '0.875rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--color-primary-dark)', margin: 0 }}>
-                    Map Lokasi
-                  </h2>
+                  <h3 style={{ fontSize: '1.125rem', fontWeight: 800, color: 'var(--color-primary-dark)', margin: 0 }}>
+                    Peta Lokasi Workshop
+                  </h3>
                   <a
                     href={info.mapsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--color-accent)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}
+                    className="btn-map-link"
+                    style={{
+                      fontSize: '0.78125rem',
+                      fontWeight: 600,
+                      color: 'var(--color-primary)',
+                      backgroundColor: 'var(--color-primary-soft)',
+                      border: '1px solid var(--color-primary-border)',
+                      borderRadius: '4px',
+                      padding: '0.45rem 0.85rem',
+                      textDecoration: 'none',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.375rem',
+                      transition: 'all var(--transition-fast)'
+                    }}
                   >
                     <span>Buka di Google Maps</span>
                     <ExternalLink size={13} />
                   </a>
                 </div>
 
-                <div style={{ borderRadius: '4px', overflow: 'hidden', border: '1px solid var(--color-border)', height: '185px' }}>
+                <div style={{ borderRadius: '4px', overflow: 'hidden', border: '1px solid var(--color-border)', flex: 1, minHeight: '185px' }}>
                   <iframe
                     src={info.mapsEmbedUrl}
                     title="Lokasi Azhar Collection Sidoarjo di Google Maps"
@@ -268,7 +247,7 @@ export default function ContactMapSection({ showForm = true }) {
               </div>
 
               {marketingList && marketingList.length > 0 && (
-                <div style={{ marginTop: '0.5rem' }}>
+                <div style={{ marginTop: 'auto' }}>
                   <div style={{ paddingBottom: '0.375rem', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--color-primary-dark)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       Tim Marketing
@@ -428,7 +407,21 @@ export default function ContactMapSection({ showForm = true }) {
                     href={companyInfo.mapsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--color-accent)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.375rem' }}
+                    className="btn-map-link"
+                    style={{
+                      fontSize: '0.8125rem',
+                      fontWeight: 600,
+                      color: 'var(--color-primary)',
+                      backgroundColor: 'var(--color-primary-soft)',
+                      border: '1px solid var(--color-primary-border)',
+                      borderRadius: '4px',
+                      padding: '0.5rem 1rem',
+                      textDecoration: 'none',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.375rem',
+                      transition: 'all var(--transition-fast)'
+                    }}
                   >
                     <span>Buka Rute di Google Maps</span>
                     <ExternalLink size={13} />

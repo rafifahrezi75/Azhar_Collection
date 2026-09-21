@@ -12,11 +12,6 @@ export default function AdminKatalogPage() {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 8
 
-  const loadData = async () => {
-    const list = await getKatalogList()
-    setItems(list)
-  }
-
   useEffect(() => {
     let isMounted = true
     getKatalogList().then((list) => {
@@ -26,10 +21,6 @@ export default function AdminKatalogPage() {
       isMounted = false
     }
   }, [])
-
-  useEffect(() => {
-    setCurrentPage(1)
-  }, [search, categoryFilter])
 
   const handleDelete = async (item) => {
     const res = await showDeleteConfirm({
@@ -83,7 +74,10 @@ export default function AdminKatalogPage() {
           <div className="admin-table-tools">
             <select
               value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
+              onChange={(e) => {
+                setCategoryFilter(e.target.value)
+                setCurrentPage(1)
+              }}
               className="admin-select admin-table-select-filter"
             >
               <option value="all">Semua Kategori</option>
@@ -100,7 +94,10 @@ export default function AdminKatalogPage() {
                 type="text"
                 placeholder="Cari model busana / pemesan..."
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => {
+                  setSearch(e.target.value)
+                  setCurrentPage(1)
+                }}
                 className="admin-input"
                 style={{ paddingLeft: '2.25rem' }}
               />

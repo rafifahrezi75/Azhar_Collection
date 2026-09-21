@@ -21,9 +21,6 @@ export default function AdminMarketingPage() {
     }
   }, [])
 
-  useEffect(() => {
-    setCurrentPage(1)
-  }, [search])
 
   const handleDelete = async (member) => {
     const res = await showDeleteConfirm({
@@ -81,7 +78,10 @@ export default function AdminMarketingPage() {
                 type="text"
                 placeholder="Cari nama, posisi, nomor..."
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => {
+                  setSearch(e.target.value)
+                  setCurrentPage(1)
+                }}
                 className="admin-input"
                 style={{ paddingLeft: '2.25rem' }}
               />

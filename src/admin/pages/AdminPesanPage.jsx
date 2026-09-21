@@ -31,9 +31,6 @@ export default function AdminPesanPage() {
     }
   }, [])
 
-  useEffect(() => {
-    setCurrentPage(1)
-  }, [search, statusFilter])
 
   const handleStatusChange = async (id, newStatus) => {
     await updateInquiryStatus(id, newStatus)
@@ -57,12 +54,21 @@ export default function AdminPesanPage() {
     }
   }
 
+  const normalizeStatus = (s) => {
+    const st = (s || '').toLowerCase()
+    if (st === 'baru') return 'baru'
+    if (st === 'dihubungi' || st === 'proses') return 'proses'
+    if (st === 'deal' || st === 'selesai') return 'selesai'
+    return 'baru'
+  }
+
   const filteredInquiries = inquiries.filter((inq) => {
     const matchSearch =
       (inq.name || '').toLowerCase().includes(search.toLowerCase()) ||
       (inq.institution || '').toLowerCase().includes(search.toLowerCase()) ||
       (inq.whatsapp || '').toLowerCase().includes(search.toLowerCase())
-    const matchStatus = statusFilter === 'all' || inq.status === statusFilter
+    const currentStatus = normalizeStatus(inq.status)
+    const matchStatus = statusFilter === 'all' || currentStatus === statusFilter
     return matchSearch && matchStatus
   })
 
@@ -95,7 +101,10 @@ export default function AdminPesanPage() {
             <select
               className="admin-select admin-table-select-filter"
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
+              onChange={(e) => {
+                setStatusFilter(e.target.value)
+                setCurrentPage(1)
+              }}
             >
               <option value="all">Semua Status</option>
               <option value="baru">Belum Dibaca</option>
@@ -108,7 +117,10 @@ export default function AdminPesanPage() {
                 type="text"
                 placeholder="Cari pengirim / instansi..."
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => {
+                  setSearch(e.target.value)
+                  setCurrentPage(1)
+                }}
                 className="admin-input"
                 style={{ paddingLeft: '2.25rem' }}
               />
@@ -165,22 +177,27 @@ export default function AdminPesanPage() {
                       )}
                     </td>
                     <td>
-                      <select
-                        value={inq.status}
-                        onChange={(e) => handleStatusChange(inq.id, e.target.value)}
-                        className={`admin-badge ${
-                          inq.status === 'baru'
-                            ? 'admin-badge-danger'
-                            : inq.status === 'proses'
-                            ? 'admin-badge-warning'
-                            : 'admin-badge-success'
-                        }`}
-                        style={{ cursor: 'pointer', border: 'none' }}
-                      >
-                        <option value="baru">Belum Dibaca</option>
-                        <option value="proses">Proses</option>
-                        <option value="selesai">Selesai</option>
-                      </select>
+                      {(() => {
+                        const currentStatus = normalizeStatus(inq.status)
+                        return (
+                          <select
+                            value={currentStatus}
+                            onChange={(e) => handleStatusChange(inq.id, e.target.value)}
+                            className={`admin-badge ${
+                              currentStatus === 'baru'
+                                ? 'admin-badge-danger'
+                                : currentStatus === 'proses'
+                                ? 'admin-badge-warning'
+                                : 'admin-badge-success'
+                            }`}
+                            style={{ cursor: 'pointer', border: 'none' }}
+                          >
+                            <option value="baru">Belum Dibaca</option>
+                            <option value="proses">Proses</option>
+                            <option value="selesai">Selesai</option>
+                          </select>
+                        )
+                      })()}
                     </td>
                     <td style={{ fontSize: '0.8125rem' }}>
                       {inq.createdAt ? new Date(inq.createdAt).toLocaleDateString('id-ID') : '-'}

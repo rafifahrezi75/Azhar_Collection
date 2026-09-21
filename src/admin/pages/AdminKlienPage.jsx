@@ -19,11 +19,6 @@ export default function AdminKlienPage() {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 8
 
-  const loadData = async () => {
-    const list = await getKlienList()
-    setClients(list)
-  }
-
   useEffect(() => {
     let isMounted = true
     getKlienList().then((list) => {
@@ -33,10 +28,6 @@ export default function AdminKlienPage() {
       isMounted = false
     }
   }, [])
-
-  useEffect(() => {
-    setCurrentPage(1)
-  }, [search, categoryFilter])
 
   const handleDelete = async (client) => {
     const res = await showDeleteConfirm({
@@ -93,7 +84,10 @@ export default function AdminKlienPage() {
           <div className="admin-table-tools">
             <select
               value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
+              onChange={(e) => {
+                setCategoryFilter(e.target.value)
+                setCurrentPage(1)
+              }}
               className="admin-select admin-table-select-filter"
             >
               <option value="all">Semua Kategori</option>
@@ -109,7 +103,10 @@ export default function AdminKlienPage() {
                 type="text"
                 placeholder="Cari nama sekolah / kota..."
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => {
+                  setSearch(e.target.value)
+                  setCurrentPage(1)
+                }}
                 className="admin-input"
                 style={{ paddingLeft: '2.25rem' }}
               />

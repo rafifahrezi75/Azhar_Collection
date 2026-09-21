@@ -29,9 +29,9 @@ export default function AboutSection() {
 
           <div className="about-text-content reveal-right delay-150">
             <span className="section-tag">{aboutData.tag}</span>
-            <h2 className="section-title" style={{ textAlign: 'left' }}>
+            <h1 className="section-title" style={{ textAlign: 'left' }}>
               {aboutData.title}
-            </h2>
+            </h1>
             <p className="about-p">{aboutData.paragraph1}</p>
             <p className="about-p">{aboutData.paragraph2}</p>
 
@@ -56,7 +56,7 @@ export default function AboutSection() {
 
             <div>
               <Link to="/tentang-kami" className="btn-primary">
-                <span>Pelajari Selengkapnya</span>
+                <span>Profil Azhar Collection</span>
                 <ArrowRight size={16} />
               </Link>
             </div>

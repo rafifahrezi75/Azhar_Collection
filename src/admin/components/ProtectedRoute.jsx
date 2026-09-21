@@ -10,7 +10,7 @@ export default function ProtectedRoute({ children }) {
   const [loading, setLoading] = useState(true)
   const location = useLocation()
   const navigate = useNavigate()
-  const lastActivityRef = useRef(Date.now())
+  const lastActivityRef = useRef(0)
 
   useEffect(() => {
     const unsubscribe = subscribeToAuth((user) => {

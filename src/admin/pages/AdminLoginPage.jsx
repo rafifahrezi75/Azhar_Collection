@@ -78,7 +78,7 @@ export default function AdminLoginPage() {
             Masuk ke Admin Panel
           </h1>
           <p style={{ fontSize: 'clamp(0.75rem, 2.5vw, 0.8125rem)', color: 'var(--admin-text-muted)', margin: 0, lineHeight: 1.45 }}>
-            Azhar Collection — Konveksi & Bordir Komputer Sidoarjo
+            Azhar Collection: Konveksi & Bordir Komputer Sidoarjo
           </p>
         </div>
 
@@ -264,7 +264,7 @@ export default function AdminLoginPage() {
               padding: '0.25rem 0.5rem'
             }}
           >
-            ← Kembali ke Website Utama
+            Kembali ke Website Utama
           </Link>
           <div style={{ fontSize: '0.75rem', color: 'var(--admin-text-subtle)' }}>
             &copy; {new Date().getFullYear()} Azhar Collection. Seluruh hak cipta dilindungi.

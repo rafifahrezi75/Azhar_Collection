@@ -7,7 +7,7 @@ export default function HeroSlider() {
   useEffect(() => {
     const timer = setInterval(() => {
       setActiveSlide((prev) => (prev + 1) % heroSlides.length)
-    }, 4000)
+    }, 4500)
     return () => clearInterval(timer)
   }, [])
 
@@ -17,6 +17,7 @@ export default function HeroSlider() {
         <div
           key={slide.id}
           className={`hero-slide ${index === activeSlide ? 'active' : ''}`}
+          aria-hidden={index !== activeSlide}
         >
           <img
             src={slide.image}
@@ -26,9 +27,9 @@ export default function HeroSlider() {
               e.currentTarget.src = 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&w=1600&q=80'
             }}
           />
-          <div className="hero-overlay" />
         </div>
       ))}
+      <div className="hero-overlay" />
     </section>
   )
 }

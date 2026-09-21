@@ -11,11 +11,6 @@ export default function AdminLayananPage() {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 8
 
-  const loadData = async () => {
-    const list = await getLayananList()
-    setServicesList(list)
-  }
-
   useEffect(() => {
     let isMounted = true
     getLayananList().then((list) => {
@@ -25,10 +20,6 @@ export default function AdminLayananPage() {
       isMounted = false
     }
   }, [])
-
-  useEffect(() => {
-    setCurrentPage(1)
-  }, [search])
 
   const handleDelete = async (service) => {
     const res = await showDeleteConfirm({
@@ -85,7 +76,10 @@ export default function AdminLayananPage() {
                 type="text"
                 placeholder="Cari jenis layanan / bahan..."
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => {
+                  setSearch(e.target.value)
+                  setCurrentPage(1)
+                }}
                 className="admin-input"
                 style={{ paddingLeft: '2.25rem' }}
               />

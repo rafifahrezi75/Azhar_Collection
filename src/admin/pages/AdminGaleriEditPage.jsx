@@ -24,7 +24,7 @@ const parseDateInfo = (dateStr) => {
     return { type: 'month', value: str }
   }
 
-  const slashFullMatch = str.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/)
+  const slashFullMatch = str.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{4})$/)
   if (slashFullMatch) {
     const day = slashFullMatch[1].padStart(2, '0')
     const month = slashFullMatch[2].padStart(2, '0')
@@ -32,7 +32,7 @@ const parseDateInfo = (dateStr) => {
     return { type: 'full', value: `${year}-${month}-${day}` }
   }
 
-  const slashMonthMatch = str.match(/^(\d{1,2})[\/-](\d{4})$/)
+  const slashMonthMatch = str.match(/^(\d{1,2})[/-](\d{4})$/)
   if (slashMonthMatch) {
     const month = slashMonthMatch[1].padStart(2, '0')
     const year = slashMonthMatch[2]
