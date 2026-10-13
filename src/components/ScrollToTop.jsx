@@ -2,25 +2,25 @@ import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 
 const pageTitles = {
-  '/': 'Azhar Collection | Konveksi Pakaian Sidoarjo',
-  '/tentang-kami': 'Tentang Kami | Azhar Collection',
-  '/layanan': 'Layanan Konveksi | Azhar Collection',
-  '/katalog': 'Katalog Seragam | Azhar Collection',
-  '/klien': 'Klien & Mitra | Azhar Collection',
-  '/galeri': 'Galeri Dokumentasi & Foto | Azhar Collection',
-  '/berita': 'Galeri Dokumentasi & Foto | Azhar Collection',
-  '/kontak': 'Kontak & Pemesanan | Azhar Collection'
+  '/': 'Azhar Collection | Konveksi Pakaian Sidoarjo & Sablon DTF',
+  '/tentang-kami': 'Tentang Kami | Konveksi Pakaian Sidoarjo - Azhar Collection',
+  '/layanan': 'Layanan Konveksi Pakaian, Sablon DTF & Bordir | Azhar Collection',
+  '/katalog': 'Katalog Seragam Sekolah & Kemeja PDH | Azhar Collection Sidoarjo',
+  '/klien': 'Klien & Mitra Pengadaan Seragam | Azhar Collection Sidoarjo',
+  '/galeri': 'Galeri Workshop Konveksi & Bordir Komputer | Azhar Collection',
+  '/berita': 'Galeri Workshop Konveksi & Bordir Komputer | Azhar Collection',
+  '/kontak': 'Kontak & Alamat Workshop Konveksi Buduran | Azhar Collection Sidoarjo'
 }
 
 const pageDescriptions = {
-  '/': 'Azhar Collection - Produsen konveksi pakaian terpercaya di Buduran, Sidoarjo. Melayani seragam sekolah SD, SMP, SMA, pramuka, batik, kemeja PDH/PDL, almamater, kaos olahraga, dan bordir komputer.',
-  '/tentang-kami': 'Profil dan perjalanan Azhar Collection sejak 2004 sebagai mitra konveksi pakaian terpercaya di Sidoarjo dan Jawa Timur.',
-  '/layanan': 'Layanan konveksi pakaian, kemeja kerja PDH/PDL, batik instansi, jas almamater, dan bordir komputer otomatis di Sidoarjo.',
-  '/katalog': 'Katalog portofolio busana dan seragam hasil produksi Azhar Collection untuk sekolah, instansi dinas, dan perusahaan.',
-  '/klien': 'Daftar sekolah, instansi pemerintah, dan lembaga mitra yang mempercayakan pengadaan seragam kepada Azhar Collection.',
-  '/galeri': 'Dokumentasi proses penjahitan seragam sekolah, pakaian dinas, bordir komputer, dan aktivitas workshop Azhar Collection di Buduran, Sidoarjo.',
-  '/berita': 'Dokumentasi proses penjahitan seragam sekolah, pakaian dinas, bordir komputer, dan aktivitas workshop Azhar Collection di Buduran, Sidoarjo.',
-  '/kontak': 'Hubungi Azhar Collection Sidoarjo untuk konsultasi pemesanan seragam kustom, kalkulasi biaya, dan survei workshop.'
+  '/': 'Azhar Collection - Produsen konveksi pakaian terpercaya di Buduran, Sidoarjo. Melayani seragam sekolah SD, SMP, SMA, pramuka, batik, kemeja PDH/PDL, almamater, kaos olahraga, sablon DTF, dan bordir komputer.',
+  '/tentang-kami': 'Profil dan sejarah Azhar Collection sejak 2004 sebagai mitra konveksi pakaian terpercaya di Sidoarjo dan Jawa Timur dengan kapasitas produksi 1.000 stel per order.',
+  '/layanan': 'Layanan jahit kustom konveksi pakaian, seragam olahraga, sablon digital DTF presisi, bordir komputer otomatis, dan pakaian dinas kustom di Sidoarjo.',
+  '/katalog': 'Katalog model kemeja PDH/PDL, seragam sekolah SD SMP SMA, jas almamater, batik sekolah, dan busana muslim hasil produksi konveksi Azhar Collection Sidoarjo.',
+  '/klien': 'Daftar sekolah, instansi pemerintah, dan lembaga mitra yang mempercayakan pengadaan seragam dan pakaian dinas kepada Azhar Collection Sidoarjo.',
+  '/galeri': 'Dokumentasi workshop penjahitan seragam sekolah, pakaian dinas, mesin bordir komputer, dan aktivitas produksi Azhar Collection di Buduran, Sidoarjo.',
+  '/berita': 'Dokumentasi workshop penjahitan seragam sekolah, pakaian dinas, mesin bordir komputer, dan aktivitas produksi Azhar Collection di Buduran, Sidoarjo.',
+  '/kontak': 'Hubungi Azhar Collection di Damarsi Buduran Sidoarjo untuk konsultasi pemesanan jahit seragam kustom, kalkulasi biaya, dan survei workshop.'
 }
 
 export default function ScrollToTop() {
@@ -65,6 +65,17 @@ export default function ScrollToTop() {
     const ogDesc = document.querySelector('meta[property="og:description"]')
     if (ogDesc) {
       ogDesc.setAttribute('content', description)
+    }
+
+    const pageUrl = `https://azharcollection.my.id${pathname === '/' ? '/' : pathname}`
+    const canonicalLink = document.querySelector('link[rel="canonical"]')
+    if (canonicalLink) {
+      canonicalLink.setAttribute('href', pageUrl)
+    }
+
+    const ogUrl = document.querySelector('meta[property="og:url"]')
+    if (ogUrl) {
+      ogUrl.setAttribute('content', pageUrl)
     }
 
     if (hash) {

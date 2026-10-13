@@ -134,7 +134,7 @@ export default function GallerySection() {
                   <div className="gallery-card-img-wrap" style={{ height: '230px' }}>
                     <img
                       src={item.image}
-                      alt={item.title || (item.date ? `Foto dokumentasi ${item.date}` : 'Foto galeri')}
+                      alt={item.title ? `${item.title} - Konveksi Pakaian Sidoarjo Azhar Collection` : 'Dokumentasi Workshop Konveksi Sidoarjo Azhar Collection'}
                       className="gallery-card-img"
                       loading="lazy"
                     />

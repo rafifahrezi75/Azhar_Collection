@@ -50,7 +50,7 @@ export default function ProductCatalogSection({ limit, showHeader = false, showV
                   {product.image ? (
                     <img
                       src={product.image}
-                      alt={product.name}
+                      alt={`${product.name} - Konveksi Pakaian Azhar Collection`}
                       className="product-img"
                       loading="lazy"
                     />

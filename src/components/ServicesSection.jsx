@@ -72,7 +72,7 @@ export default function ServicesSection({ limit }) {
                 className={`service-card reveal-up delay-${Math.min((idx % 3) * 100 + 100, 400)}`}
               >
                 <div className="service-card-bg">
-                  {item.image && <img src={item.image} alt={item.title} />}
+                  {item.image && <img src={item.image} alt={`${item.title} - Layanan Konveksi Azhar Collection Sidoarjo`} />}
                   <div className="service-card-bg-overlay" />
                 </div>
 
