@@ -100,7 +100,7 @@ export default function AdminLayananCreatePage() {
                   id="service-title"
                   type="text"
                   className="admin-input"
-                  placeholder="Contoh: Konveksi Seragam Sekolah SD, SMP & SMA"
+                  placeholder="Contoh: Konveksi Pakaian Sekolah SD, SMP & SMA"
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   required

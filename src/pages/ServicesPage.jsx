@@ -7,7 +7,7 @@ export default function ServicesPage() {
   return (
     <div className="services-page">
       <PageHeader
-        title="Layanan Jahit Kustom & Production House Garment"
+        title="Layanan Jahit Kustom & Konveksi Pakaian"
         subtitle="Dapatkan Hasil Jahitan Presisi Rapi Berstandar Tinggi dengan Penawaran Harga Terbaik & Garansi 100% Retur Gratis!"
         breadcrumb="Layanan"
       />

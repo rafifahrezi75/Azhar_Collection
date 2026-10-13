@@ -25,7 +25,7 @@ export const heroSlides = [
   {
     id: 1,
     image: "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=1600&q=80",
-    title: "Produsen Konveksi Seragam Sekolah & Busana Kustom Terpercaya"
+    title: "Produsen Konveksi Pakaian Sekolah & Busana Kustom Terpercaya"
   },
   {
     id: 2,
@@ -52,7 +52,7 @@ export const heroSlides = [
 export const infoBoxesData = {
   box1: {
     title: "Jahitan Rapi, Tahan Lama & Garansi Retur 100%",
-    desc: "Nikmati hasil jahit konveksi seragam dan busana kustom dengan pola presisi, obras ganda yang kokoh, serta garansi ganti produk cacat gratis demi kepuasan penuh Anda!",
+    desc: "Nikmati hasil jahit konveksi pakaian dan busana kustom dengan pola presisi, obras ganda yang kokoh, serta garansi ganti produk cacat gratis demi kepuasan penuh Anda!",
     link: "Lihat Katalog Baju Yang Pernah Dikerjakan"
   },
   box2: {
@@ -65,7 +65,7 @@ export const infoBoxesData = {
 export const aboutData = {
   tag: "MENGAPA PILIH AZHAR COLLECTION",
   title: "Mitra Konveksi Terdepan Dengan Hasil Jahitan Berstandar Mutu Tinggi",
-  paragraph1: "Azhar Collection merupakan produsen konveksi dan garment terkemuka di Sidoarjo yang dirintis dari tradisi jahit keluarga berpengalaman. Bermula dari pembuatan seragam militer hingga 1.000 stel per order, kini kami berkembang sebagai spesialis produksi seragam sekolah, busana muslim, mukena, dan atribut sablon DTF berkualitas ekspor.",
+  paragraph1: "Azhar Collection merupakan produsen konveksi pakaian terkemuka di Sidoarjo yang dirintis dari tradisi jahit keluarga berpengalaman. Bermula dari pembuatan seragam militer hingga 1.000 stel per order, kini kami berkembang sebagai spesialis produksi seragam sekolah, busana muslim, mukena, dan atribut sablon DTF berkualitas ekspor.",
   paragraph2: "Setiap pesanan dijamin melalui 10 tahap alur produksi ketat, mulai dari pembuatan master sample, seleksi bahan premium, inspeksi QC 100%, hingga garansi penggantian produk cacat gratis. Kami melayani pengadaan partai besar dan kustom untuk sekolah serta instansi di seluruh pulau di Indonesia.",
   stats: [
     { value: "40+", label: "Tahun Pengalaman Konveksi" },

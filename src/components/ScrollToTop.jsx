@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 
 const pageTitles = {
-  '/': 'Azhar Collection | Konveksi Seragam Sidoarjo',
+  '/': 'Azhar Collection | Konveksi Pakaian Sidoarjo',
   '/tentang-kami': 'Tentang Kami | Azhar Collection',
   '/layanan': 'Layanan Konveksi | Azhar Collection',
   '/katalog': 'Katalog Seragam | Azhar Collection',
@@ -13,9 +13,9 @@ const pageTitles = {
 }
 
 const pageDescriptions = {
-  '/': 'Azhar Collection - Produsen konveksi dan garment terpercaya di Buduran, Sidoarjo. Melayani seragam sekolah SD, SMP, SMA, pramuka, batik, kemeja PDH/PDL, almamater, kaos olahraga, dan bordir komputer.',
-  '/tentang-kami': 'Profil dan perjalanan Azhar Collection sejak 2004 sebagai mitra konveksi seragam dan garment terpercaya di Sidoarjo dan Jawa Timur.',
-  '/layanan': 'Layanan konveksi seragam sekolah, kemeja kerja PDH/PDL, batik instansi, jas almamater, dan bordir komputer otomatis di Sidoarjo.',
+  '/': 'Azhar Collection - Produsen konveksi pakaian terpercaya di Buduran, Sidoarjo. Melayani seragam sekolah SD, SMP, SMA, pramuka, batik, kemeja PDH/PDL, almamater, kaos olahraga, dan bordir komputer.',
+  '/tentang-kami': 'Profil dan perjalanan Azhar Collection sejak 2004 sebagai mitra konveksi pakaian terpercaya di Sidoarjo dan Jawa Timur.',
+  '/layanan': 'Layanan konveksi pakaian, kemeja kerja PDH/PDL, batik instansi, jas almamater, dan bordir komputer otomatis di Sidoarjo.',
   '/katalog': 'Katalog portofolio busana dan seragam hasil produksi Azhar Collection untuk sekolah, instansi dinas, dan perusahaan.',
   '/klien': 'Daftar sekolah, instansi pemerintah, dan lembaga mitra yang mempercayakan pengadaan seragam kepada Azhar Collection.',
   '/galeri': 'Dokumentasi proses penjahitan seragam sekolah, pakaian dinas, bordir komputer, dan aktivitas workshop Azhar Collection di Buduran, Sidoarjo.',
@@ -27,7 +27,7 @@ export default function ScrollToTop() {
   const { pathname, hash } = useLocation()
 
   useEffect(() => {
-    let title = 'Azhar Collection | Konveksi Seragam Sidoarjo'
+    let title = 'Azhar Collection | Konveksi Pakaian Sidoarjo'
     let description = pageDescriptions['/']
 
     if (pageTitles[pathname]) {

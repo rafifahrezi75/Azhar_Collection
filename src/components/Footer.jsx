@@ -53,7 +53,7 @@ export default function Footer({
             </div>
 
             <p style={{ fontSize: '0.84375rem', color: 'rgba(255, 255, 255, 0.72)', lineHeight: 1.6, marginBottom: '1.5rem' }}>
-              {info.tagline || 'Produsen konveksi dan garment terpercaya di Sidoarjo. Melayani pesanan kustom seragam sekolah, batik identitas, kemeja PDH/PDL, jas almamater, dan pakaian dinas dengan mutu jahitan rapi bergaransi.'}
+              {info.tagline || 'Produsen konveksi pakaian terpercaya di Sidoarjo. Melayani pesanan kustom seragam sekolah, batik identitas, kemeja PDH/PDL, jas almamater, dan pakaian dinas dengan mutu jahitan rapi bergaransi.'}
             </p>
 
             <div className="footer-social-links">

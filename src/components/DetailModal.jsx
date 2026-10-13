@@ -238,7 +238,7 @@ export default function DetailModal({
               Visi Perusahaan:
             </h5>
             <p style={{ fontSize: '0.8125rem', color: 'var(--color-text-muted)', lineHeight: 1.6 }}>
-              Menjadi produsen konveksi dan garment terdepan di Indonesia yang dipercaya karena keaslian bahan baku, standar jahitan prima, ketepatan waktu, dan integritas kemitraan jangka panjang.
+              Menjadi produsen konveksi pakaian terdepan di Indonesia yang dipercaya karena keaslian bahan baku, standar jahitan prima, ketepatan waktu, dan integritas kemitraan jangka panjang.
             </p>
           </div>
 
