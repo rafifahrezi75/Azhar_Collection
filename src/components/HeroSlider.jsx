@@ -24,7 +24,7 @@ export default function HeroSlider() {
             alt={`${slide.title} - Konveksi Pakaian Azhar Collection Sidoarjo`}
             className="hero-slide-bg"
             onError={(e) => {
-              e.currentTarget.src = 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&w=1600&q=80'
+              e.currentTarget.src = '/images/hero/hero-1.png'
             }}
           />
         </div>

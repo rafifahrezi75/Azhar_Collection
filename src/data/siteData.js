@@ -24,27 +24,27 @@ export const companyInfo = {
 export const heroSlides = [
   {
     id: 1,
-    image: "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=1600&q=80",
+    image: "/images/hero/hero-1.png",
     title: "Konveksi Pakaian Sekolah & Baju Kerja Berpengalaman di Sidoarjo"
   },
   {
     id: 2,
-    image: "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=1600&q=80",
+    image: "/images/hero/hero-2.png",
     title: "Kain Pilihan Pabrik Tekstil dengan Jahitan Obras Ganda yang Kokoh"
   },
   {
     id: 3,
-    image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=1600&q=80",
+    image: "/images/hero/hero-3.jpg",
     title: "Layanan Sablon Digital DTF & Bordir Komputer Logo Sekolah"
   },
   {
     id: 4,
-    image: "https://images.unsplash.com/photo-1479064555552-3ef4979f8908?auto=format&fit=crop&w=1600&q=80",
+    image: "/images/hero/hero-4.jpg",
     title: "Siap Melayani Pengadaan Seragam untuk Sekolah dan Perkantoran"
   },
   {
     id: 5,
-    image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1600&q=80",
+    image: "/images/hero/hero-5.jpg",
     title: "Garansi Perbaikan atau Ganti Baru Jika Terjadi Cacat Jahitan"
   }
 ];

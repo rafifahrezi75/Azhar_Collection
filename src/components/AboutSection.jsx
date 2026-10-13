@@ -9,11 +9,11 @@ export default function AboutSection() {
         <div className="about-grid">
           <div className="about-image-wrapper reveal-left">
             <img
-              src="https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=1000&q=80"
+              src="/images/hero/hero-4.jpg"
               alt="Workshop Konveksi Pakaian dan Pengadaan Seragam Sekolah Sidoarjo - Azhar Collection"
               className="about-image-main"
               onError={(e) => {
-                e.currentTarget.src = 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=1000&q=80'
+                e.currentTarget.src = '/images/hero/hero-1.png'
               }}
             />
 
