@@ -58,17 +58,17 @@ Menjalankan pemasaran digital terintegrasi (Instagram, TikTok, WhatsApp Business
     <div className="about-page">
       <PageHeader
         title="Tentang Azhar Collection"
-        subtitle="Produsen Konveksi & Jahit Kustom Terpercaya dengan Pengawasan Mutu QC Ketat & Garansi Retur 100% Cacat Gratis"
+        subtitle="Mengenal perjalanan usaha jahit keluarga dari Buduran Sidoarjo, standar kerapian produksi, dan komitmen layanan kami."
         breadcrumb="Tentang Kami"
       />
 
       <section className="career-journey-section">
         <div className="container">
           <div className="journey-header reveal-up">
-            <span className="section-tag">PERJALANAN DEDIKASI KUALITAS</span>
-            <h2 className="section-title">Sejarah Usaha Jahit & Rekam Jejak Prestasi</h2>
+            <span className="section-tag">SEJARAH & PERJALANAN</span>
+            <h2 className="section-title">Perjalanan Usaha Jahit Keluarga Azhar Collection</h2>
             <p className="section-subtitle">
-              Tahapan pertumbuhan Azhar Collection dari tradisi jahit keluarga hingga menjadi produsen konveksi tepercaya bagi ratusan lembaga di seluruh Indonesia.
+              Tahapan pertumbuhan dari bengkel jahit rumahan hingga melayani pengadaan seragam sekolah dan instansi di berbagai daerah.
             </p>
           </div>
 

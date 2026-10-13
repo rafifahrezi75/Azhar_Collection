@@ -7,9 +7,9 @@ export default function CtaBanner() {
       <div className="cta-banner-overlay" />
       <div className="container">
         <div className="cta-banner-content reveal-scale">
-          <h2 className="cta-title">Siap Memproduksi Seragam Bergaransi Kualitas Nomor 1?</h2>
+          <h2 className="cta-title">Punya Rencana Pengadaan Seragam atau Baju Kerja?</h2>
           <p className="cta-subtitle">
-            Dapatkan sampel gratis, penawaran harga terbaik, dan garansi retur gratis 100% dari produsen konveksi Azhar Collection hari ini!
+            Konsultasikan kebutuhan bahan, jumlah pesanan, dan jadwal pengerjaan langsung bersama tim Azhar Collection.
           </p>
           <Link
             to="/kontak"
@@ -17,7 +17,7 @@ export default function CtaBanner() {
             style={{ padding: '1rem 2.25rem', fontSize: '1rem', borderRadius: '4px' }}
           >
             <MessageSquare size={18} />
-            <span>Hubungi Tim Marketing & Pesan Sekarang</span>
+            <span>Mulai Konsultasi Pesanan</span>
           </Link>
         </div>
       </div>

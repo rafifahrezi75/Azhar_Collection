@@ -8,7 +8,7 @@ export default function ServicesPage() {
     <div className="services-page">
       <PageHeader
         title="Layanan Jahit Kustom & Konveksi Pakaian"
-        subtitle="Dapatkan Hasil Jahitan Presisi Rapi Berstandar Tinggi dengan Penawaran Harga Terbaik & Garansi 100% Retur Gratis!"
+        subtitle="Mulai dari seragam sekolah, kemeja kerja PDH/PDL, sablon DTF, hingga bordir komputer dengan spesifikasi bahan dan ukuran yang bisa disesuaikan."
         breadcrumb="Layanan"
       />
 

@@ -87,7 +87,7 @@ export default function ServiceDetailPage() {
                   style={{ width: '100%', height: '380px', objectFit: 'cover' }}
                 />
                 <div style={{ padding: '2.25rem' }}>
-                  <span className="section-tag" style={{ marginBottom: '0.75rem' }}>LAYANAN KONVEKSI SPESIALIS</span>
+                  <span className="section-tag" style={{ marginBottom: '0.75rem' }}>LAYANAN KONVEKSI</span>
                   <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--color-primary-dark)', margin: '0.25rem 0 1rem 0' }}>
                     {service.title}
                   </h1>

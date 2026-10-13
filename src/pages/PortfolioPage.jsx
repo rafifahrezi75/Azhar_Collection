@@ -5,8 +5,8 @@ export default function PortfolioPage() {
   return (
     <div className="portfolio-page">
       <PageHeader
-        title="Katalog Baju Yang Pernah Dikerjakan"
-        subtitle="Daftar Lengkap Busana & Seragam Hasil Produksi Azhar Collection Beserta Asal Sekolah & Instansi Pemesan"
+        title="Katalog Busana & Seragam"
+        subtitle="Dokumentasi busana hasil jahit konveksi Azhar Collection beserta asal sekolah dan instansi pemesan."
         breadcrumb="Katalog"
       />
 

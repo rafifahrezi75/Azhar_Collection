@@ -24,10 +24,10 @@ export default function ProductCatalogSection({ limit, showHeader = false, showV
       <div className="container">
         {showHeader && (
           <div className="reveal-up" style={{ textAlign: 'center', maxWidth: '750px', margin: '0 auto 3rem auto' }}>
-            <span className="section-tag">PORTOFOLIO & HASIL JAHITAN</span>
-            <h2 className="section-title">Katalog Baju Yang Pernah Dikerjakan</h2>
+            <span className="section-tag">KATALOG PRODUKSI</span>
+            <h2 className="section-title">Contoh Busana & Seragam yang Pernah Dikerjakan</h2>
             <p className="section-subtitle">
-              Daftar Lengkap Busana & Seragam Hasil Produksi Azhar Collection Beserta Asal Sekolah & Instansi Pemesan
+              Dokumentasi seragam sekolah, pakaian dinas, dan busana pesanan dari berbagai sekolah serta lembaga pemesan.
             </p>
           </div>
         )}
@@ -78,7 +78,7 @@ export default function ProductCatalogSection({ limit, showHeader = false, showV
         {showViewAll && displayedItems.length > 0 && (
           <div className="reveal-up delay-200" style={{ textAlign: 'center', marginTop: '3rem' }}>
             <Link to="/katalog" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.625rem', padding: '0.875rem 2.25rem' }}>
-              <span>Lihat Semua Katalog Lebih Lengkap</span>
+              <span>Lihat Seluruh Katalog Busana</span>
               <ArrowRight size={18} />
             </Link>
           </div>

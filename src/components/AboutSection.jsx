@@ -38,19 +38,19 @@ export default function AboutSection() {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '2rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.84375rem', color: 'var(--color-primary-dark)', fontWeight: 600 }}>
                 <CheckCircle2 size={16} style={{ color: 'var(--color-accent)' }} />
-                <span>Pesanan 100% Kustom</span>
+                <span>Pilihan Bahan Kain Beragam</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.84375rem', color: 'var(--color-primary-dark)', fontWeight: 600 }}>
                 <CheckCircle2 size={16} style={{ color: 'var(--color-accent)' }} />
-                <span>Desain Timeless & Mutu Prima</span>
+                <span>Jahitan Rapi & Tahan Cuci</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.84375rem', color: 'var(--color-primary-dark)', fontWeight: 600 }}>
                 <CheckCircle2 size={16} style={{ color: 'var(--color-accent)' }} />
-                <span>Pemberdayaan Penjahit Rumahan</span>
+                <span>Pemberdayaan Penjahit Lokal</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.84375rem', color: 'var(--color-primary-dark)', fontWeight: 600 }}>
                 <CheckCircle2 size={16} style={{ color: 'var(--color-accent)' }} />
-                <span>Konsep Zero Waste Kain Perca</span>
+                <span>Pemanfaatan Sisa Kain Perca</span>
               </div>
             </div>
 

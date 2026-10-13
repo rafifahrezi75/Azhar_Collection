@@ -1,7 +1,7 @@
 export const companyInfo = {
   name: "Azhar Collection",
   legalName: "CV. Azhar Collection",
-  tagline: "Produsen Konveksi & Jahit Kustom Terpercaya - Garansi Mutu Nomor 1",
+  tagline: "Workshop Konveksi Pakaian di Buduran, Sidoarjo. Rapi, Tepat Waktu, dan Bergaransi.",
   city: "Sidoarjo",
   regency: "Kabupaten Sidoarjo",
   province: "Jawa Timur",
@@ -25,75 +25,75 @@ export const heroSlides = [
   {
     id: 1,
     image: "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=1600&q=80",
-    title: "Produsen Konveksi Pakaian Sekolah & Busana Kustom Terpercaya"
+    title: "Konveksi Pakaian Sekolah & Baju Kerja Berpengalaman di Sidoarjo"
   },
   {
     id: 2,
     image: "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=1600&q=80",
-    title: "Jahitan Rapi Presisi & Bahan Kain Premium Standar SNI"
+    title: "Kain Pilihan Pabrik Tekstil dengan Jahitan Obras Ganda yang Kokoh"
   },
   {
     id: 3,
     image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=1600&q=80",
-    title: "Spesialis Sablon Digital DTF & Bordir Komputer Presisi Tinggi"
+    title: "Layanan Sablon Digital DTF & Bordir Komputer Logo Sekolah"
   },
   {
     id: 4,
     image: "https://images.unsplash.com/photo-1479064555552-3ef4979f8908?auto=format&fit=crop&w=1600&q=80",
-    title: "Kemitraan Pengadaan Seragam Instansi Ke Seluruh Indonesia"
+    title: "Siap Melayani Pengadaan Seragam untuk Sekolah dan Perkantoran"
   },
   {
     id: 5,
     image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1600&q=80",
-    title: "Garansi 100% Retur Gratis Jika Produk Cacat Atau Tidak Sesuai"
+    title: "Garansi Perbaikan atau Ganti Baru Jika Terjadi Cacat Jahitan"
   }
 ];
 
 export const infoBoxesData = {
   box1: {
-    title: "Jahitan Rapi, Tahan Lama & Garansi Retur 100%",
-    desc: "Nikmati hasil jahit konveksi pakaian dan busana kustom dengan pola presisi, obras ganda yang kokoh, serta garansi ganti produk cacat gratis demi kepuasan penuh Anda!",
-    link: "Lihat Katalog Baju Yang Pernah Dikerjakan"
+    title: "Jahitan Rapi, Kuat, dan Bergaransi",
+    desc: "Setiap pakaian diperiksa kerapian jahitan, kelim, dan kancingnya. Jika ada cacat produksi atau ukuran meleset dari kesepakatan, kami siap perbaiki atau ganti baru.",
+    link: "Lihat Contoh Model yang Pernah Dikerjakan"
   },
   box2: {
-    title: "Solusi Konveksi Zero Waste & Kemitraan Nasional",
-    desc: "Pilihan konveksi modern yang mengombinasikan pengerjaan cepat, pengawasan QC 100%, serta komitmen daur ulang kain perca ramah lingkungan yang menguntungkan mitra!",
-    link: "Konsultasi Pesanan Sekarang"
+    title: "Kapasitas Produksi Partai Kecil hingga Besar",
+    desc: "Menerima pesanan seragam sekolah, pakaian kantor, hingga komunitas mulai dari 12 potong sampai ribuan stel dengan jadwal pengerjaan yang disepakati bersama.",
+    link: "Konsultasi Spesifikasi & Estimasi Biaya"
   }
 };
 
 export const aboutData = {
-  tag: "MENGAPA PILIH AZHAR COLLECTION",
-  title: "Mitra Konveksi Terdepan Dengan Hasil Jahitan Berstandar Mutu Tinggi",
-  paragraph1: "Azhar Collection merupakan produsen konveksi pakaian terkemuka di Sidoarjo yang dirintis dari tradisi jahit keluarga berpengalaman. Bermula dari pembuatan seragam militer hingga 1.000 stel per order, kini kami berkembang sebagai spesialis produksi seragam sekolah, busana muslim, mukena, dan atribut sablon DTF berkualitas ekspor.",
-  paragraph2: "Setiap pesanan dijamin melalui 10 tahap alur produksi ketat, mulai dari pembuatan master sample, seleksi bahan premium, inspeksi QC 100%, hingga garansi penggantian produk cacat gratis. Kami melayani pengadaan partai besar dan kustom untuk sekolah serta instansi di seluruh pulau di Indonesia.",
+  tag: "TENTANG AZHAR COLLECTION",
+  title: "Berawal dari Tradisi Jahit Keluarga di Buduran, Sidoarjo",
+  paragraph1: "Azhar Collection tumbuh dari usaha jahit keluarga di Desa Damarsi, Buduran. Dari pengalaman awal mengerjakan seragam militer hingga ribuan potong, kini kami berfokus pada pengadaan seragam sekolah, kemeja kerja, kaos olahraga, mukena, serta sablon DTF dan bordir komputer.",
+  paragraph2: "Kami memadukan ketelitian penjahit lokal berpengalaman dengan kontrol kualitas pada setiap helai pakaian. Mulai dari pemilihan bahan kain yang adem, pembuatan sampel ukuran, hingga pengecekan akhir sebelum pakaian dikemas dan dikirim.",
   stats: [
-    { value: "40+", label: "Tahun Pengalaman Konveksi" },
-    { value: "500+", label: "Sekolah & Instansi Berlangganan" },
+    { value: "40+", label: "Tahun Tradisi Jahit" },
+    { value: "500+", label: "Sekolah & Lembaga Pemesan" },
     { value: "1.000+", label: "Stel Kapasitas Batch Produksi" }
   ]
 };
 
 export const whyUsData = {
-  tag: "KEUNGGULAN PROMOSI KAMI",
-  title: "Jaminan Kualitas & Keuntungan Terbaik Untuk Pesanan Seragam Anda",
-  subtitle: "Dapatkan penawaran harga bersaing dengan kualitas jahitan bergaransi resmi yang tidak bisa Anda dapatkan di konveksi biasa.",
+  tag: "KEUNGGULAN KAMI",
+  title: "Alasan Memilih Azhar Collection untuk Kebutuhan Busana Anda",
+  subtitle: "Kami mengutamakan kejujuran bahan, kerapian jahitan, dan ketepatan waktu agar seragam nyaman dipakai dan tahan lama.",
   items: [
     {
-      title: "Garansi Retur 100% Cacat Gratis",
-      desc: "Jika ditemukan cacat jahitan atau sablon luntur, kami ganti baru secara gratis tanpa biaya tambahan."
+      title: "Garansi Ganti Baru untuk Cacat Produksi",
+      desc: "Jika ditemukan jahitan lepas, kancing tidak pas, atau sablon cacat, kami ganti tanpa biaya tambahan."
     },
     {
-      title: "Pola Timeless & Nyaman 3+ Tahun",
-      desc: "Seragam dirancang awet, jahitan kokoh tidak gampang sobek, serta nyaman dipakai aktivitas seharian."
+      title: "Pola Nyaman dengan Toleransi Kelonggaran",
+      desc: "Ukuran baju dirancang leluasa agar nyaman dipakai beraktivitas seharian dan tahan untuk pemakaian jangka panjang."
     },
     {
-      title: "Spesialis Sablon DTF & Bordir Komputer",
-      desc: "Mencetak logo instansi dan desain grafis dengan warna tajam, presisi tinggi, dan tahan cuci berulang."
+      title: "Sablon DTF & Bordir Komputer Rapat",
+      desc: "Warna logo dan tulisan tajam, tidak mudah retak saat dicuci, serta bordir komputer dengan kerapatan benang presisi."
     },
     {
-      title: "Inovasi Zero Waste & Ramah Lingkungan",
-      desc: "Mendukung produksi berkelanjutan dengan mengolah sisa perca menjadi suvenir dan produk bernilai jual."
+      title: "Pemanfaatan Kain Perca & Ramah Lingkungan",
+      desc: "Sisa potongan kain diolah kembali menjadi produk bermanfaat bersama perajin rumahan di sekitar workshop."
     }
   ]
 };

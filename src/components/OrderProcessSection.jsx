@@ -52,13 +52,13 @@ export default function OrderProcessSection() {
       <div className="container">
         <div className="reveal-up" style={{ textAlign: 'center', maxWidth: '700px', margin: '0 auto 3rem auto' }}>
           <span className="section-tag">
-            CARA MUDAH PESAN SERAGAM BERGARANSI
+            ALUR KERJA KAMI
           </span>
           <h2 className="section-title" style={{ color: '#FFFFFF' }}>
-            5 Tahap Mudah Pemesanan Seragam Kustom
+            Tahapan Pemesanan Jahit & Konveksi
           </h2>
           <p className="section-subtitle" style={{ color: 'rgba(255, 255, 255, 0.85)' }}>
-            Dari konsultasi sampel gratis, penentuan spesifikasi bahan, produksi terstandar, pengawasan QC 100%, hingga garansi penggantian cacat gratis!
+            Mulai dari diskusi bahan dan ukuran, pembuatan pola, proses jahit dan sablon, pemeriksaan kualitas, hingga pengiriman pesanan.
           </p>
         </div>
 
