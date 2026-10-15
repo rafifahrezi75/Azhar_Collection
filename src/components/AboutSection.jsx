@@ -9,7 +9,7 @@ export default function AboutSection() {
         <div className="about-grid">
           <div className="about-image-wrapper reveal-left">
             <img
-              src="/images/hero/hero-4.jpg"
+              src="/images/about/tentang-azhar.jpg"
               alt="Workshop Konveksi Pakaian dan Pengadaan Seragam Sekolah Sidoarjo - Azhar Collection"
               className="about-image-main"
               onError={(e) => {
