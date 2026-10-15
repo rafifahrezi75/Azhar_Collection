@@ -240,13 +240,16 @@ export default function AdminKatalogDetailPage() {
                 </div>
                 <div className="admin-katalog-meta-body">
                   {Array.isArray(product.materials) && product.materials.length > 0 ? (
-                    <ul style={{ margin: 0, paddingLeft: '1.15rem', listStyleType: 'disc', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                    <ol style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
                       {product.materials.map((mat, idx) => (
-                        <li key={idx} style={{ fontSize: '0.8125rem', fontWeight: 600 }}>
-                          {mat}
+                        <li key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.4rem', fontSize: '0.8125rem', fontWeight: 600 }}>
+                          <span style={{ color: 'var(--admin-primary)', fontWeight: 700, minWidth: '1.15rem' }}>
+                            {idx + 1}.
+                          </span>
+                          <span>{mat}</span>
                         </li>
                       ))}
-                    </ul>
+                    </ol>
                   ) : (
                     <span>{product.material || '-'}</span>
                   )}

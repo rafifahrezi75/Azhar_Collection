@@ -90,6 +90,13 @@ export default function ProductDetailPage() {
 
   const galleryImages = product ? normalizeProductImages(product) : []
   const activeImage = galleryImages[activeImageIndex] || galleryImages[0]
+  const materialsList = product
+    ? Array.isArray(product.materials) && product.materials.length > 0
+      ? product.materials
+      : typeof product.material === 'string' && product.material.trim()
+      ? product.material.split(',').map((s) => s.trim()).filter(Boolean)
+      : []
+    : []
 
   useEffect(() => {
     if (galleryImages.length <= 1 || isPaused) return
@@ -323,18 +330,21 @@ export default function ProductDetailPage() {
                   Deskripsi & Spesifikasi Produk
                 </h3>
 
-                {Array.isArray(product.materials) && product.materials.length > 0 && (
+                {materialsList.length > 0 && (
                   <div style={{ background: 'var(--color-bg-light)', padding: '1rem 1.25rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)' }}>
                     <p style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--color-primary)', margin: '0 0 0.625rem 0' }}>
                       Bahan Utama Kain
                     </p>
-                    <ul style={{ margin: 0, paddingLeft: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-                      {product.materials.map((mat, idx) => (
-                        <li key={idx} style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-primary-dark)', lineHeight: 1.5 }}>
-                          {mat}
+                    <ol style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+                      {materialsList.map((mat, idx) => (
+                        <li key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-primary-dark)', lineHeight: 1.5 }}>
+                          <span style={{ fontWeight: 700, color: 'var(--color-primary)', minWidth: '1.25rem' }}>
+                            {idx + 1}.
+                          </span>
+                          <span>{mat}</span>
                         </li>
                       ))}
-                    </ul>
+                    </ol>
                   </div>
                 )}
 
