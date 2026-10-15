@@ -12,6 +12,7 @@ import {
   Loader2,
   FileText
 } from 'lucide-react'
+import { getKatalogById, normalizeProductImages, createSlug } from '../../firebase/adminService'
 function shouldShowBadge(gender) {
   if (!gender) return false
   const g = String(gender).trim().toLowerCase()
