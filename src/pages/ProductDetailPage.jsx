@@ -20,10 +20,15 @@ function formatPcs(val) {
   return /pcs|setel|buah|lembar/i.test(trimmed) ? trimmed : `${trimmed} Pcs`
 }
 
+function shouldShowBadge(gender) {
+  if (!gender) return false
+  const g = String(gender).trim().toLowerCase()
+  return g === 'laki-laki' || g === 'perempuan' || g === 'unisex'
+}
+
 function getGenderBadgeClass(gender) {
   if (gender === 'Laki-laki') return 'gender-male'
   if (gender === 'Perempuan') return 'gender-female'
-  if (gender === 'Foto Cover' || gender === 'Cover') return 'gender-cover'
   return 'gender-unisex'
 }
 
@@ -171,18 +176,10 @@ export default function ProductDetailPage() {
                   </div>
                 )}
 
-                {activeImage?.gender && activeImage.gender !== 'Tanpa Badge' && (
+                {shouldShowBadge(activeImage?.gender) && (
                   <div style={{ position: 'absolute', top: '1rem', left: '1rem', zIndex: 10 }}>
                     <span className={`product-gender-badge ${getGenderBadgeClass(activeImage.gender)}`}>
                       {activeImage.gender}
-                    </span>
-                  </div>
-                )}
-
-                {galleryImages.length > 1 && (
-                  <div style={{ position: 'absolute', top: '1rem', right: '1rem', zIndex: 10 }}>
-                    <span className="product-photos-count-badge">
-                      {activeImageIndex + 1} / {galleryImages.length} Foto
                     </span>
                   </div>
                 )}
@@ -263,7 +260,7 @@ export default function ProductDetailPage() {
                         alt={`Thumbnail ${idx + 1}`}
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                       />
-                      {imgItem.gender && imgItem.gender !== 'Tanpa Badge' && (
+                      {shouldShowBadge(imgItem.gender) && (
                         <span className={`product-thumb-badge ${getGenderBadgeClass(imgItem.gender)}`}>
                           {imgItem.gender}
                         </span>

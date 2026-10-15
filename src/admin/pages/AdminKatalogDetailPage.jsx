@@ -12,7 +12,11 @@ import {
   Loader2,
   FileText
 } from 'lucide-react'
-import { getKatalogById, normalizeProductImages, createSlug } from '../../firebase/adminService'
+function shouldShowBadge(gender) {
+  if (!gender) return false
+  const g = String(gender).trim().toLowerCase()
+  return g === 'laki-laki' || g === 'perempuan' || g === 'unisex'
+}
 
 export default function AdminKatalogDetailPage() {
   const { id } = useParams()
@@ -121,7 +125,7 @@ export default function AdminKatalogDetailPage() {
                     src={activeImage.url}
                     alt={product.name}
                   />
-                  {activeImage.gender && activeImage.gender !== 'Tanpa Badge' && (
+                  {shouldShowBadge(activeImage?.gender) && (
                     <div style={{ position: 'absolute', top: '0.75rem', left: '0.75rem', zIndex: 5 }}>
                       <span
                         className={
@@ -129,8 +133,6 @@ export default function AdminKatalogDetailPage() {
                             ? 'admin-badge-male'
                             : activeImage.gender === 'Perempuan'
                             ? 'admin-badge-female'
-                            : activeImage.gender === 'Foto Cover' || activeImage.isCover
-                            ? 'admin-badge-cover'
                             : 'admin-badge-unisex'
                         }
                       >
@@ -167,7 +169,7 @@ export default function AdminKatalogDetailPage() {
                     }}
                   >
                     <img src={img.url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    {img.gender && img.gender !== 'Tanpa Badge' && (
+                    {shouldShowBadge(img.gender) && (
                       <span
                         style={{
                           position: 'absolute',
@@ -185,8 +187,6 @@ export default function AdminKatalogDetailPage() {
                               ? '#2563EB'
                               : img.gender === 'Perempuan'
                               ? '#DB2777'
-                              : img.gender === 'Foto Cover' || img.isCover
-                              ? '#0F766E'
                               : '#475569',
                           whiteSpace: 'nowrap',
                           overflow: 'hidden',

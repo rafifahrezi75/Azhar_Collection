@@ -519,7 +519,7 @@ export default function AdminKatalogEditPage() {
                           <option value="Unisex">Unisex</option>
                           <option value="Tanpa Badge">Tanpa Badge</option>
                         </select>
-                        {item.gender && item.gender !== 'Tanpa Badge' ? (
+                        {item.gender && item.gender !== 'Tanpa Badge' && (
                           <span
                             className={`admin-badge ${
                               item.gender === 'Laki-laki'
@@ -530,10 +530,6 @@ export default function AdminKatalogEditPage() {
                             }`}
                           >
                             {item.gender}
-                          </span>
-                        ) : (
-                          <span style={{ fontSize: '0.75rem', color: 'var(--admin-text-subtle)' }}>
-                            (Tanpa Badge)
                           </span>
                         )}
                       </div>
