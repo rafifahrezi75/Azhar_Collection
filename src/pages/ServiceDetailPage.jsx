@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom'
 import PageHeader from '../components/PageHeader'
 import { servicesData as fallbackServices, companyInfo } from '../data/siteData'
 import { getLayananList } from '../firebase/adminService'
+import { ServiceDetailSkeleton } from '../components/SkeletonLoader'
 import {
   ArrowLeft,
   Ruler,
@@ -31,18 +32,7 @@ export default function ServiceDetailPage() {
   const service = services.find((s) => s.slug === slug || s.id === slug)
 
   if (isLoading) {
-    return (
-      <div className="service-detail-page">
-        <PageHeader
-          title="Memuat Layanan..."
-          subtitle="Mengambil detail layanan konveksi Azhar Collection"
-          breadcrumb="Detail Layanan"
-        />
-        <div className="container" style={{ padding: '4rem 1.5rem', textAlign: 'center' }}>
-          <p style={{ color: 'var(--color-text-muted)' }}>Sedang memuat data...</p>
-        </div>
-      </div>
-    )
+    return <ServiceDetailSkeleton />
   }
 
   if (!service) {

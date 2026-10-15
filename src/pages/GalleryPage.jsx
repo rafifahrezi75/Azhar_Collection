@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import PageHeader from '../components/PageHeader'
 import { getGalleryList } from '../firebase/adminService'
-import { Loader2, Image as ImageIcon } from 'lucide-react'
+import { ImageIcon } from 'lucide-react'
+import { GalleryGridSkeleton } from '../components/SkeletonLoader'
 
 export default function GalleryPage() {
   const [items, setItems] = useState([])
@@ -42,10 +43,7 @@ export default function GalleryPage() {
           </div>
 
           {loading ? (
-            <div style={{ textAlign: 'center', padding: '5rem 0' }}>
-              <Loader2 size={36} className="spin-animation" style={{ color: 'var(--color-primary)', margin: '0 auto 1rem auto' }} />
-              <p style={{ color: 'var(--color-text-muted)' }}>Memuat galeri dokumentasi...</p>
-            </div>
+            <GalleryGridSkeleton count={8} />
           ) : items.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '4rem 0' }}>
               <ImageIcon size={48} style={{ color: 'var(--color-text-muted)', margin: '0 auto 1rem auto', opacity: 0.5 }} />

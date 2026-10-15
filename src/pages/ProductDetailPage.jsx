@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import PageHeader from '../components/PageHeader'
 import { getKatalogList, getKlienList, normalizeProductImages, createSlug } from '../firebase/adminService'
+import { ProductDetailSkeleton } from '../components/SkeletonLoader'
 import { portfolioProducts as fallbackProducts, clientsData as fallbackClients } from '../data/siteData'
 import {
   ArrowLeft,
@@ -112,18 +113,7 @@ export default function ProductDetailPage() {
   }, [galleryImages.length, isPaused])
 
   if (isLoading) {
-    return (
-      <div className="product-detail-page">
-        <PageHeader
-          title="Memuat Detail Produk..."
-          subtitle="Mengambil spesifikasi produk dari sistem Azhar Collection"
-          breadcrumb="Detail Produk"
-        />
-        <div className="container" style={{ padding: '4rem 1.5rem', textAlign: 'center' }}>
-          <p style={{ color: 'var(--color-text-muted)' }}>Sedang memuat data...</p>
-        </div>
-      </div>
-    )
+    return <ProductDetailSkeleton />
   }
 
   if (!product) {

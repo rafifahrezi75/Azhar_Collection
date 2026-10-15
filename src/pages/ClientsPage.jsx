@@ -3,6 +3,7 @@ import PageHeader from '../components/PageHeader'
 import { getKlienList } from '../firebase/adminService'
 import { clientsData as fallbackClients } from '../data/siteData'
 import { MapPin, Calendar, School, Package } from 'lucide-react'
+import { ClientsGridSkeleton } from '../components/SkeletonLoader'
 
 function formatPcs(val) {
   if (!val) return ''
@@ -45,12 +46,17 @@ function ClientLogo({ src, alt }) {
 
 export default function ClientsPage() {
   const [clients, setClients] = useState(fallbackClients)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     let isMounted = true
-    getKlienList().then((list) => {
-      if (isMounted && list) setClients(list)
-    })
+    getKlienList()
+      .then((list) => {
+        if (isMounted && list && list.length > 0) setClients(list)
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false)
+      })
     return () => {
       isMounted = false
     }
@@ -66,7 +72,9 @@ export default function ClientsPage() {
 
       <section className="clients-section-main">
         <div className="container">
-          {clients.length === 0 ? (
+          {loading ? (
+            <ClientsGridSkeleton count={8} />
+          ) : clients.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '4rem 1.5rem', background: 'var(--color-bg-light)', borderRadius: 'var(--radius-lg)', border: '1px dashed var(--color-border)' }}>
               <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9375rem', margin: 0 }}>
                 Belum ada data mitra klien yang ditampilkan. Silakan tambahkan mitra klien baru melalui Admin Panel.

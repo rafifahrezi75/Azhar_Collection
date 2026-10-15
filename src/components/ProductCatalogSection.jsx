@@ -3,19 +3,25 @@ import { Link } from 'react-router-dom'
 import { School, ArrowRight } from 'lucide-react'
 import { getKatalogList, getKlienList, normalizeProductImages, createSlug } from '../firebase/adminService'
 import { portfolioProducts as fallbackProducts, clientsData as fallbackClients } from '../data/siteData'
+import { ProductCatalogSkeleton } from './SkeletonLoader'
 
 export default function ProductCatalogSection({ limit, showHeader = false, showViewAll = false }) {
   const [items, setItems] = useState(fallbackProducts)
   const [clientsList, setClientsList] = useState(fallbackClients)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     let isMounted = true
-    Promise.all([getKatalogList(), getKlienList()]).then(([prods, clis]) => {
-      if (isMounted) {
-        if (prods) setItems(prods)
-        if (clis) setClientsList(clis)
-      }
-    })
+    Promise.all([getKatalogList(), getKlienList()])
+      .then(([prods, clis]) => {
+        if (isMounted) {
+          if (prods && prods.length > 0) setItems(prods)
+          if (clis && clis.length > 0) setClientsList(clis)
+        }
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false)
+      })
     return () => {
       isMounted = false
     }
@@ -36,7 +42,9 @@ export default function ProductCatalogSection({ limit, showHeader = false, showV
           </div>
         )}
 
-        {displayedItems.length === 0 ? (
+        {loading ? (
+          <ProductCatalogSkeleton count={limit || 8} />
+        ) : displayedItems.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '3.5rem 1.5rem', background: 'var(--color-bg-light)', borderRadius: 'var(--radius-lg)', border: '1px dashed var(--color-border)' }}>
             <p style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem', margin: 0 }}>
               Belum ada data produk katalog yang ditampilkan. Silakan tambahkan produk baru melalui Admin Panel.

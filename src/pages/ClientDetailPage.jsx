@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom'
 import { clientsData as fallbackClients } from '../data/siteData'
 import { getKlienList, createSlug } from '../firebase/adminService'
 import PageHeader from '../components/PageHeader'
+import { ClientDetailSkeleton } from '../components/SkeletonLoader'
 import {
   Building2,
   MapPin,
@@ -59,18 +60,7 @@ export default function ClientDetailPage() {
   const client = clients.find((c) => c.id === clientId)
 
   if (isLoading) {
-    return (
-      <div className="client-detail-page">
-        <PageHeader
-          title="Memuat Data Klien..."
-          subtitle="Mengambil riwayat kemitraan dari sistem Azhar Collection"
-          breadcrumb="Detail Klien"
-        />
-        <div className="container" style={{ padding: '4rem 1.5rem', textAlign: 'center' }}>
-          <p style={{ color: 'var(--color-text-muted)' }}>Sedang memuat data...</p>
-        </div>
-      </div>
-    )
+    return <ClientDetailSkeleton />
   }
 
   if (!client) {
