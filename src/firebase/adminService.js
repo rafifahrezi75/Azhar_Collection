@@ -1011,22 +1011,41 @@ export const seedInitialDataToFirestore = async () => {
   return results
 }
 
-export const getKatalogById = async (id) => {
+export const getKatalogById = async (idOrSlug) => {
+  if (!idOrSlug) return null
+  const target = String(idOrSlug).toLowerCase().trim()
+
   if (isFirebaseConfigured && db) {
     try {
-      const snap = await getDoc(doc(db, 'products', String(id)))
+      const snap = await getDoc(doc(db, 'products', String(idOrSlug)))
       if (snap.exists()) {
         const item = { id: snap.id, ...snap.data() }
         saveLocalKatalog(item)
         return item
       }
+
+      const q = query(collection(db, 'products'), where('slug', '==', target))
+      const querySnap = await getDocs(q)
+      if (!querySnap.empty) {
+        const docItem = querySnap.docs[0]
+        const item = { id: docItem.id, ...docItem.data() }
+        saveLocalKatalog(item)
+        return item
+      }
     } catch {
-      const list = getLocalData('products', portfolioProducts)
-      return list.find((item) => String(item.id) === String(id)) || null
+      void 0
     }
   }
-  const list = getLocalData('products', portfolioProducts)
-  return list.find((item) => String(item.id) === String(id)) || null
+
+  const list = await getKatalogList().catch(() => getLocalData('products', portfolioProducts))
+  return (
+    list.find(
+      (item) =>
+        String(item.id) === String(idOrSlug) ||
+        (item.slug && item.slug.toLowerCase() === target) ||
+        createSlug(item.name) === target
+    ) || null
+  )
 }
 
 export const getKlienById = async (id) => {

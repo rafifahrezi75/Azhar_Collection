@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Plus, Search, Edit2, Trash2, Shirt, Image as ImageIcon, Eye } from 'lucide-react'
 import AdminPagination from '../components/AdminPagination'
-import { getKatalogList, deleteKatalogItem, normalizeProductImages } from '../../firebase/adminService'
+import { getKatalogList, deleteKatalogItem, normalizeProductImages, createSlug } from '../../firebase/adminService'
 import { showDeleteConfirm, showToast, showErrorAlert } from '../utils/swal'
 
 export default function AdminKatalogPage() {
@@ -56,7 +56,7 @@ export default function AdminKatalogPage() {
     <div>
       <div className="admin-page-header">
         <div>
-          <h1 className="admin-page-title">Katalog Produk & Portofolio</h1>
+          <h1 className="admin-page-title">Katalog Produk</h1>
           <p className="admin-page-desc">
             Kelola model busana, spesifikasi kain, dan foto seragam yang tampil di website.
           </p>
@@ -148,6 +148,7 @@ export default function AdminKatalogPage() {
                   const imgs = normalizeProductImages(item)
                   const cover = imgs[0]?.url || item.image
                   const genders = Array.from(new Set(imgs.map((i) => i.gender).filter((g) => Boolean(g) && g !== 'Tanpa Badge')))
+                  const itemSlug = item.slug || createSlug(item.name) || item.id
 
                   return (
                     <tr key={item.id}>
@@ -215,14 +216,14 @@ export default function AdminKatalogPage() {
                     <td style={{ textAlign: 'right' }}>
                       <div style={{ display: 'inline-flex', gap: '0.375rem' }}>
                         <Link
-                          to={`/admin/katalog/detail/${item.id}`}
+                          to={`/admin/katalog/detail/${itemSlug}`}
                           className="admin-icon-btn"
                           title="Lihat Detail Produk"
                         >
                           <Eye size={15} />
                         </Link>
                         <Link
-                          to={`/admin/katalog/edit/${item.id}`}
+                          to={`/admin/katalog/edit/${itemSlug}`}
                           className="admin-icon-btn"
                           title="Ubah Produk"
                         >

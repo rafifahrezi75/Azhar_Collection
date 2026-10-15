@@ -92,7 +92,7 @@ export default function AdminKatalogDetailPage() {
 
           <div className="admin-inline-actions" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Link
-              to={`/admin/katalog/edit/${product.id}`}
+              to={`/admin/katalog/edit/${productSlug}`}
               className="admin-action-icon-btn admin-action-icon-btn-primary"
               title="Ubah Produk"
               aria-label="Ubah Produk"

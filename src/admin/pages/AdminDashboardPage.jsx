@@ -492,7 +492,7 @@ export default function AdminDashboardPage() {
                 Cloudinary Media Storage
               </div>
               <div className="admin-cloud-status-desc">
-                CDN media aset gambar & galeri portofolio
+                CDN media aset gambar & galeri katalog
               </div>
             </div>
           </div>
