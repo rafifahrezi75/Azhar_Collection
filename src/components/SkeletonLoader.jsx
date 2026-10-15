@@ -193,20 +193,41 @@ export function ClientCardSkeleton() {
   return (
     <div className="client-clean-card skeleton-card">
       <div className="client-clean-img-wrap skeleton-shimmer" style={{ background: '#E2E8F0' }} />
-      <div className="client-clean-content" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-        <div className="skeleton-shimmer" style={{ width: '80%', height: '16px', borderRadius: '4px', background: '#CBD5E1' }} />
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <div className="skeleton-shimmer" style={{ width: '14px', height: '14px', borderRadius: '3px', background: '#E2E8F0' }} />
-          <div className="skeleton-shimmer" style={{ width: '50%', height: '12px', borderRadius: '4px', background: '#E2E8F0' }} />
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <div className="skeleton-shimmer" style={{ width: '14px', height: '14px', borderRadius: '3px', background: '#E2E8F0' }} />
-          <div className="skeleton-shimmer" style={{ width: '65%', height: '12px', borderRadius: '4px', background: '#E2E8F0' }} />
+
+      <div className="client-clean-content">
+        <div
+          className="skeleton-shimmer"
+          style={{
+            width: '85%',
+            height: '18px',
+            borderRadius: '4px',
+            background: '#CBD5E1',
+            marginBottom: '0.625rem'
+          }}
+        />
+
+        <div className="client-clean-meta" style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
+          <div className="client-meta-row" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+            <div className="skeleton-shimmer" style={{ width: '14px', height: '14px', borderRadius: '3px', background: '#CBD5E1', flexShrink: 0 }} />
+            <div className="skeleton-shimmer" style={{ width: '50%', height: '12px', borderRadius: '3px', background: '#E2E8F0' }} />
+          </div>
+          <div className="client-meta-row" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+            <div className="skeleton-shimmer" style={{ width: '14px', height: '14px', borderRadius: '3px', background: '#CBD5E1', flexShrink: 0 }} />
+            <div className="skeleton-shimmer" style={{ width: '65%', height: '12px', borderRadius: '3px', background: '#E2E8F0' }} />
+          </div>
         </div>
       </div>
-      <div style={{ padding: '0 1.25rem 1.25rem 1.25rem' }}>
-        <div className="skeleton-shimmer" style={{ width: '45%', height: '20px', borderRadius: '4px', background: '#E2E8F0' }} />
-      </div>
+
+      <div
+        className="client-order-badge skeleton-shimmer"
+        style={{
+          width: '120px',
+          height: '26px',
+          background: '#E2E8F0',
+          borderColor: 'transparent',
+          margin: 0
+        }}
+      />
     </div>
   )
 }
