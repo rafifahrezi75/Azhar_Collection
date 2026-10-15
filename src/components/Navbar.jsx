@@ -75,15 +75,6 @@ export default function Navbar({ onOpenQuote }) {
                 <Phone size={13} />
                 <span>{info.phonePrimary || info.phone}</span>
               </a>
-
-              <button
-                type="button"
-                className="mobile-toggle-btn"
-                onClick={() => setIsMobileOpen(!isMobileOpen)}
-                aria-label="Buka menu navigasi"
-              >
-                {isMobileOpen ? <X size={26} /> : <Menu size={26} />}
-              </button>
             </div>
           </div>
         </div>
@@ -110,15 +101,24 @@ export default function Navbar({ onOpenQuote }) {
               ))}
             </nav>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <div className="nav-actions-right">
               <button
                 type="button"
                 onClick={onOpenQuote}
-                className="btn-primary"
-                style={{ padding: '0.625rem 1.25rem', fontSize: '0.84375rem' }}
+                className="btn-primary btn-nav-cta"
+                aria-label="Konsultasi Pesanan via WhatsApp"
               >
                 <MessageSquare size={16} />
-                <span>Konsultasi Pesanan</span>
+                <span className="nav-cta-text">Konsultasi Pesanan</span>
+              </button>
+
+              <button
+                type="button"
+                className="mobile-toggle-btn"
+                onClick={() => setIsMobileOpen(!isMobileOpen)}
+                aria-label={isMobileOpen ? 'Tutup menu navigasi' : 'Buka menu navigasi'}
+              >
+                {isMobileOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
             </div>
           </div>

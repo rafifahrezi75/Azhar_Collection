@@ -42,7 +42,7 @@ export default function DetailModal({
             </tbody>
           </table>
 
-          <div style={{ display: 'flex', gap: '0.75rem' }}>
+          <div className="modal-footer-btns">
             <a
               href={`https://wa.me/6281330666807?text=Halo%20Pak%20Haris%20Azhar%20Collection%2C%20saya%20tertarik%20dengan%20layanan%20${encodeURIComponent(data.title)}.%20Mohon%20info%20penawaran.`}
               target="_blank"
@@ -101,7 +101,7 @@ export default function DetailModal({
             </tbody>
           </table>
 
-          <div style={{ display: 'flex', gap: '0.75rem' }}>
+          <div className="modal-footer-btns">
             <a
               href={`https://wa.me/6281330666807?text=Halo%20Pak%20Haris%20Azhar%20Collection%2C%20saya%20tertarik%20memesan%20kustom%20seperti%20model%20${encodeURIComponent(data.name)}%20(${data.id}).%20Mohon%20info%20selengkapnya.`}
               target="_blank"
@@ -136,80 +136,86 @@ export default function DetailModal({
           <h5 style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--color-primary)', marginTop: '1rem', marginBottom: '0.5rem' }}>
             1. Standar Seragam SD (Sekolah Dasar)
           </h5>
-          <table className="spec-table" style={{ fontSize: '0.75rem' }}>
-            <thead>
-              <tr>
-                <th>Ukuran</th>
-                <th>Lingkar Dada</th>
-                <th>Panjang Baju</th>
-                <th>Lingkar Pinggang</th>
-                <th>Panjang Celana/Rok</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sizeChartData.sd.map((row, idx) => (
-                <tr key={idx}>
-                  <td style={{ fontWeight: 700 }}>{row.size}</td>
-                  <td>{row.chest}</td>
-                  <td>{row.shirtLen}</td>
-                  <td>{row.waist}</td>
-                  <td>{row.pantLen}</td>
+          <div className="table-responsive-wrapper">
+            <table className="spec-table" style={{ fontSize: '0.75rem' }}>
+              <thead>
+                <tr>
+                  <th>Ukuran</th>
+                  <th>Lingkar Dada</th>
+                  <th>Panjang Baju</th>
+                  <th>Lingkar Pinggang</th>
+                  <th>Panjang Celana/Rok</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {sizeChartData.sd.map((row, idx) => (
+                  <tr key={idx}>
+                    <td style={{ fontWeight: 700 }}>{row.size}</td>
+                    <td>{row.chest}</td>
+                    <td>{row.shirtLen}</td>
+                    <td>{row.waist}</td>
+                    <td>{row.pantLen}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
           <h5 style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--color-primary)', marginTop: '1.5rem', marginBottom: '0.5rem' }}>
             2. Standar Seragam SMP (Sekolah Menengah Pertama)
           </h5>
-          <table className="spec-table" style={{ fontSize: '0.75rem' }}>
-            <thead>
-              <tr>
-                <th>Ukuran</th>
-                <th>Lingkar Dada</th>
-                <th>Panjang Baju</th>
-                <th>Lingkar Pinggang</th>
-                <th>Panjang Celana/Rok</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sizeChartData.smp.map((row, idx) => (
-                <tr key={idx}>
-                  <td style={{ fontWeight: 700 }}>{row.size}</td>
-                  <td>{row.chest}</td>
-                  <td>{row.shirtLen}</td>
-                  <td>{row.waist}</td>
-                  <td>{row.pantLen}</td>
+          <div className="table-responsive-wrapper">
+            <table className="spec-table" style={{ fontSize: '0.75rem' }}>
+              <thead>
+                <tr>
+                  <th>Ukuran</th>
+                  <th>Lingkar Dada</th>
+                  <th>Panjang Baju</th>
+                  <th>Lingkar Pinggang</th>
+                  <th>Panjang Celana/Rok</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {sizeChartData.smp.map((row, idx) => (
+                  <tr key={idx}>
+                    <td style={{ fontWeight: 700 }}>{row.size}</td>
+                    <td>{row.chest}</td>
+                    <td>{row.shirtLen}</td>
+                    <td>{row.waist}</td>
+                    <td>{row.pantLen}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
           <h5 style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--color-primary)', marginTop: '1.5rem', marginBottom: '0.5rem' }}>
             3. Standar Seragam SMA / SMK & Dewasa (Kemeja PDH / Almamater)
           </h5>
-          <table className="spec-table" style={{ fontSize: '0.75rem', marginBottom: '1.5rem' }}>
-            <thead>
-              <tr>
-                <th>Ukuran</th>
-                <th>Lingkar Dada</th>
-                <th>Panjang Baju</th>
-                <th>Lingkar Pinggang</th>
-                <th>Panjang Celana</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sizeChartData.sma.map((row, idx) => (
-                <tr key={idx}>
-                  <td style={{ fontWeight: 700 }}>{row.size}</td>
-                  <td>{row.chest}</td>
-                  <td>{row.shirtLen}</td>
-                  <td>{row.waist}</td>
-                  <td>{row.pantLen}</td>
+          <div className="table-responsive-wrapper">
+            <table className="spec-table" style={{ fontSize: '0.75rem', marginBottom: '1.5rem' }}>
+              <thead>
+                <tr>
+                  <th>Ukuran</th>
+                  <th>Lingkar Dada</th>
+                  <th>Panjang Baju</th>
+                  <th>Lingkar Pinggang</th>
+                  <th>Panjang Celana</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {sizeChartData.sma.map((row, idx) => (
+                  <tr key={idx}>
+                    <td style={{ fontWeight: 700 }}>{row.size}</td>
+                    <td>{row.chest}</td>
+                    <td>{row.shirtLen}</td>
+                    <td>{row.waist}</td>
+                    <td>{row.pantLen}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
           <button type="button" onClick={onClose} className="btn-primary" style={{ width: '100%' }}>
             Tutup Panduan Ukuran

@@ -68,15 +68,15 @@ export default function ServiceDetailPage() {
 
       <section style={{ padding: '3rem 0 4rem 0' }}>
         <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 2fr) minmax(0, 1fr)', gap: '2.5rem', alignItems: 'start' }}>
+          <div className="service-detail-layout-grid">
             <div className="reveal-left" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
               <div style={{ background: '#FFFFFF', borderRadius: 'var(--radius-xl)', overflow: 'hidden', border: '1px solid var(--color-border)', boxShadow: 'var(--shadow-sm)' }}>
                 <img
                   src={service.image}
                   alt={service.title}
-                  style={{ width: '100%', height: '380px', objectFit: 'cover' }}
+                  className="service-detail-image"
                 />
-                <div style={{ padding: '2.25rem' }}>
+                <div className="service-detail-content-card">
                   <span className="section-tag" style={{ marginBottom: '0.75rem' }}>LAYANAN KONVEKSI</span>
                   <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--color-primary-dark)', margin: '0.25rem 0 1rem 0' }}>
                     {service.title}
@@ -97,48 +97,50 @@ export default function ServiceDetailPage() {
                     <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: 'var(--color-primary-dark)', marginBottom: '1rem' }}>
                       Spesifikasi & Standar Produksi
                     </h3>
-                    <table className="spec-table">
-                      <tbody>
-                        <tr>
-                          <th style={{ width: '35%' }}>Bahan Kain Rekomendasi</th>
-                          <td>
-                             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.375rem' }}>
-                               {Array.isArray(service.materials) ? (
-                                 service.materials.map((m, idx) => (
-                                   <span key={idx} style={{ background: 'var(--color-bg-light)', padding: '0.25rem 0.625rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-primary-dark)' }}>
-                                     {m}
-                                   </span>
-                                 ))
-                               ) : typeof service.materials === 'string' && service.materials.trim() ? (
-                                 service.materials.split(',').map((m, idx) => (
-                                   <span key={idx} style={{ background: 'var(--color-bg-light)', padding: '0.25rem 0.625rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-primary-dark)' }}>
-                                     {m.trim()}
-                                   </span>
-                                 ))
-                               ) : (
-                                 <span style={{ fontSize: '0.8125rem', color: 'var(--color-text-muted)' }}>-</span>
-                               )}
-                             </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <th>Minimum Pemesanan (MOQ)</th>
-                          <td style={{ fontWeight: 600, color: 'var(--color-primary-dark)' }}>{service.moq}</td>
-                        </tr>
-                        <tr>
-                          <th>Estimasi Waktu Pengerjaan</th>
-                          <td>{service.leadTime}</td>
-                        </tr>
-                        <tr>
-                          <th>Standar Jahitan</th>
-                          <td>Obras 4 benang rapi, double stitch di area krusial, dan bordir komputer 12 kepala presisi</td>
-                        </tr>
-                        <tr>
-                          <th>Layanan Sampel</th>
-                          <td>Tersedia pembuatan dummy / master sample untuk persetujuan model sebelum jahit massal</td>
-                        </tr>
-                      </tbody>
-                    </table>
+                    <div className="table-responsive-wrapper">
+                      <table className="spec-table">
+                        <tbody>
+                          <tr>
+                            <th style={{ width: '35%' }}>Bahan Kain Rekomendasi</th>
+                            <td>
+                               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.375rem' }}>
+                                 {Array.isArray(service.materials) ? (
+                                   service.materials.map((m, idx) => (
+                                     <span key={idx} style={{ background: 'var(--color-bg-light)', padding: '0.25rem 0.625rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-primary-dark)' }}>
+                                       {m}
+                                     </span>
+                                   ))
+                                 ) : typeof service.materials === 'string' && service.materials.trim() ? (
+                                   service.materials.split(',').map((m, idx) => (
+                                     <span key={idx} style={{ background: 'var(--color-bg-light)', padding: '0.25rem 0.625rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-primary-dark)' }}>
+                                       {m.trim()}
+                                     </span>
+                                   ))
+                                 ) : (
+                                   <span style={{ fontSize: '0.8125rem', color: 'var(--color-text-muted)' }}>-</span>
+                                 )}
+                               </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th>Minimum Pemesanan (MOQ)</th>
+                            <td style={{ fontWeight: 600, color: 'var(--color-primary-dark)' }}>{service.moq}</td>
+                          </tr>
+                          <tr>
+                            <th>Estimasi Waktu Pengerjaan</th>
+                            <td>{service.leadTime}</td>
+                          </tr>
+                          <tr>
+                            <th>Standar Jahitan</th>
+                            <td>Obras 4 benang rapi, double stitch di area krusial, dan bordir komputer 12 kepala presisi</td>
+                          </tr>
+                          <tr>
+                            <th>Layanan Sampel</th>
+                            <td>Tersedia pembuatan dummy / master sample untuk persetujuan model sebelum jahit massal</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
               </div>

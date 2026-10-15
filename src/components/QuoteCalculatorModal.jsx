@@ -118,7 +118,7 @@ export default function QuoteCalculatorModal({ isOpen, onClose }) {
 
           <div className="form-group">
             <label className="form-label">Tingkatan Bahan Kain</label>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+            <div className="calc-tier-grid">
               <button
                 type="button"
                 onClick={() => setFabricTier('standard')}
@@ -197,7 +197,7 @@ export default function QuoteCalculatorModal({ isOpen, onClose }) {
             </div>
           </div>
 
-          <div style={{ marginTop: '1.75rem', display: 'flex', gap: '0.75rem' }}>
+          <div className="modal-footer-btns" style={{ marginTop: '1.75rem' }}>
             <button
               type="button"
               onClick={handleSendToWhatsApp}

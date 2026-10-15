@@ -117,7 +117,10 @@ export default function GallerySection() {
             className="gallery-carousel-track"
             onTransitionEnd={handleTransitionEnd}
             style={{
-              transform: `translateX(-${translateXPercent}%)`,
+              display: 'flex',
+              gap: 0,
+              width: `${(displayItems.length * 100) / visibleCount}%`,
+              transform: `translateX(-${currentIndex * (100 / displayItems.length)}%)`,
               transition: enableTransition ? 'transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)' : 'none'
             }}
           >
@@ -126,8 +129,9 @@ export default function GallerySection() {
                 key={item.uniqueKey}
                 className="gallery-carousel-slide"
                 style={{
-                  flex: `0 0 calc(${100 / visibleCount}% - ${(gapPx * (visibleCount - 1)) / visibleCount}px)`,
-                  maxWidth: `calc(${100 / visibleCount}% - ${(gapPx * (visibleCount - 1)) / visibleCount}px)`
+                  width: `${100 / displayItems.length}%`,
+                  padding: '0 8px',
+                  boxSizing: 'border-box'
                 }}
               >
                 <div className="gallery-card">

@@ -149,11 +149,11 @@ export default function ProductDetailPage() {
         breadcrumb={product.name}
       />
 
-      <section style={{ padding: '3rem 0 5rem 0' }}>
+      <section className="product-detail-section" style={{ padding: '2.5rem 0 4rem 0' }}>
         <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.1fr) minmax(0, 1.3fr)', gap: '3rem', alignItems: 'start', background: '#FFFFFF', padding: '2.5rem', borderRadius: 'var(--radius-xl)', border: '1px solid var(--color-border)', boxShadow: 'var(--shadow-sm)', marginBottom: '4rem' }}>
+          <div className="product-detail-hero-grid">
             <div className="reveal-left">
-              <div style={{ position: 'relative', borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid var(--color-border)', height: '420px', background: 'var(--color-bg-light)' }}>
+              <div className="product-detail-image-box">
                 {activeImage?.url ? (
                   <img
                     src={activeImage.url}
@@ -233,7 +233,7 @@ export default function ProductDetailPage() {
               </div>
 
               {galleryImages.length > 1 && (
-                <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.min(galleryImages.length, 6)}, minmax(0, 1fr))`, gap: '0.75rem', marginTop: '0.875rem' }}>
+                <div className="product-detail-thumbs-grid">
                   {galleryImages.map((imgItem, idx) => (
                     <button
                       key={idx}
@@ -377,7 +377,6 @@ export default function ProductDetailPage() {
               {relatedProducts.map((item, idx) => {
                 const itemImages = normalizeProductImages(item)
                 const itemCover = itemImages[0]?.url || item.image
-                const itemGender = itemImages[0]?.gender
                 const itemSlug = item.slug || createSlug(item.name) || item.id
 
                 return (

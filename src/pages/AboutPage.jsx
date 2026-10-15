@@ -119,7 +119,7 @@ Menjalankan pemasaran digital terintegrasi (Instagram, TikTok, WhatsApp Business
           </div>
 
           <div className="visi-misi-cards-row">
-            <div className="reveal-left delay-100" style={{ background: '#FFFFFF', padding: '2.25rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--color-border)', display: 'flex', flexDirection: 'column' }}>
+            <div className="visi-misi-card reveal-left delay-100">
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem', marginBottom: '1.25rem' }}>
                 <div style={{ width: '44px', height: '44px', borderRadius: '4px', background: 'var(--color-primary-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary)', flexShrink: 0 }}>
                   <Award size={24} />
@@ -133,7 +133,7 @@ Menjalankan pemasaran digital terintegrasi (Instagram, TikTok, WhatsApp Business
               </p>
             </div>
 
-            <div className="reveal-right delay-200" style={{ background: '#FFFFFF', padding: '2.25rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--color-border)', display: 'flex', flexDirection: 'column' }}>
+            <div className="visi-misi-card reveal-right delay-200">
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem', marginBottom: '1.25rem' }}>
                 <div style={{ width: '44px', height: '44px', borderRadius: '4px', background: 'var(--color-accent-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-accent)', flexShrink: 0 }}>
                   <ShieldCheck size={24} />

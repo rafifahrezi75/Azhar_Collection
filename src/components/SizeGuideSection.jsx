@@ -42,28 +42,30 @@ export default function SizeGuideSection() {
                 </h3>
               </div>
 
-              <table className="spec-table" style={{ width: '100%' }}>
-                <thead>
-                  <tr>
-                    <th>Ukuran</th>
-                    <th>Lingkar Dada</th>
-                    <th>Panjang Baju</th>
-                    <th>Lingkar Pinggang</th>
-                    <th>Panjang Celana/Rok</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {sizeChartData[sec.key].map((row, idx) => (
-                    <tr key={idx}>
-                      <td style={{ fontWeight: 700, color: 'var(--color-primary-dark)' }}>{row.size}</td>
-                      <td>{row.chest}</td>
-                      <td>{row.shirtLen}</td>
-                      <td>{row.waist}</td>
-                      <td>{row.pantLen}</td>
+              <div className="table-responsive-wrapper">
+                <table className="spec-table" style={{ width: '100%', minWidth: '520px' }}>
+                  <thead>
+                    <tr>
+                      <th>Ukuran</th>
+                      <th>Lingkar Dada</th>
+                      <th>Panjang Baju</th>
+                      <th>Lingkar Pinggang</th>
+                      <th>Panjang Celana/Rok</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {sizeChartData[sec.key].map((row, idx) => (
+                      <tr key={idx}>
+                        <td style={{ fontWeight: 700, color: 'var(--color-primary-dark)' }}>{row.size}</td>
+                        <td>{row.chest}</td>
+                        <td>{row.shirtLen}</td>
+                        <td>{row.waist}</td>
+                        <td>{row.pantLen}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           ))}
 

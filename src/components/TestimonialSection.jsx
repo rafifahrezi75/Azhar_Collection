@@ -92,14 +92,15 @@ export default function TestimonialSection() {
                 <div
                   className="testimonials-track"
                   style={{
-                    transform: `translateX(-${active * (100 / perView)}%)`
+                    width: `${(testimonials.length * 100) / perView}%`,
+                    transform: `translateX(-${active * (100 / testimonials.length)}%)`
                   }}
                 >
                   {testimonials.map((item) => (
                     <div
                       key={item.id}
                       className="testimonial-slide-item"
-                      style={{ width: `${100 / perView}%` }}
+                      style={{ width: `${100 / testimonials.length}%` }}
                     >
                       <div className="testimonial-card-box">
                         <p className="testimonial-quote-text">

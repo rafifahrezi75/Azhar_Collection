@@ -35,7 +35,7 @@ export default function AboutSection() {
             <p className="about-p">{aboutData.paragraph1}</p>
             <p className="about-p">{aboutData.paragraph2}</p>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '2rem' }}>
+            <div className="about-features-grid">
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.84375rem', color: 'var(--color-primary-dark)', fontWeight: 600 }}>
                 <CheckCircle2 size={16} style={{ color: 'var(--color-accent)' }} />
                 <span>Pilihan Bahan Kain Beragam</span>
