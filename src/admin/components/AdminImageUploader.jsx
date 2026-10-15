@@ -86,19 +86,9 @@ export default function AdminImageUploader({
 
   return (
     <div className="admin-input-group">
-      {(label || ratioHint) && (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem', flexWrap: 'wrap', gap: '0.375rem' }}>
+      {label && (
+        <div style={{ marginBottom: '0.5rem' }}>
           {renderLabel(label)}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginLeft: 'auto' }}>
-            {ratioHint && (
-              <span style={{ fontSize: '0.6875rem', color: 'var(--admin-text-subtle)', fontWeight: 600 }}>
-                {ratioHint}
-              </span>
-            )}
-            <span style={{ fontSize: '0.6875rem', color: 'var(--admin-primary)', fontWeight: 700 }}>
-              Cloudinary Terhubung
-            </span>
-          </div>
         </div>
       )}
 
@@ -176,14 +166,14 @@ export default function AdminImageUploader({
                 gap: '0.375rem',
                 fontSize: '0.6875rem',
                 marginTop: '0.2rem',
-                color: activeFile ? 'var(--admin-primary)' : 'var(--admin-success)'
+                color: 'var(--admin-text-subtle)'
               }}
             >
-              <CheckCircle size={13} />
+              <CheckCircle size={13} style={{ color: activeFile ? 'var(--admin-primary)' : 'var(--admin-success)', flexShrink: 0 }} />
               <span>
                 {activeFile
-                  ? `Foto baru dipilih (${(activeFile.size / 1024).toFixed(0)} KB) - Diunggah ke Cloudinary saat klik Simpan`
-                  : 'Foto aktif dari Cloudinary / database'}
+                  ? `Foto baru dipilih (${(activeFile.size / 1024).toFixed(0)} KB)`
+                  : (ratioHint || 'Foto tersimpan')}
               </span>
             </div>
           </div>
@@ -240,7 +230,7 @@ export default function AdminImageUploader({
             Klik untuk memilih foto atau drag & drop file
           </div>
           <div style={{ fontSize: '0.6875rem', color: 'var(--admin-text-muted)', marginTop: '0.2rem' }}>
-            Foto akan diunggah otomatis ke Cloudinary saat Anda mengklik Simpan
+            Foto akan disimpan otomatis saat Anda mengklik Simpan
           </div>
           {ratioHint && (
             <div style={{ marginTop: '0.5rem', display: 'inline-flex', alignItems: 'center', gap: '0.25rem', padding: '0.25rem 0.5rem', borderRadius: '4px', backgroundColor: 'var(--admin-surface-hover)', border: '1px solid var(--admin-border)', fontSize: '0.6875rem', fontWeight: 600, color: 'var(--admin-text-subtle)' }}>

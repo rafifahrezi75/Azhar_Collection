@@ -472,7 +472,7 @@ export default function AdminDashboardPage() {
             style={{ padding: '0.35rem 0.75rem', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em', display: 'inline-flex', alignItems: 'center' }}
           >
             {isFirebaseConfigured && <span className="admin-status-dot" />}
-            {isFirebaseConfigured ? 'Firebase Terhubung' : 'Firebase Offline'}
+            {isFirebaseConfigured ? 'Aktif' : 'Offline'}
           </span>
         </div>
 
@@ -502,7 +502,7 @@ export default function AdminDashboardPage() {
             style={{ padding: '0.35rem 0.75rem', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em', display: 'inline-flex', alignItems: 'center' }}
           >
             <span className="admin-status-dot" />
-            Cloudinary Terhubung
+            Aktif
           </span>
         </div>
       </div>
