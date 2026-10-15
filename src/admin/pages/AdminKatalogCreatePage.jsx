@@ -15,9 +15,9 @@ export default function AdminKatalogCreatePage() {
   const [clientsList, setClientsList] = useState([])
   const [loadingClients, setLoadingClients] = useState(true)
 
-  const [photos, setPhotos] = useState([
-    { id: 'p-1', url: '', file: null, gender: 'Laki-laki' }
-  ])
+  const [coverUrl, setCoverUrl] = useState('')
+  const [coverFile, setCoverFile] = useState(null)
+  const [variantPhotos, setVariantPhotos] = useState([])
 
   const [formData, setFormData] = useState({
     name: '',
@@ -89,51 +89,40 @@ export default function AdminKatalogCreatePage() {
     }
   }
 
-  const handleAddPhoto = () => {
-    setPhotos((prev) => [
+  const handleAddVariantPhoto = () => {
+    setVariantPhotos((prev) => [
       ...prev,
       {
-        id: `p-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+        id: `v-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
         url: '',
         file: null,
-        gender: prev.length === 1 && prev[0].gender === 'Laki-laki' ? 'Perempuan' : 'Unisex'
+        gender: prev.length === 0 ? 'Laki-laki' : prev.length === 1 ? 'Perempuan' : 'Unisex'
       }
     ])
   }
 
-  const handleRemovePhoto = (index) => {
-    if (photos.length > 1) {
-      setPhotos((prev) => prev.filter((_, i) => i !== index))
-    }
+  const handleRemoveVariantPhoto = (index) => {
+    setVariantPhotos((prev) => prev.filter((_, i) => i !== index))
   }
 
-  const handleSetPrimaryPhoto = (index) => {
-    if (index === 0) return
-    setPhotos((prev) => {
-      const target = prev[index]
-      const remaining = prev.filter((_, i) => i !== index)
-      return [target, ...remaining]
-    })
-  }
-
-  const handlePhotoFileSelected = (index, file) => {
-    setPhotos((prev) => {
+  const handleVariantFileSelected = (index, file) => {
+    setVariantPhotos((prev) => {
       const next = [...prev]
       next[index] = { ...next[index], file }
       return next
     })
   }
 
-  const handlePhotoUrlChanged = (index, url) => {
-    setPhotos((prev) => {
+  const handleVariantUrlChanged = (index, url) => {
+    setVariantPhotos((prev) => {
       const next = [...prev]
       next[index] = { ...next[index], url }
       return next
     })
   }
 
-  const handlePhotoGenderChanged = (index, gender) => {
-    setPhotos((prev) => {
+  const handleVariantGenderChanged = (index, gender) => {
+    setVariantPhotos((prev) => {
       const next = [...prev]
       next[index] = { ...next[index], gender }
       return next
@@ -157,9 +146,8 @@ export default function AdminKatalogCreatePage() {
       return
     }
 
-    const hasAnyPhoto = photos.some((p) => p.file || (p.url && p.url.trim()))
-    if (!hasAnyPhoto) {
-      setError('Harap unggah minimal 1 foto model produk busana')
+    if (!coverFile && (!coverUrl || !coverUrl.trim())) {
+      setError('Harap unggah Foto Cover Utama produk')
       return
     }
 
@@ -167,22 +155,27 @@ export default function AdminKatalogCreatePage() {
     setError('')
 
     try {
-      const uploadedImages = []
-      for (const item of photos) {
+      let finalCoverUrl = coverUrl
+      if (coverFile) {
+        finalCoverUrl = await uploadToCloudinary(coverFile)
+      }
+
+      if (!finalCoverUrl || !finalCoverUrl.trim()) {
+        throw new Error('Gagal memproses Foto Cover Utama. Harap unggah foto valid.')
+      }
+
+      const uploadedVariants = []
+      for (const item of variantPhotos) {
         let finalUrl = item.url
         if (item.file) {
           finalUrl = await uploadToCloudinary(item.file)
         }
         if (finalUrl && finalUrl.trim()) {
-          uploadedImages.push({
+          uploadedVariants.push({
             url: finalUrl.trim(),
             gender: item.gender || 'Tanpa Badge'
           })
         }
-      }
-
-      if (uploadedImages.length === 0) {
-        throw new Error('Gagal memproses foto produk. Harap unggah foto valid.')
       }
 
       const validMaterials = materials.map((m) => m.trim()).filter(Boolean)
@@ -194,8 +187,8 @@ export default function AdminKatalogCreatePage() {
         slug,
         materials: validMaterials,
         material: validMaterials.join(', '),
-        image: uploadedImages[0]?.url || '',
-        images: uploadedImages
+        image: finalCoverUrl.trim(),
+        images: uploadedVariants
       })
 
       await showSuccessAlert('Berhasil Ditambahkan', 'Model busana baru berhasil disimpan ke katalog.')
@@ -219,7 +212,7 @@ export default function AdminKatalogCreatePage() {
             <div>
               <h1 className="admin-page-title" style={{ margin: 0 }}>Tambah Model Busana Baru</h1>
               <p className="admin-page-desc" style={{ margin: '0.25rem 0 0 0' }}>
-                Tambahkan model seragam, rincian bahan kain, varian foto gender, dan mitra klien pemesan.
+                Tambahkan foto cover utama, model seragam, rincian bahan kain, varian foto gender, dan mitra klien pemesan.
               </p>
             </div>
           </div>
@@ -367,121 +360,134 @@ export default function AdminKatalogCreatePage() {
 
             <div style={{ borderTop: '1px solid var(--admin-border)', margin: '0.5rem 0 0 0' }} />
 
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: '0.9375rem', color: 'var(--admin-text-main)' }}>
+                    Foto Cover Utama Produk <span style={{ color: 'var(--admin-danger)' }}>*</span>
+                  </div>
+                  <div style={{ fontSize: '0.8125rem', color: 'var(--admin-text-muted)', marginTop: '0.125rem' }}>
+                    Foto utama yang tampil di kartu katalog depan dan tampilan awal saat membuka detail produk.
+                  </div>
+                </div>
+                <span className="admin-badge admin-badge-primary">Cover Utama</span>
+              </div>
+
+              <div style={{ maxWidth: '480px' }}>
+                <AdminImageUploader
+                  label=""
+                  ratioHint="Rasio 4:3 (Landscape, misal 800 x 600 px)"
+                  currentImage={coverUrl}
+                  selectedFile={coverFile}
+                  onFileSelected={(file) => setCoverFile(file)}
+                  onUrlChanged={(url) => setCoverUrl(url)}
+                  folder="azhar/products"
+                />
+              </div>
+            </div>
+
+            <div style={{ borderTop: '1px solid var(--admin-border)', margin: '0.5rem 0 0 0' }} />
+
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
                 <div>
                   <div style={{ fontWeight: 700, fontSize: '0.9375rem', color: 'var(--admin-text-main)' }}>
-                    Galeri Foto Produk & Varian Gender
+                    Galeri Foto Varian Model (Opsional)
                   </div>
                   <div style={{ fontSize: '0.8125rem', color: 'var(--admin-text-muted)', marginTop: '0.125rem' }}>
-                    Anda dapat menambahkan lebih dari 1 foto dengan label Laki-laki / Perempuan.
+                    Tambahkan foto model busana dengan badge khusus seperti Laki-laki, Perempuan, Unisex, atau Tanpa Badge.
                   </div>
                 </div>
                 <button
                   type="button"
                   className="admin-btn admin-btn-primary"
-                  onClick={handleAddPhoto}
+                  onClick={handleAddVariantPhoto}
                   style={{ padding: '0.45rem 0.875rem', fontSize: '0.8125rem' }}
                 >
                   <Plus size={14} />
-                  <span>Tambah Foto</span>
+                  <span>Tambah Foto Varian</span>
                 </button>
               </div>
 
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 380px), 1fr))',
-                  gap: '1.25rem'
-                }}
-              >
-                {photos.map((item, idx) => (
-                  <div key={item.id} className="admin-photo-card">
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', flexWrap: 'wrap', borderBottom: '1px solid var(--admin-border)', paddingBottom: '0.5rem' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              {variantPhotos.length === 0 ? (
+                <div style={{ padding: '1.5rem', textAlign: 'center', border: '1px dashed var(--admin-border)', borderRadius: 'var(--admin-radius)', color: 'var(--admin-text-muted)', fontSize: '0.8125rem' }}>
+                  Belum ada foto varian tambahan. Klik tombol <strong>Tambah Foto Varian</strong> di atas jika ingin menambahkan foto model Laki-laki atau Perempuan.
+                </div>
+              ) : (
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 380px), 1fr))',
+                    gap: '1.25rem'
+                  }}
+                >
+                  {variantPhotos.map((item, idx) => (
+                    <div key={item.id} className="admin-photo-card">
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', flexWrap: 'wrap', borderBottom: '1px solid var(--admin-border)', paddingBottom: '0.5rem' }}>
                         <span style={{ fontWeight: 700, fontSize: '0.8125rem', color: 'var(--admin-text-main)' }}>
-                          Foto #{idx + 1}
+                          Foto Varian #{idx + 1}
                         </span>
-                        {idx === 0 ? (
-                          <span className="admin-badge admin-badge-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
-                            <Star size={10} />
-                            Foto Cover Utama
-                          </span>
-                        ) : (
-                          <button
-                            type="button"
-                            onClick={() => handleSetPrimaryPhoto(idx)}
-                            className="admin-action-icon-btn"
-                            title="Jadikan Foto Utama / Cover"
-                            aria-label="Jadikan Foto Utama / Cover"
-                            style={{ height: '24px', padding: '0 0.5rem', fontSize: '0.6875rem', borderRadius: '4px' }}
-                          >
-                            Jadikan Utama
-                          </button>
-                        )}
-                      </div>
 
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        {photos.length > 1 && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                           <button
                             type="button"
-                            onClick={() => handleRemovePhoto(idx)}
+                            onClick={() => handleRemoveVariantPhoto(idx)}
                             className="admin-action-icon-btn admin-action-icon-btn-danger"
-                            title="Hapus Foto Ini"
-                            aria-label="Hapus Foto Ini"
+                            title="Hapus Foto Varian Ini"
+                            aria-label="Hapus Foto Varian Ini"
                           >
                             <Trash2 size={14} />
                           </button>
+                        </div>
+                      </div>
+
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+                        <label className="admin-label" style={{ margin: 0, fontSize: '0.78125rem', whiteSpace: 'nowrap' }}>
+                          Badge Gender / Varian:
+                        </label>
+                        <select
+                          className="admin-select"
+                          value={item.gender || 'Tanpa Badge'}
+                          onChange={(e) => handleVariantGenderChanged(idx, e.target.value)}
+                          style={{ height: '34px', fontSize: '0.8125rem', width: 'auto', minWidth: '140px' }}
+                        >
+                          <option value="Laki-laki">Laki-laki</option>
+                          <option value="Perempuan">Perempuan</option>
+                          <option value="Unisex">Unisex</option>
+                          <option value="Tanpa Badge">Tanpa Badge</option>
+                        </select>
+                        {item.gender && item.gender !== 'Tanpa Badge' ? (
+                          <span
+                            className={`admin-badge ${
+                              item.gender === 'Laki-laki'
+                                ? 'admin-badge-male'
+                                : item.gender === 'Perempuan'
+                                ? 'admin-badge-female'
+                                : 'admin-badge-unisex'
+                            }`}
+                          >
+                            {item.gender}
+                          </span>
+                        ) : (
+                          <span style={{ fontSize: '0.75rem', color: 'var(--admin-text-subtle)' }}>
+                            (Tanpa Badge)
+                          </span>
                         )}
                       </div>
-                    </div>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-                      <label className="admin-label" style={{ margin: 0, fontSize: '0.78125rem', whiteSpace: 'nowrap' }}>
-                        Badge Gender / Varian:
-                      </label>
-                      <select
-                        className="admin-select"
-                        value={item.gender || 'Tanpa Badge'}
-                        onChange={(e) => handlePhotoGenderChanged(idx, e.target.value)}
-                        style={{ height: '34px', fontSize: '0.8125rem', width: 'auto', minWidth: '140px' }}
-                      >
-                        <option value="Laki-laki">Laki-laki</option>
-                        <option value="Perempuan">Perempuan</option>
-                        <option value="Unisex">Unisex</option>
-                        <option value="Tanpa Badge">Tanpa Badge</option>
-                      </select>
-                      {item.gender && item.gender !== 'Tanpa Badge' ? (
-                        <span
-                          className={`admin-badge ${
-                            item.gender === 'Laki-laki'
-                              ? 'admin-badge-male'
-                              : item.gender === 'Perempuan'
-                              ? 'admin-badge-female'
-                              : 'admin-badge-unisex'
-                          }`}
-                        >
-                          {item.gender}
-                        </span>
-                      ) : (
-                        <span style={{ fontSize: '0.75rem', color: 'var(--admin-text-subtle)' }}>
-                          (Tanpa Badge)
-                        </span>
-                      )}
+                      <AdminImageUploader
+                        label=""
+                        ratioHint="Rasio 4:3 (Landscape, misal 800 x 600 px)"
+                        currentImage={item.url}
+                        selectedFile={item.file}
+                        onFileSelected={(file) => handleVariantFileSelected(idx, file)}
+                        onUrlChanged={(url) => handleVariantUrlChanged(idx, url)}
+                        folder="azhar/products"
+                      />
                     </div>
-
-                    <AdminImageUploader
-                      label=""
-                      ratioHint="Rasio 4:3 (Landscape, misal 800 x 600 px)"
-                      currentImage={item.url}
-                      selectedFile={item.file}
-                      onFileSelected={(file) => handlePhotoFileSelected(idx, file)}
-                      onUrlChanged={(url) => handlePhotoUrlChanged(idx, url)}
-                      folder="azhar/products"
-                    />
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>

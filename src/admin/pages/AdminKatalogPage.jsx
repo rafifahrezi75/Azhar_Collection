@@ -147,7 +147,7 @@ export default function AdminKatalogPage() {
                 paginatedItems.map((item) => {
                   const imgs = normalizeProductImages(item)
                   const cover = imgs[0]?.url || item.image
-                  const genders = Array.from(new Set(imgs.map((i) => i.gender).filter((g) => Boolean(g) && g !== 'Tanpa Badge')))
+                  const genders = Array.from(new Set(imgs.map((i) => i.gender).filter((g) => Boolean(g) && g !== 'Tanpa Badge' && g !== 'Foto Cover' && g !== 'Cover')))
                   const itemSlug = item.slug || createSlug(item.name) || item.id
 
                   return (

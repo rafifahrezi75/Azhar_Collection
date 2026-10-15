@@ -398,23 +398,52 @@ const saveLocalKatalog = (payload) => {
 
 export const normalizeProductImages = (product) => {
   if (!product) return []
-  if (Array.isArray(product.images) && product.images.length > 0) {
-    return product.images
-      .map((item) => {
-        if (typeof item === 'string') {
-          return { url: item, gender: 'Tanpa Badge' }
-        }
-        return {
-          url: item?.url || '',
-          gender: item?.gender || 'Tanpa Badge'
-        }
-      })
-      .filter((img) => Boolean(img.url))
+  const list = []
+
+  const coverUrl = product.image
+    ? typeof product.image === 'string'
+      ? product.image.trim()
+      : product.image.url?.trim()
+    : ''
+
+  if (coverUrl) {
+    list.push({
+      url: coverUrl,
+      gender: 'Foto Cover',
+      isCover: true
+    })
   }
-  if (product.image) {
-    return [{ url: product.image, gender: 'Tanpa Badge' }]
+
+  if (Array.isArray(product.images)) {
+    product.images.forEach((item) => {
+      const u = typeof item === 'string' ? item.trim() : item?.url?.trim()
+      const g = typeof item === 'object' && item?.gender ? item.gender : 'Tanpa Badge'
+      if (u) {
+        if (!coverUrl || u !== coverUrl) {
+          list.push({
+            url: u,
+            gender: g,
+            isCover: false
+          })
+        }
+      }
+    })
   }
-  return []
+
+  if (list.length === 0 && Array.isArray(product.images) && product.images.length > 0) {
+    product.images.forEach((item, idx) => {
+      const u = typeof item === 'string' ? item.trim() : item?.url?.trim()
+      if (u) {
+        list.push({
+          url: u,
+          gender: typeof item === 'object' && item?.gender ? item.gender : (idx === 0 ? 'Foto Cover' : 'Tanpa Badge'),
+          isCover: idx === 0
+        })
+      }
+    })
+  }
+
+  return list
 }
 
 export const deleteKatalogItem = async (id, imageUrl) => {

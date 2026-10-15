@@ -129,6 +129,8 @@ export default function AdminKatalogDetailPage() {
                             ? 'admin-badge-male'
                             : activeImage.gender === 'Perempuan'
                             ? 'admin-badge-female'
+                            : activeImage.gender === 'Foto Cover' || activeImage.isCover
+                            ? 'admin-badge-cover'
                             : 'admin-badge-unisex'
                         }
                       >
@@ -178,7 +180,14 @@ export default function AdminKatalogDetailPage() {
                           borderRadius: '2px',
                           textAlign: 'center',
                           color: '#FFFFFF',
-                          background: img.gender === 'Laki-laki' ? '#2563EB' : img.gender === 'Perempuan' ? '#DB2777' : '#475569',
+                          background:
+                            img.gender === 'Laki-laki'
+                              ? '#2563EB'
+                              : img.gender === 'Perempuan'
+                              ? '#DB2777'
+                              : img.gender === 'Foto Cover' || img.isCover
+                              ? '#0F766E'
+                              : '#475569',
                           whiteSpace: 'nowrap',
                           overflow: 'hidden',
                           textOverflow: 'ellipsis'

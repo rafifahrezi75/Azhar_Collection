@@ -642,6 +642,11 @@
   color: #475569;
 }
 
+.admin-badge-cover {
+  background-color: #CCFBF1;
+  color: #0F766E;
+}
+
 .admin-dark .admin-badge-male {
   background-color: rgba(37, 99, 235, 0.2);
   color: #93C5FD;
@@ -655,6 +660,11 @@
 .admin-dark .admin-badge-unisex {
   background-color: rgba(148, 163, 184, 0.2);
   color: #CBD5E1;
+}
+
+.admin-dark .admin-badge-cover {
+  background-color: rgba(15, 118, 110, 0.25);
+  color: #5EEAD4;
 }
 
 .admin-photo-card {

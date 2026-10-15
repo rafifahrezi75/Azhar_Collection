@@ -4250,6 +4250,11 @@ body.captcha-locked {
   color: #FFFFFF;
 }
 
+.product-gender-badge.gender-cover {
+  background: var(--color-primary);
+  color: #FFFFFF;
+}
+
 .product-photos-count-badge {
   display: inline-flex;
   align-items: center;
@@ -4317,6 +4322,11 @@ body.captcha-locked {
 
 .product-thumb-badge.gender-unisex {
   background: rgba(71, 85, 105, 0.92);
+}
+
+.product-thumb-badge.gender-cover {
+  background: var(--color-primary);
+  color: #FFFFFF;
 }
 
 

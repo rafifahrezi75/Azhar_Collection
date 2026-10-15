@@ -23,6 +23,7 @@ function formatPcs(val) {
 function getGenderBadgeClass(gender) {
   if (gender === 'Laki-laki') return 'gender-male'
   if (gender === 'Perempuan') return 'gender-female'
+  if (gender === 'Foto Cover' || gender === 'Cover') return 'gender-cover'
   return 'gender-unisex'
 }
 
@@ -30,6 +31,7 @@ export default function ProductDetailPage() {
   const { slug, productId } = useParams()
   const targetParam = slug || productId
   const [activeImageIndex, setActiveImageIndex] = useState(0)
+  const [isPaused, setIsPaused] = useState(false)
   const [productsList, setProductsList] = useState(fallbackProducts)
   const [clientsList, setClientsList] = useState(fallbackClients)
   const [isLoading, setIsLoading] = useState(true)
@@ -90,12 +92,12 @@ export default function ProductDetailPage() {
   const activeImage = galleryImages[activeImageIndex] || galleryImages[0]
 
   useEffect(() => {
-    if (galleryImages.length <= 1) return
+    if (galleryImages.length <= 1 || isPaused) return
     const interval = setInterval(() => {
       setActiveImageIndex((prev) => (prev + 1) % galleryImages.length)
-    }, 4000)
+    }, 6000)
     return () => clearInterval(interval)
-  }, [galleryImages.length])
+  }, [galleryImages.length, isPaused])
 
   if (isLoading) {
     return (
@@ -182,7 +184,10 @@ export default function ProductDetailPage() {
                   <>
                     <button
                       type="button"
-                      onClick={() => setActiveImageIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length)}
+                      onClick={() => {
+                        setIsPaused(true)
+                        setActiveImageIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length)
+                      }}
                       aria-label="Foto Sebelumnya"
                       style={{
                         position: 'absolute',
@@ -205,7 +210,10 @@ export default function ProductDetailPage() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => setActiveImageIndex((prev) => (prev + 1) % galleryImages.length)}
+                      onClick={() => {
+                        setIsPaused(true)
+                        setActiveImageIndex((prev) => (prev + 1) % galleryImages.length)
+                      }}
                       aria-label="Foto Berikutnya"
                       style={{
                         position: 'absolute',
@@ -236,7 +244,10 @@ export default function ProductDetailPage() {
                     <button
                       key={idx}
                       type="button"
-                      onClick={() => setActiveImageIndex(idx)}
+                      onClick={() => {
+                        setIsPaused(true)
+                        setActiveImageIndex(idx)
+                      }}
                       className={`product-thumb-btn ${activeImageIndex === idx ? 'active' : ''}`}
                       aria-label={`Foto ${idx + 1}`}
                     >
