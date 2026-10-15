@@ -93,7 +93,7 @@ export default function ProductDetailPage() {
       }
     : null
 
-  const galleryImages = product ? normalizeProductImages(product) : []
+  const galleryImages = product ? normalizeProductImages(product, { includeCover: false }) : []
   const activeImage = galleryImages[activeImageIndex] || galleryImages[0]
   const materialsList = product
     ? Array.isArray(product.materials) && product.materials.length > 0

@@ -71,7 +71,7 @@ export default function AdminKatalogDetailPage() {
     )
   }
 
-  const productImages = normalizeProductImages(product)
+  const productImages = normalizeProductImages(product, { includeCover: false })
   const activeImage = productImages[activePhotoIdx] || productImages[0]
   const productSlug = product.slug || createSlug(product.name) || product.id
 

@@ -396,8 +396,9 @@ const saveLocalKatalog = (payload) => {
   return newId
 }
 
-export const normalizeProductImages = (product) => {
+export const normalizeProductImages = (product, options = {}) => {
   if (!product) return []
+  const { includeCover = true } = options
   const list = []
 
   const coverUrl = product.image
@@ -406,21 +407,14 @@ export const normalizeProductImages = (product) => {
       : product.image.url?.trim()
     : ''
 
-  if (coverUrl) {
-    list.push({
-      url: coverUrl,
-      gender: 'Foto Cover',
-      isCover: true
-    })
-  }
-
+  const variantList = []
   if (Array.isArray(product.images)) {
     product.images.forEach((item) => {
       const u = typeof item === 'string' ? item.trim() : item?.url?.trim()
       const g = typeof item === 'object' && item?.gender ? item.gender : 'Tanpa Badge'
       if (u) {
         if (!coverUrl || u !== coverUrl) {
-          list.push({
+          variantList.push({
             url: u,
             gender: g,
             isCover: false
@@ -430,14 +424,35 @@ export const normalizeProductImages = (product) => {
     })
   }
 
+  if (includeCover) {
+    if (coverUrl) {
+      list.push({
+        url: coverUrl,
+        gender: 'Foto Cover',
+        isCover: true
+      })
+    }
+    list.push(...variantList)
+  } else {
+    if (variantList.length > 0) {
+      list.push(...variantList)
+    } else if (coverUrl) {
+      list.push({
+        url: coverUrl,
+        gender: 'Foto Cover',
+        isCover: true
+      })
+    }
+  }
+
   if (list.length === 0 && Array.isArray(product.images) && product.images.length > 0) {
-    product.images.forEach((item, idx) => {
+    product.images.forEach((item) => {
       const u = typeof item === 'string' ? item.trim() : item?.url?.trim()
       if (u) {
         list.push({
           url: u,
-          gender: typeof item === 'object' && item?.gender ? item.gender : (idx === 0 ? 'Foto Cover' : 'Tanpa Badge'),
-          isCover: idx === 0
+          gender: typeof item === 'object' && item?.gender ? item.gender : 'Tanpa Badge',
+          isCover: false
         })
       }
     })
