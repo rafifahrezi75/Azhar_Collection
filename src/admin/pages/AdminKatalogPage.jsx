@@ -147,7 +147,7 @@ export default function AdminKatalogPage() {
                 paginatedItems.map((item) => {
                   const imgs = normalizeProductImages(item)
                   const cover = imgs[0]?.url || item.image
-                  const genders = Array.from(new Set(imgs.map((i) => i.gender).filter(Boolean)))
+                  const genders = Array.from(new Set(imgs.map((i) => i.gender).filter((g) => Boolean(g) && g !== 'Tanpa Badge')))
 
                   return (
                     <tr key={item.id}>

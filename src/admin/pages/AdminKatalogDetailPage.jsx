@@ -121,7 +121,7 @@ export default function AdminKatalogDetailPage() {
                     src={activeImage.url}
                     alt={product.name}
                   />
-                  {activeImage.gender && (
+                  {activeImage.gender && activeImage.gender !== 'Tanpa Badge' && (
                     <div style={{ position: 'absolute', top: '0.75rem', left: '0.75rem', zIndex: 5 }}>
                       <span
                         className={
@@ -165,7 +165,7 @@ export default function AdminKatalogDetailPage() {
                     }}
                   >
                     <img src={img.url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    {img.gender && (
+                    {img.gender && img.gender !== 'Tanpa Badge' && (
                       <span
                         style={{
                           position: 'absolute',

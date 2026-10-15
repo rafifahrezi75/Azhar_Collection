@@ -162,7 +162,7 @@ export default function ProductDetailPage() {
                   </div>
                 )}
 
-                {activeImage?.gender && (
+                {activeImage?.gender && activeImage.gender !== 'Tanpa Badge' && (
                   <div style={{ position: 'absolute', top: '1rem', left: '1rem', zIndex: 10 }}>
                     <span className={`product-gender-badge ${getGenderBadgeClass(activeImage.gender)}`}>
                       {activeImage.gender}
@@ -245,7 +245,7 @@ export default function ProductDetailPage() {
                         alt={`Thumbnail ${idx + 1}`}
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                       />
-                      {imgItem.gender && (
+                      {imgItem.gender && imgItem.gender !== 'Tanpa Badge' && (
                         <span className={`product-thumb-badge ${getGenderBadgeClass(imgItem.gender)}`}>
                           {imgItem.gender}
                         </span>

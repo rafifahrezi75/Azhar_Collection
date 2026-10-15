@@ -402,17 +402,17 @@ export const normalizeProductImages = (product) => {
     return product.images
       .map((item) => {
         if (typeof item === 'string') {
-          return { url: item, gender: 'Unisex' }
+          return { url: item, gender: 'Tanpa Badge' }
         }
         return {
           url: item?.url || '',
-          gender: item?.gender || 'Unisex'
+          gender: item?.gender || 'Tanpa Badge'
         }
       })
       .filter((img) => Boolean(img.url))
   }
   if (product.image) {
-    return [{ url: product.image, gender: 'Unisex' }]
+    return [{ url: product.image, gender: 'Tanpa Badge' }]
   }
   return []
 }

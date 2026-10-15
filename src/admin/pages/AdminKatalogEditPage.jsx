@@ -230,7 +230,7 @@ export default function AdminKatalogEditPage() {
         if (finalUrl && finalUrl.trim()) {
           uploadedImages.push({
             url: finalUrl.trim(),
-            gender: item.gender || 'Unisex'
+            gender: item.gender || 'Tanpa Badge'
           })
         }
       }
@@ -309,8 +309,8 @@ export default function AdminKatalogEditPage() {
             </div>
           )}
 
-          <div className="admin-single-card-grid">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               <div className="admin-form-group">
                 <label className="admin-label" htmlFor="product-name">
                   Nama Model Busana <span style={{ color: 'var(--admin-danger)' }}>*</span>
@@ -326,7 +326,7 @@ export default function AdminKatalogEditPage() {
                 />
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
                 <div className="admin-form-group">
                   <label className="admin-label" htmlFor="product-category">Kategori Busana</label>
                   <select
@@ -419,9 +419,9 @@ export default function AdminKatalogEditPage() {
                 </label>
                 <textarea
                   id="product-specs"
-                  rows={6}
+                  rows={4}
                   className="admin-input"
-                  style={{ resize: 'vertical', lineHeight: 1.6, minHeight: '130px' }}
+                  style={{ resize: 'vertical', lineHeight: 1.6, minHeight: '100px' }}
                   placeholder="Tuliskan rincian spesifikasi jahitan jarum dua, tipe kancing, furing, bordir logo komputer, dsb..."
                   value={formData.specs}
                   onChange={(e) => setFormData({ ...formData, specs: e.target.value })}
@@ -429,13 +429,15 @@ export default function AdminKatalogEditPage() {
               </div>
             </div>
 
+            <div style={{ borderTop: '1px solid var(--admin-border)', margin: '0.5rem 0 0 0' }} />
+
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
                 <div>
-                  <div style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--admin-text-main)' }}>
+                  <div style={{ fontWeight: 700, fontSize: '0.9375rem', color: 'var(--admin-text-main)' }}>
                     Galeri Foto Produk & Varian Gender
                   </div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--admin-text-muted)' }}>
+                  <div style={{ fontSize: '0.8125rem', color: 'var(--admin-text-muted)', marginTop: '0.125rem' }}>
                     Anda dapat menambahkan lebih dari 1 foto dengan label Laki-laki / Perempuan.
                   </div>
                 </div>
@@ -443,14 +445,20 @@ export default function AdminKatalogEditPage() {
                   type="button"
                   className="admin-btn admin-btn-primary"
                   onClick={handleAddPhoto}
-                  style={{ padding: '0.375rem 0.75rem', fontSize: '0.75rem' }}
+                  style={{ padding: '0.45rem 0.875rem', fontSize: '0.8125rem' }}
                 >
                   <Plus size={14} />
                   <span>Tambah Foto</span>
                 </button>
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 380px), 1fr))',
+                  gap: '1.25rem'
+                }}
+              >
                 {photos.map((item, idx) => (
                   <div key={item.id} className="admin-photo-card">
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', flexWrap: 'wrap', borderBottom: '1px solid var(--admin-border)', paddingBottom: '0.5rem' }}>
@@ -492,31 +500,38 @@ export default function AdminKatalogEditPage() {
                       </div>
                     </div>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
                       <label className="admin-label" style={{ margin: 0, fontSize: '0.78125rem', whiteSpace: 'nowrap' }}>
                         Badge Gender / Varian:
                       </label>
                       <select
                         className="admin-select"
-                        value={item.gender}
+                        value={item.gender || 'Tanpa Badge'}
                         onChange={(e) => handlePhotoGenderChanged(idx, e.target.value)}
                         style={{ height: '34px', fontSize: '0.8125rem', width: 'auto', minWidth: '140px' }}
                       >
                         <option value="Laki-laki">Laki-laki</option>
                         <option value="Perempuan">Perempuan</option>
-                        <option value="Unisex">Unisex / Umum</option>
+                        <option value="Unisex">Unisex</option>
+                        <option value="Tanpa Badge">Tanpa Badge</option>
                       </select>
-                      <span
-                        className={`admin-badge ${
-                          item.gender === 'Laki-laki'
-                            ? 'admin-badge-male'
-                            : item.gender === 'Perempuan'
-                            ? 'admin-badge-female'
-                            : 'admin-badge-unisex'
-                        }`}
-                      >
-                        {item.gender}
-                      </span>
+                      {item.gender && item.gender !== 'Tanpa Badge' ? (
+                        <span
+                          className={`admin-badge ${
+                            item.gender === 'Laki-laki'
+                              ? 'admin-badge-male'
+                              : item.gender === 'Perempuan'
+                              ? 'admin-badge-female'
+                              : 'admin-badge-unisex'
+                          }`}
+                        >
+                          {item.gender}
+                        </span>
+                      ) : (
+                        <span style={{ fontSize: '0.75rem', color: 'var(--admin-text-subtle)' }}>
+                          (Tanpa Badge)
+                        </span>
+                      )}
                     </div>
 
                     <AdminImageUploader

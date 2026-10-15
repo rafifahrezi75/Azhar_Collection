@@ -289,26 +289,6 @@ export default function AdminClientAutocomplete({
           )}
         </div>
       )}
-
-      {selectedClient && (
-        <div
-          style={{
-            marginTop: '0.375rem',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.4rem',
-            padding: '0.2rem 0.5rem',
-            borderRadius: '4px',
-            background: 'var(--admin-primary-soft, rgba(128, 0, 128, 0.08))',
-            color: 'var(--admin-primary)',
-            fontSize: '0.75rem',
-            fontWeight: 700
-          }}
-        >
-          <Check size={12} />
-          <span>Terhubung dengan: {selectedClient.name} {selectedClient.city ? `(${selectedClient.city})` : ''}</span>
-        </div>
-      )}
     </div>
   )
 }
