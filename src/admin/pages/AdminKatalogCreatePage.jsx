@@ -221,6 +221,8 @@ export default function AdminKatalogCreatePage() {
 
       await saveKatalogItem({
         ...formData,
+        client: formData.client,
+        clientOrigin: formData.client,
         clientId: finalClientId,
         slug,
         materials: validMaterials,

@@ -1,16 +1,20 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { School, ArrowRight } from 'lucide-react'
-import { getKatalogList, normalizeProductImages, createSlug } from '../firebase/adminService'
-import { portfolioProducts as fallbackProducts } from '../data/siteData'
+import { getKatalogList, getKlienList, normalizeProductImages, createSlug } from '../firebase/adminService'
+import { portfolioProducts as fallbackProducts, clientsData as fallbackClients } from '../data/siteData'
 
 export default function ProductCatalogSection({ limit, showHeader = false, showViewAll = false }) {
   const [items, setItems] = useState(fallbackProducts)
+  const [clientsList, setClientsList] = useState(fallbackClients)
 
   useEffect(() => {
     let isMounted = true
-    getKatalogList().then((list) => {
-      if (isMounted && list) setItems(list)
+    Promise.all([getKatalogList(), getKlienList()]).then(([prods, clis]) => {
+      if (isMounted) {
+        if (prods) setItems(prods)
+        if (clis) setClientsList(clis)
+      }
     })
     return () => {
       isMounted = false
@@ -44,6 +48,8 @@ export default function ProductCatalogSection({ limit, showHeader = false, showV
               const productImages = normalizeProductImages(product)
               const coverImg = productImages[0]?.url || product.image
               const itemSlug = product.slug || createSlug(product.name) || product.id
+              const clientMatch = clientsList.find((c) => String(c.id) === String(product.clientId))
+              const originName = clientMatch ? clientMatch.name : (product.client || product.clientOrigin || 'Azhar Collection')
 
               return (
                 <Link
@@ -72,7 +78,7 @@ export default function ProductCatalogSection({ limit, showHeader = false, showV
 
                     <div className="product-clean-origin">
                       <School size={15} style={{ color: 'var(--color-primary)', flexShrink: 0 }} />
-                      <span>{product.clientOrigin || product.client || 'Azhar Collection'}</span>
+                      <span>{originName}</span>
                     </div>
                   </div>
                 </Link>

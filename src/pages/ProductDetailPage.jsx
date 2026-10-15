@@ -417,7 +417,7 @@ export default function ProductDetailPage() {
 
                       <div className="product-clean-origin">
                         <School size={15} style={{ color: 'var(--color-primary)', flexShrink: 0 }} />
-                        <span>{item.clientOrigin || item.client || 'Azhar Collection'}</span>
+                        <span>{clientsList.find((c) => String(c.id) === String(item.clientId))?.name || item.client || item.clientOrigin || 'Azhar Collection'}</span>
                       </div>
                     </div>
                   </Link>
