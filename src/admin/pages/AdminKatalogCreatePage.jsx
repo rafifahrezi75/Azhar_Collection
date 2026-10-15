@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { ArrowLeft, Save, AlertCircle, Loader2, Plus, Trash2, Star, Image as ImageIcon } from 'lucide-react'
+import { ArrowLeft, Save, AlertCircle, Loader2, Plus, Trash2, Star, ArrowUp, ArrowDown, Image as ImageIcon } from 'lucide-react'
 import AdminImageUploader from '../components/AdminImageUploader'
 import { uploadToCloudinary } from '../../firebase/cloudinaryService'
 import { getKlienList, saveKatalogItem, createSlug } from '../../firebase/adminService'
@@ -125,6 +125,44 @@ export default function AdminKatalogCreatePage() {
     setVariantPhotos((prev) => {
       const next = [...prev]
       next[index] = { ...next[index], gender }
+      return next
+    })
+  }
+
+  const handleMoveVariantPhoto = (index, direction) => {
+    const targetIndex = index + direction
+    if (targetIndex < 0 || targetIndex >= variantPhotos.length) return
+    setVariantPhotos((prev) => {
+      const next = [...prev]
+      const temp = next[index]
+      next[index] = next[targetIndex]
+      next[targetIndex] = temp
+      return next
+    })
+  }
+
+  const handleMakeCover = (index) => {
+    const target = variantPhotos[index]
+    if (!target) return
+
+    const oldCoverUrl = coverUrl
+    const oldCoverFile = coverFile
+
+    setCoverUrl(target.url || '')
+    setCoverFile(target.file || null)
+
+    setVariantPhotos((prev) => {
+      const next = [...prev]
+      if (oldCoverUrl || oldCoverFile) {
+        next[index] = {
+          id: `v-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+          url: oldCoverUrl,
+          file: oldCoverFile,
+          gender: 'Tanpa Badge'
+        }
+      } else {
+        next.splice(index, 1)
+      }
       return next
     })
   }
@@ -428,7 +466,40 @@ export default function AdminKatalogCreatePage() {
                           Foto Varian #{idx + 1}
                         </span>
 
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                          <button
+                            type="button"
+                            onClick={() => handleMakeCover(idx)}
+                            className="admin-action-icon-btn"
+                            title="Jadikan Foto Cover Utama"
+                            aria-label="Jadikan Foto Cover Utama"
+                            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', height: '26px', padding: '0 0.5rem', fontSize: '0.6875rem', borderRadius: '4px' }}
+                          >
+                            <Star size={12} />
+                            <span>Jadikan Cover</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleMoveVariantPhoto(idx, -1)}
+                            disabled={idx === 0}
+                            className="admin-action-icon-btn"
+                            title="Geser Urutan ke Atas / Kiri"
+                            aria-label="Geser Urutan ke Atas"
+                            style={{ opacity: idx === 0 ? 0.35 : 1, cursor: idx === 0 ? 'not-allowed' : 'pointer' }}
+                          >
+                            <ArrowUp size={14} />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleMoveVariantPhoto(idx, 1)}
+                            disabled={idx === variantPhotos.length - 1}
+                            className="admin-action-icon-btn"
+                            title="Geser Urutan ke Bawah / Kanan"
+                            aria-label="Geser Urutan ke Bawah"
+                            style={{ opacity: idx === variantPhotos.length - 1 ? 0.35 : 1, cursor: idx === variantPhotos.length - 1 ? 'not-allowed' : 'pointer' }}
+                          >
+                            <ArrowDown size={14} />
+                          </button>
                           <button
                             type="button"
                             onClick={() => handleRemoveVariantPhoto(idx)}
