@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { ArrowLeft, Save, AlertCircle, Loader2, Plus, Trash2, Star, ArrowUp, ArrowDown, Image as ImageIcon } from 'lucide-react'
+import { ArrowLeft, Save, AlertCircle, Loader2, Plus, Trash2, GripVertical, ArrowUp, ArrowDown, Image as ImageIcon } from 'lucide-react'
 import AdminImageUploader from '../components/AdminImageUploader'
 import { uploadToCloudinary } from '../../firebase/cloudinaryService'
 import { getKatalogById, getKlienList, saveKatalogItem, createSlug } from '../../firebase/adminService'
@@ -28,6 +28,8 @@ export default function AdminKatalogEditPage() {
   const [coverUrl, setCoverUrl] = useState('')
   const [coverFile, setCoverFile] = useState(null)
   const [variantPhotos, setVariantPhotos] = useState([])
+  const [draggedIdx, setDraggedIdx] = useState(null)
+  const [dragOverIdx, setDragOverIdx] = useState(null)
 
   const [formData, setFormData] = useState({
     name: '',
@@ -194,30 +196,50 @@ export default function AdminKatalogEditPage() {
     })
   }
 
-  const handleMakeCover = (index) => {
-    const target = variantPhotos[index]
-    if (!target) return
+  const handleDragStart = (e, index) => {
+    const tag = e.target.tagName ? e.target.tagName.toLowerCase() : ''
+    if (tag === 'input' || tag === 'select' || tag === 'textarea' || tag === 'button' || e.target.closest('button, input, select, textarea')) {
+      e.preventDefault()
+      return
+    }
+    setDraggedIdx(index)
+    e.dataTransfer.effectAllowed = 'move'
+    e.dataTransfer.setData('text/plain', String(index))
+  }
 
-    const oldCoverUrl = coverUrl
-    const oldCoverFile = coverFile
+  const handleDragOver = (e, index) => {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'move'
+    if (dragOverIdx !== index) {
+      setDragOverIdx(index)
+    }
+  }
 
-    setCoverUrl(target.url || '')
-    setCoverFile(target.file || null)
+  const handleDragLeave = (e, index) => {
+    if (dragOverIdx === index) {
+      setDragOverIdx(null)
+    }
+  }
 
+  const handleDrop = (targetIndex) => {
+    if (draggedIdx === null || draggedIdx === targetIndex) {
+      setDraggedIdx(null)
+      setDragOverIdx(null)
+      return
+    }
     setVariantPhotos((prev) => {
       const next = [...prev]
-      if (oldCoverUrl || oldCoverFile) {
-        next[index] = {
-          id: `v-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
-          url: oldCoverUrl,
-          file: oldCoverFile,
-          gender: 'Tanpa Badge'
-        }
-      } else {
-        next.splice(index, 1)
-      }
+      const [movedItem] = next.splice(draggedIdx, 1)
+      next.splice(targetIndex, 0, movedItem)
       return next
     })
+    setDraggedIdx(null)
+    setDragOverIdx(null)
+  }
+
+  const handleDragEnd = () => {
+    setDraggedIdx(null)
+    setDragOverIdx(null)
   }
 
   const handleSubmit = async (e) => {
@@ -342,141 +364,139 @@ export default function AdminKatalogEditPage() {
           )}
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-              <div className="admin-form-group">
-                <label className="admin-label" htmlFor="product-name">
-                  Nama Model Busana <span style={{ color: 'var(--admin-danger)' }}>*</span>
-                </label>
-                <input
-                  id="product-name"
-                  type="text"
-                  className="admin-input"
-                  placeholder="Contoh: Kemeja PDH Nagata Drill Bordir Komputer"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  required
-                />
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
+            <div className="admin-product-form-layout">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 <div className="admin-form-group">
-                  <label className="admin-label" htmlFor="product-category">Kategori Busana</label>
-                  <select
-                    id="product-category"
-                    className="admin-select"
-                    value={formData.category}
-                    onChange={(e) => handleCategoryChange(e.target.value)}
-                  >
-                    <option value="seragam">Seragam Sekolah</option>
-                    <option value="batik">Batik Identitas</option>
-                    <option value="kemeja">Kemeja PDH / PDL</option>
-                    <option value="jas">Jas Almamater</option>
-                    <option value="jaket">Jaket & Rompi</option>
-                    <option value="kaos">Kaos & Olahraga</option>
-                  </select>
+                  <label className="admin-label" htmlFor="product-name">
+                    Nama Model Busana <span style={{ color: 'var(--admin-danger)' }}>*</span>
+                  </label>
+                  <input
+                    id="product-name"
+                    type="text"
+                    className="admin-input"
+                    placeholder="Contoh: Kemeja PDH Nagata Drill Bordir Komputer"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    required
+                  />
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1rem' }}>
+                  <div className="admin-form-group">
+                    <label className="admin-label" htmlFor="product-category">Kategori Busana</label>
+                    <select
+                      id="product-category"
+                      className="admin-select"
+                      value={formData.category}
+                      onChange={(e) => handleCategoryChange(e.target.value)}
+                    >
+                      <option value="seragam">Seragam Sekolah</option>
+                      <option value="batik">Batik Identitas</option>
+                      <option value="kemeja">Kemeja PDH / PDL</option>
+                      <option value="jas">Jas Almamater</option>
+                      <option value="jaket">Jaket & Rompi</option>
+                      <option value="kaos">Kaos & Olahraga</option>
+                    </select>
+                  </div>
+
+                  <div className="admin-form-group">
+                    <label className="admin-label" htmlFor="product-client-autocomplete">
+                      Instansi / Mitra Pemesan (Dari Data Klien) <span style={{ color: 'var(--admin-danger)' }}>*</span>
+                    </label>
+                    <AdminClientAutocomplete
+                      clients={clientsList}
+                      value={formData.clientId}
+                      clientName={formData.client}
+                      onChange={({ clientId, clientName }) => {
+                        setFormData((prev) => ({
+                          ...prev,
+                          clientId,
+                          client: clientName
+                        }))
+                      }}
+                      required
+                      placeholder="Ketik untuk cari instansi / sekolah pemesan..."
+                    />
+                  </div>
                 </div>
 
                 <div className="admin-form-group">
-                  <label className="admin-label" htmlFor="product-client-autocomplete">
-                    Instansi / Mitra Pemesan (Dari Data Klien) <span style={{ color: 'var(--admin-danger)' }}>*</span>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.375rem' }}>
+                    <label className="admin-label" style={{ margin: 0 }}>
+                      Bahan Utama Kain (Maks. 3 Poin)
+                    </label>
+                    <span className="admin-points-count">
+                      {materials.length} / 3 Poin
+                    </span>
+                  </div>
+
+                  <div className="admin-points-container">
+                    {materials.map((mat, idx) => (
+                      <div key={idx} className="admin-point-row">
+                        <span className="admin-point-index">{idx + 1}.</span>
+                        <input
+                          type="text"
+                          className="admin-input admin-point-input"
+                          placeholder={`Poin bahan ${idx + 1}, misal: Nagata Drill Asli Jepang`}
+                          value={mat}
+                          onChange={(e) => handleMaterialChange(idx, e.target.value)}
+                        />
+                        {materials.length > 1 && (
+                          <button
+                            type="button"
+                            className="admin-action-icon-btn admin-action-icon-btn-danger"
+                            onClick={() => handleRemoveMaterial(idx)}
+                            title="Hapus Poin Bahan"
+                            aria-label="Hapus Poin Bahan"
+                          >
+                            <Trash2 size={15} />
+                          </button>
+                        )}
+                        {idx === materials.length - 1 && materials.length < 3 && (
+                          <button
+                            type="button"
+                            className="admin-action-icon-btn admin-action-icon-btn-primary"
+                            onClick={handleAddMaterial}
+                            title="Tambah Poin Bahan"
+                            aria-label="Tambah Poin Bahan"
+                          >
+                            <Plus size={15} />
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="admin-form-group">
+                  <label className="admin-label" htmlFor="product-specs">
+                    Rincian Spesifikasi dan Keunggulan Model
                   </label>
-                  <AdminClientAutocomplete
-                    clients={clientsList}
-                    value={formData.clientId}
-                    clientName={formData.client}
-                    onChange={({ clientId, clientName }) => {
-                      setFormData((prev) => ({
-                        ...prev,
-                        clientId,
-                        client: clientName
-                      }))
-                    }}
-                    required
-                    placeholder="Ketik untuk cari instansi / sekolah pemesan..."
+                  <textarea
+                    id="product-specs"
+                    rows={4}
+                    className="admin-input"
+                    style={{ resize: 'vertical', lineHeight: 1.6, minHeight: '110px' }}
+                    placeholder="Tuliskan rincian spesifikasi jahitan jarum dua, tipe kancing, furing, bordir logo komputer, dsb..."
+                    value={formData.specs}
+                    onChange={(e) => setFormData({ ...formData, specs: e.target.value })}
                   />
                 </div>
               </div>
 
-              <div className="admin-form-group">
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.375rem' }}>
-                  <label className="admin-label" style={{ margin: 0 }}>
-                    Bahan Utama Kain (Maks. 3 Poin)
-                  </label>
-                  <span className="admin-points-count">
-                    {materials.length} / 3 Poin
-                  </span>
-                </div>
-
-                <div className="admin-points-container">
-                  {materials.map((mat, idx) => (
-                    <div key={idx} className="admin-point-row">
-                      <span className="admin-point-index">{idx + 1}.</span>
-                      <input
-                        type="text"
-                        className="admin-input admin-point-input"
-                        placeholder={`Poin bahan ${idx + 1}, misal: Nagata Drill Asli Jepang`}
-                        value={mat}
-                        onChange={(e) => handleMaterialChange(idx, e.target.value)}
-                      />
-                      {materials.length > 1 && (
-                        <button
-                          type="button"
-                          className="admin-action-icon-btn admin-action-icon-btn-danger"
-                          onClick={() => handleRemoveMaterial(idx)}
-                          title="Hapus Poin Bahan"
-                          aria-label="Hapus Poin Bahan"
-                        >
-                          <Trash2 size={15} />
-                        </button>
-                      )}
-                      {idx === materials.length - 1 && materials.length < 3 && (
-                        <button
-                          type="button"
-                          className="admin-action-icon-btn admin-action-icon-btn-primary"
-                          onClick={handleAddMaterial}
-                          title="Tambah Poin Bahan"
-                          aria-label="Tambah Poin Bahan"
-                        >
-                          <Plus size={15} />
-                        </button>
-                      )}
+              <div className="admin-cover-sidebar">
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem', borderBottom: '1px solid var(--admin-border)', paddingBottom: '0.75rem' }}>
+                  <div>
+                    <div style={{ fontWeight: 700, fontSize: '0.9375rem', color: 'var(--admin-text-main)' }}>
+                      Foto Cover Utama Produk <span style={{ color: 'var(--admin-danger)' }}>*</span>
                     </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="admin-form-group">
-                <label className="admin-label" htmlFor="product-specs">
-                  Rincian Spesifikasi dan Keunggulan Model
-                </label>
-                <textarea
-                  id="product-specs"
-                  rows={4}
-                  className="admin-input"
-                  style={{ resize: 'vertical', lineHeight: 1.6, minHeight: '100px' }}
-                  placeholder="Tuliskan rincian spesifikasi jahitan jarum dua, tipe kancing, furing, bordir logo komputer, dsb..."
-                  value={formData.specs}
-                  onChange={(e) => setFormData({ ...formData, specs: e.target.value })}
-                />
-              </div>
-            </div>
-
-            <div style={{ borderTop: '1px solid var(--admin-border)', margin: '0.5rem 0 0 0' }} />
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
-                <div>
-                  <div style={{ fontWeight: 700, fontSize: '0.9375rem', color: 'var(--admin-text-main)' }}>
-                    Foto Cover Utama Produk <span style={{ color: 'var(--admin-danger)' }}>*</span>
+                    <div style={{ fontSize: '0.8125rem', color: 'var(--admin-text-muted)', marginTop: '0.125rem' }}>
+                      Foto utama kartu katalog & tampilan awal produk.
+                    </div>
                   </div>
-                  <div style={{ fontSize: '0.8125rem', color: 'var(--admin-text-muted)', marginTop: '0.125rem' }}>
-                    Foto utama yang tampil di kartu katalog depan dan tampilan awal saat membuka detail produk.
-                  </div>
+                  <span className="admin-badge admin-badge-primary">Cover Utama</span>
                 </div>
-                <span className="admin-badge admin-badge-primary">Cover Utama</span>
-              </div>
 
-              <div style={{ maxWidth: '480px' }}>
                 <AdminImageUploader
                   label=""
                   ratioHint="Rasio 4:3 (Landscape, misal 800 x 600 px)"
@@ -489,7 +509,7 @@ export default function AdminKatalogEditPage() {
               </div>
             </div>
 
-            <div style={{ borderTop: '1px solid var(--admin-border)', margin: '0.5rem 0 0 0' }} />
+            <div style={{ borderTop: '1px solid var(--admin-border)', margin: '0.25rem 0' }} />
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
@@ -498,7 +518,7 @@ export default function AdminKatalogEditPage() {
                     Galeri Foto Varian Model (Opsional)
                   </div>
                   <div style={{ fontSize: '0.8125rem', color: 'var(--admin-text-muted)', marginTop: '0.125rem' }}>
-                    Tambahkan foto model busana dengan badge khusus seperti Laki-laki, Perempuan, Unisex, atau Tanpa Badge.
+                    Geser (drag) foto untuk mengubah urutan. Tambahkan badge gender seperti Laki-laki, Perempuan, Unisex, atau Tanpa Badge.
                   </div>
                 </div>
                 <button
@@ -525,24 +545,27 @@ export default function AdminKatalogEditPage() {
                   }}
                 >
                   {variantPhotos.map((item, idx) => (
-                    <div key={item.id} className="admin-photo-card">
+                    <div
+                      key={item.id}
+                      className={`admin-photo-card ${draggedIdx === idx ? 'is-dragging' : ''} ${dragOverIdx === idx ? 'is-drag-over' : ''}`}
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, idx)}
+                      onDragOver={(e) => handleDragOver(e, idx)}
+                      onDragLeave={(e) => handleDragLeave(e, idx)}
+                      onDrop={() => handleDrop(idx)}
+                      onDragEnd={handleDragEnd}
+                    >
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', flexWrap: 'wrap', borderBottom: '1px solid var(--admin-border)', paddingBottom: '0.5rem' }}>
-                        <span style={{ fontWeight: 700, fontSize: '0.8125rem', color: 'var(--admin-text-main)' }}>
-                          Foto Varian #{idx + 1}
-                        </span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
+                          <span className="admin-drag-handle" title="Tahan dan geser (drag) untuk ubah urutan">
+                            <GripVertical size={16} />
+                          </span>
+                          <span style={{ fontWeight: 700, fontSize: '0.8125rem', color: 'var(--admin-text-main)' }}>
+                            Foto Varian #{idx + 1}
+                          </span>
+                        </div>
 
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                          <button
-                            type="button"
-                            onClick={() => handleMakeCover(idx)}
-                            className="admin-action-icon-btn"
-                            title="Jadikan Foto Cover Utama"
-                            aria-label="Jadikan Foto Cover Utama"
-                            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', height: '26px', padding: '0 0.5rem', fontSize: '0.6875rem', borderRadius: '4px' }}
-                          >
-                            <Star size={12} />
-                            <span>Jadikan Cover</span>
-                          </button>
                           <button
                             type="button"
                             onClick={() => handleMoveVariantPhoto(idx, -1)}
