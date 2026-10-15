@@ -290,7 +290,7 @@ export default function DetailModal({
             <Info size={20} style={{ color: 'var(--color-primary)' }} />
             <h3 className="modal-title">
               {type === 'service' && 'Detail Layanan Konveksi'}
-              {type === 'product' && 'Detail Portofolio & Spesifikasi'}
+              {type === 'product' && 'Detail Produk & Spesifikasi'}
               {type === 'sizeChart' && 'Panduan Ukuran Pakaian'}
               {type === 'about' && 'Tentang Azhar Collection'}
               {type === 'imagePreview' && 'Pratinjau Foto Workshop'}

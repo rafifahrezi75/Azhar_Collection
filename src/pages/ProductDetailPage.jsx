@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import PageHeader from '../components/PageHeader'
-import { getKatalogList, getKlienList } from '../firebase/adminService'
+import { getKatalogList, getKlienList, normalizeProductImages, createSlug } from '../firebase/adminService'
 import { portfolioProducts as fallbackProducts, clientsData as fallbackClients } from '../data/siteData'
 import {
   ArrowLeft,
@@ -20,12 +20,23 @@ function formatPcs(val) {
   return /pcs|setel|buah|lembar/i.test(trimmed) ? trimmed : `${trimmed} Pcs`
 }
 
+function getGenderBadgeClass(gender) {
+  if (gender === 'Laki-laki') return 'gender-male'
+  if (gender === 'Perempuan') return 'gender-female'
+  return 'gender-unisex'
+}
+
 export default function ProductDetailPage() {
-  const { productId } = useParams()
+  const { slug, productId } = useParams()
+  const targetParam = slug || productId
   const [activeImageIndex, setActiveImageIndex] = useState(0)
   const [productsList, setProductsList] = useState(fallbackProducts)
   const [clientsList, setClientsList] = useState(fallbackClients)
   const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    setActiveImageIndex(0)
+  }, [targetParam])
 
   useEffect(() => {
     let isMounted = true
@@ -56,12 +67,18 @@ export default function ProductDetailPage() {
     )
   ]
 
-  const product = allProducts.find(
-    (p) => p.id === productId || p.id?.toLowerCase() === productId?.toLowerCase()
-  )
+  const product = allProducts.find((p) => {
+    const current = String(targetParam || '').toLowerCase()
+    const pSlug = (p.slug || createSlug(p.name)).toLowerCase()
+    return (
+      pSlug === current ||
+      createSlug(p.name).toLowerCase() === current ||
+      String(p.id).toLowerCase() === current
+    )
+  })
 
   const client = product
-    ? clientsList.find((c) => c.id === product.clientId) || {
+    ? clientsList.find((c) => String(c.id) === String(product.clientId) || c.name === product.client || c.name === product.clientOrigin) || {
         name: product.clientOrigin || product.client || 'Mitra Instansi',
         image: product.image,
         city: 'Sidoarjo, Jawa Timur',
@@ -69,18 +86,14 @@ export default function ProductDetailPage() {
       }
     : null
 
-  const galleryImages = product
-    ? [
-        product.image,
-        ...(client?.orderedProducts?.filter((op) => op.image && op.image !== product.image).map((op) => op.image) || [])
-      ].filter(Boolean).filter((v, i, a) => a.indexOf(v) === i)
-    : []
+  const galleryImages = product ? normalizeProductImages(product) : []
+  const activeImage = galleryImages[activeImageIndex] || galleryImages[0]
 
   useEffect(() => {
     if (galleryImages.length <= 1) return
     const interval = setInterval(() => {
       setActiveImageIndex((prev) => (prev + 1) % galleryImages.length)
-    }, 3500)
+    }, 4000)
     return () => clearInterval(interval)
   }, [galleryImages.length])
 
@@ -121,7 +134,7 @@ export default function ProductDetailPage() {
   }
 
   const relatedProducts = productsList
-    .filter((p) => p.id !== product.id)
+    .filter((p) => String(p.id) !== String(product.id))
     .slice(0, 3)
 
   return (
@@ -137,11 +150,33 @@ export default function ProductDetailPage() {
           <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.1fr) minmax(0, 1.3fr)', gap: '3rem', alignItems: 'start', background: '#FFFFFF', padding: '2.5rem', borderRadius: 'var(--radius-xl)', border: '1px solid var(--color-border)', boxShadow: 'var(--shadow-sm)', marginBottom: '4rem' }}>
             <div className="reveal-left">
               <div style={{ position: 'relative', borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid var(--color-border)', height: '420px', background: 'var(--color-bg-light)' }}>
-                <img
-                  src={galleryImages[activeImageIndex]}
-                  alt={product.name}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'all 0.3s ease' }}
-                />
+                {activeImage?.url ? (
+                  <img
+                    src={activeImage.url}
+                    alt={product.name}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'all 0.3s ease' }}
+                  />
+                ) : (
+                  <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-muted)' }}>
+                    Foto Tidak Tersedia
+                  </div>
+                )}
+
+                {activeImage?.gender && (
+                  <div style={{ position: 'absolute', top: '1rem', left: '1rem', zIndex: 10 }}>
+                    <span className={`product-gender-badge ${getGenderBadgeClass(activeImage.gender)}`}>
+                      {activeImage.gender}
+                    </span>
+                  </div>
+                )}
+
+                {galleryImages.length > 1 && (
+                  <div style={{ position: 'absolute', top: '1rem', right: '1rem', zIndex: 10 }}>
+                    <span className="product-photos-count-badge">
+                      {activeImageIndex + 1} / {galleryImages.length} Foto
+                    </span>
+                  </div>
+                )}
 
                 {galleryImages.length > 1 && (
                   <>
@@ -162,7 +197,8 @@ export default function ProductDetailPage() {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        cursor: 'pointer'
+                        cursor: 'pointer',
+                        border: 'none'
                       }}
                     >
                       <ChevronLeft size={20} />
@@ -184,7 +220,8 @@ export default function ProductDetailPage() {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        cursor: 'pointer'
+                        cursor: 'pointer',
+                        border: 'none'
                       }}
                     >
                       <ChevronRight size={20} />
@@ -193,37 +230,35 @@ export default function ProductDetailPage() {
                 )}
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: `repeat(${galleryImages.length}, 1fr)`, gap: '0.75rem', marginTop: '0.875rem' }}>
-                {galleryImages.map((imgSrc, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={() => setActiveImageIndex(idx)}
-                    style={{
-                      height: '76px',
-                      borderRadius: 'var(--radius-md)',
-                      overflow: 'hidden',
-                      border: activeImageIndex === idx ? '2px solid var(--color-primary)' : '1px solid var(--color-border)',
-                      padding: 0,
-                      cursor: 'pointer',
-                      opacity: activeImageIndex === idx ? 1 : 0.65,
-                      boxShadow: activeImageIndex === idx ? 'var(--shadow-sm)' : 'none',
-                      transition: 'all var(--transition-fast)'
-                    }}
-                  >
-                    <img
-                      src={imgSrc}
-                      alt={`Foto detail ${idx + 1}`}
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                    />
-                  </button>
-                ))}
-              </div>
+              {galleryImages.length > 1 && (
+                <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.min(galleryImages.length, 6)}, minmax(0, 1fr))`, gap: '0.75rem', marginTop: '0.875rem' }}>
+                  {galleryImages.map((imgItem, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => setActiveImageIndex(idx)}
+                      className={`product-thumb-btn ${activeImageIndex === idx ? 'active' : ''}`}
+                      aria-label={`Foto ${idx + 1}`}
+                    >
+                      <img
+                        src={imgItem.url}
+                        alt={`Thumbnail ${idx + 1}`}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                      {imgItem.gender && (
+                        <span className={`product-thumb-badge ${getGenderBadgeClass(imgItem.gender)}`}>
+                          {imgItem.gender}
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div className="reveal-right delay-150" style={{ display: 'flex', flexDirection: 'column' }}>
               <div style={{ marginBottom: '0.75rem' }}>
-                <span className="section-tag" style={{ margin: 0 }}>{product.categoryLabel}</span>
+                <span className="section-tag" style={{ margin: 0 }}>{product.categoryLabel || product.category}</span>
               </div>
 
               <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--color-primary-dark)', margin: '0 0 1.25rem 0', lineHeight: 1.3 }}>
@@ -234,23 +269,32 @@ export default function ProductDetailPage() {
                 <div style={{ background: '#FFFFFF', padding: '1.25rem', borderRadius: 'var(--radius-lg)', marginBottom: '1.75rem', border: '1px solid var(--color-border)', boxShadow: 'var(--shadow-xs)' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                     <img
-                      src={client.image}
+                      src={client.logo || client.image || product.image}
                       alt={client.name}
                       style={{ width: '56px', height: '56px', borderRadius: 'var(--radius-md)', objectFit: 'cover', border: '1px solid var(--color-border)', flexShrink: 0 }}
                     />
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', minWidth: 0 }}>
-                      <h3 style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--color-primary-dark)', margin: 0, lineHeight: 1.3 }}>
-                        {client.name}
-                      </h3>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '1rem', fontSize: '0.8125rem', color: 'var(--color-text-muted)' }}>
-                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
-                          <MapPin size={14} style={{ color: 'var(--color-accent)', flexShrink: 0 }} />
-                          <span>{client.city}</span>
-                        </div>
-                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
-                          <Calendar size={14} style={{ color: 'var(--color-accent)', flexShrink: 0 }} />
-                          <span>Mitra Sejak {client.since}</span>
-                        </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                        <span style={{ fontSize: '0.6875rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--color-primary)', background: 'var(--color-primary-soft)', padding: '0.15rem 0.5rem', borderRadius: '4px' }}>
+                          Instansi Pemesan
+                        </span>
+                        <h3 style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--color-primary-dark)', margin: 0, lineHeight: 1.3 }}>
+                          {client.name}
+                        </h3>
+                      </div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '1rem', fontSize: '0.8125rem', color: 'var(--color-text-muted)', marginTop: '0.25rem' }}>
+                        {client.city && (
+                          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+                            <MapPin size={14} style={{ color: 'var(--color-accent)', flexShrink: 0 }} />
+                            <span>{client.city}</span>
+                          </div>
+                        )}
+                        {client.since && (
+                          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+                            <Calendar size={14} style={{ color: 'var(--color-accent)', flexShrink: 0 }} />
+                            <span>Mitra Sejak {client.since}</span>
+                          </div>
+                        )}
                         {client.totalPcs && client.totalPcs.trim() && (
                           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
                             <Package size={14} style={{ color: 'var(--color-accent)', flexShrink: 0 }} />
@@ -311,7 +355,7 @@ export default function ProductDetailPage() {
           <div className="reveal-up">
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.75rem' }}>
               <div>
-                <span className="section-tag">PORTOFOLIO LAINNYA</span>
+                <span className="section-tag">KATALOG LAINNYA</span>
                 <h3 style={{ fontSize: '1.375rem', fontWeight: 800, color: 'var(--color-primary-dark)', margin: 0 }}>
                   Model Baju Terkait Yang Pernah Dikerjakan
                 </h3>
@@ -322,32 +366,45 @@ export default function ProductDetailPage() {
             </div>
 
             <div className="products-grid">
-              {relatedProducts.map((item, idx) => (
-                <Link
-                  key={item.id}
-                  to={`/katalog/${item.id}`}
-                  className={`product-card product-card-clean reveal-up delay-${Math.min((idx % 3) * 100 + 100, 300)}`}
-                >
-                  <div className="product-img-wrapper">
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="product-img"
-                      loading="lazy"
-                    />
-                  </div>
+              {relatedProducts.map((item, idx) => {
+                const itemImages = normalizeProductImages(item)
+                const itemCover = itemImages[0]?.url || item.image
+                const itemGender = itemImages[0]?.gender
+                const itemSlug = item.slug || createSlug(item.name) || item.id
 
-                  <div className="product-content">
-                    <span className="product-category-text">{item.categoryLabel}</span>
-                    <h3 className="product-name">{item.name}</h3>
-
-                    <div className="product-clean-origin">
-                      <School size={15} style={{ color: 'var(--color-primary)', flexShrink: 0 }} />
-                      <span>{item.clientOrigin}</span>
+                return (
+                  <Link
+                    key={item.id}
+                    to={`/katalog/${itemSlug}`}
+                    className={`product-card product-card-clean reveal-up delay-${Math.min((idx % 3) * 100 + 100, 300)}`}
+                  >
+                    <div className="product-img-wrapper">
+                      {itemCover ? (
+                        <img
+                          src={itemCover}
+                          alt={item.name}
+                          className="product-img"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F1F5F9', color: '#94A3B8', fontSize: '0.75rem' }}>
+                          Foto Busana
+                        </div>
+                      )}
                     </div>
-                  </div>
-                </Link>
-              ))}
+
+                    <div className="product-content">
+                      <span className="product-category-text">{item.categoryLabel || item.category}</span>
+                      <h3 className="product-name">{item.name}</h3>
+
+                      <div className="product-clean-origin">
+                        <School size={15} style={{ color: 'var(--color-primary)', flexShrink: 0 }} />
+                        <span>{item.clientOrigin || item.client || 'Azhar Collection'}</span>
+                      </div>
+                    </div>
+                  </Link>
+                )
+              })}
             </div>
           </div>
         </div>

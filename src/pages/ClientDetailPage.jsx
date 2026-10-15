@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { clientsData as fallbackClients } from '../data/siteData'
-import { getKlienList } from '../firebase/adminService'
+import { getKlienList, createSlug } from '../firebase/adminService'
 import PageHeader from '../components/PageHeader'
 import {
   Building2,
@@ -499,12 +499,14 @@ export default function ClientDetailPage() {
             </div>
 
             <div className="products-grid">
-              {(client.orderedProducts || []).map((product) => (
-                <Link
-                  key={product.id}
-                  to={`/katalog/${product.id}`}
-                  className="product-card product-card-clean"
-                >
+              {(client.orderedProducts || []).map((product) => {
+                const itemSlug = product.slug || createSlug(product.name) || product.id
+                return (
+                  <Link
+                    key={product.id}
+                    to={`/katalog/${itemSlug}`}
+                    className="product-card product-card-clean"
+                  >
                   <div className="product-img-wrapper">
                     <img
                       src={product.image}
@@ -524,7 +526,8 @@ export default function ClientDetailPage() {
                     </div>
                   </div>
                 </Link>
-              ))}
+              )
+            })}
             </div>
           </div>
         </div>

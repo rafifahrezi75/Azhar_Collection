@@ -14,7 +14,7 @@ export default function InfoBoxes() {
             <div>
               <h3 className="info-box-title">{infoBoxesData.box1.title}</h3>
               <p className="info-box-desc">{infoBoxesData.box1.desc}</p>
-              <Link to="/portofolio" className="info-box-link">
+              <Link to="/katalog" className="info-box-link">
                 <span>{infoBoxesData.box1.link}</span>
                 <ArrowRight size={15} />
               </Link>

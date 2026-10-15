@@ -627,6 +627,51 @@
   color: var(--admin-danger);
 }
 
+.admin-badge-male {
+  background-color: #DBEAFE;
+  color: #1D4ED8;
+}
+
+.admin-badge-female {
+  background-color: #FCE7F3;
+  color: #BE185D;
+}
+
+.admin-badge-unisex {
+  background-color: #F1F5F9;
+  color: #475569;
+}
+
+.admin-dark .admin-badge-male {
+  background-color: rgba(37, 99, 235, 0.2);
+  color: #93C5FD;
+}
+
+.admin-dark .admin-badge-female {
+  background-color: rgba(219, 39, 119, 0.2);
+  color: #F9A8D4;
+}
+
+.admin-dark .admin-badge-unisex {
+  background-color: rgba(148, 163, 184, 0.2);
+  color: #CBD5E1;
+}
+
+.admin-photo-card {
+  padding: 1rem;
+  border: 1px solid var(--admin-border);
+  border-radius: 6px;
+  background-color: var(--admin-surface);
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  transition: border-color 0.2s ease;
+}
+
+.admin-photo-card:hover {
+  border-color: var(--admin-primary);
+}
+
 .admin-btn {
   display: inline-flex;
   align-items: center;

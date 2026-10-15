@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Plus, Search, Edit2, Trash2, Shirt, Image as ImageIcon, Eye } from 'lucide-react'
 import AdminPagination from '../components/AdminPagination'
-import { getKatalogList, deleteKatalogItem } from '../../firebase/adminService'
+import { getKatalogList, deleteKatalogItem, normalizeProductImages } from '../../firebase/adminService'
 import { showDeleteConfirm, showToast, showErrorAlert } from '../utils/swal'
 
 export default function AdminKatalogPage() {
@@ -144,43 +144,70 @@ export default function AdminKatalogPage() {
                   </td>
                 </tr>
               ) : (
-                paginatedItems.map((item) => (
-                  <tr key={item.id}>
-                    <td>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem' }}>
-                        <div
-                          style={{
-                            width: '46px',
-                            height: '46px',
-                            borderRadius: 'var(--admin-radius)',
-                            overflow: 'hidden',
-                            backgroundColor: 'var(--admin-surface-hover)',
-                            flexShrink: 0,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                          }}
-                        >
-                          {item.image ? (
-                            <img
-                              src={item.image}
-                              alt={item.name}
-                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                            />
-                          ) : (
-                            <ImageIcon size={20} style={{ color: 'var(--admin-text-subtle)' }} />
-                          )}
+                paginatedItems.map((item) => {
+                  const imgs = normalizeProductImages(item)
+                  const cover = imgs[0]?.url || item.image
+                  const genders = Array.from(new Set(imgs.map((i) => i.gender).filter(Boolean)))
+
+                  return (
+                    <tr key={item.id}>
+                      <td>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem' }}>
+                          <div
+                            style={{
+                              width: '46px',
+                              height: '46px',
+                              borderRadius: 'var(--admin-radius)',
+                              overflow: 'hidden',
+                              backgroundColor: 'var(--admin-surface-hover)',
+                              flexShrink: 0,
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center'
+                            }}
+                          >
+                            {cover ? (
+                              <img
+                                src={cover}
+                                alt={item.name}
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                              />
+                            ) : (
+                              <ImageIcon size={20} style={{ color: 'var(--admin-text-subtle)' }} />
+                            )}
+                          </div>
+                          <div>
+                            <div style={{ fontWeight: 800 }}>{item.name}</div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', marginTop: '0.25rem', flexWrap: 'wrap' }}>
+                              {imgs.length > 1 && (
+                                <span style={{ fontSize: '0.6875rem', color: 'var(--admin-text-subtle)', fontWeight: 600 }}>
+                                  {imgs.length} Foto
+                                </span>
+                              )}
+                              {genders.map((g) => (
+                                <span
+                                  key={g}
+                                  className={
+                                    g === 'Laki-laki'
+                                      ? 'admin-badge-male'
+                                      : g === 'Perempuan'
+                                      ? 'admin-badge-female'
+                                      : 'admin-badge-unisex'
+                                  }
+                                  style={{ fontSize: '0.625rem', padding: '0.1rem 0.35rem' }}
+                                >
+                                  {g}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
                         </div>
-                        <div>
-                          <div style={{ fontWeight: 800 }}>{item.name}</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <span className="admin-badge admin-badge-primary">
-                        {item.categoryLabel || item.category}
-                      </span>
-                    </td>
+                      </td>
+                      <td>
+                        <span className="admin-badge admin-badge-primary">
+                          {item.categoryLabel || item.category}
+                        </span>
+                      </td>
                     <td>{item.client || '-'}</td>
                     <td style={{ maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       {item.material || '-'}
@@ -213,8 +240,8 @@ export default function AdminKatalogPage() {
                       </div>
                     </td>
                   </tr>
-                ))
-              )}
+                )
+              }))}
             </tbody>
           </table>
         </div>

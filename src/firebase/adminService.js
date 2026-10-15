@@ -97,41 +97,44 @@ const defaultNews = [
 const defaultServices = [
   {
     id: "layanan-1",
+    slug: "jahitan-rapi-dan-berstandar-mutu",
     title: "Jahitan Rapi & Berstandar Mutu",
     shortDesc: "Layanan jahit seragam olahraga, busana muslim, dan mukena dengan standar QC ketat, jahitan obras ganda, serta kelim rapi presisi.",
     moq: "12 Pcs",
     leadTime: "7 - 14 Hari",
     materials: "Katun Combed, Polyester, Rayon, Toyobo, Wolfis",
     fullDesc: "<p>Menghadirkan layanan penjahitan berkualitas tinggi yang dikerjakan oleh tenaga penjahit terampil dan berpengalaman. Setiap helai pakaian melalui proses inspeksi Quality Control (QC) menyeluruh guna memastikan jahitan kokoh, lurus, tidak mudah robek, dan nyaman dikenakan untuk pemakaian jangka panjang.</p><ul><li>Jahitan obras dan kelim rapi presisi di setiap sisi</li><li>Pemeriksaan QC ketat pada ukuran, kerapian benang, dan kekuatan sambungan</li><li>Finishing lipat rapi dan pengemasan terstandarisasi</li></ul>",
-    image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=800&q=80",
+    image: "https://res.cloudinary.com/dl1lswlpb/image/upload/v1792061964/k4l4zf6vwsnizalq118n.png",
     icon: "Shirt"
   },
   {
     id: "layanan-2",
+    slug: "dtf-sablon-digital-transfer-film",
     title: "DTF Sablon (Digital Transfer Film)",
     shortDesc: "Jasa cetak sablon digital DTF resolusi tinggi yang lentur, warna tajam, dan memiliki ketahanan cuci maksimal.",
     moq: "12 Pcs",
     leadTime: "3 - 7 Hari",
     materials: "Film DTF Premium, Tinta Pigment DTF, Hot Melt Adhesive Powder",
     fullDesc: "<p>Solusi sablon modern untuk kaos, seragam olahraga, maupun atribut komunitas. Menggunakan teknologi transfer film digital berpresisi tinggi yang mampu mencetak gradasi warna rumit dan logo instansi secara mendetail dengan daya rekat serat kain yang kuat serta tahan lama.</p><ul><li>Warna cerah, tajam, dan tidak mudah retak atau mengelupas saat dicuci</li><li>Cocok untuk penempatan logo sekolah, nama instansi, hingga desain grafis custom</li><li>Proses press panas optimal untuk hasil menempel sempurna</li></ul>",
-    image: "https://images.unsplash.com/photo-1618354691373-d851c5c3a990?auto=format&fit=crop&w=800&q=80",
+    image: "https://res.cloudinary.com/dl1lswlpb/image/upload/v1792061966/quxikilngclrvil2vnnw.jpg",
     icon: "Cpu"
   },
   {
     id: "layanan-3",
+    slug: "kustom-sesuai-permintaan",
     title: "Kustom Sesuai Permintaan",
     shortDesc: "Layanan kustomisasi penuh mulai dari pemilihan pola, kombinasi warna bahan, penentuan ukuran bertingkat, hingga model khusus.",
     moq: "24 Pcs",
     leadTime: "7 - 14 Hari",
     materials: "Pilihan Material Sesuai Request (Katun, Drill, Polyester, Kain Perca Upcycle)",
     fullDesc: "<p>Fleksibilitas produksi penuh yang disesuaikan dengan kebutuhan dan spesifikasi unik pelanggan, baik untuk kebutuhan sekolah, komunitas, majelis, maupun suvenir kreatif. Kami membantu mewujudkan konsep desain Anda mulai dari pembuatan pola awal hingga produk jadi siap pakai.</p><ul><li>Bebas tentukan desain model kerah, lengan, pola kombinasi, dan variasi saku</li><li>Tersedia rentang ukuran kustom lengkap (anak-anak hingga dewasa/big size)</li><li>Konsultasi pemilihan bahan baku dan aksesori pendukung</li></ul>",
-    image: "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=800&q=80",
+    image: "https://res.cloudinary.com/dl1lswlpb/image/upload/v1792061967/t10z4jcmrzpllnmn00y5.jpg",
     icon: "Scissors"
   }
 ]
 
 const LOCAL_STORAGE_KEY_PREFIX = 'azhar_admin_'
-const DATA_VERSION_KEY = 'azhar_admin_data_seeded_v20'
+const DATA_VERSION_KEY = 'azhar_admin_data_seeded_v22'
 
 if (typeof window !== 'undefined' && !localStorage.getItem(DATA_VERSION_KEY)) {
   try {
@@ -145,17 +148,6 @@ if (typeof window !== 'undefined' && !localStorage.getItem(DATA_VERSION_KEY)) {
     localStorage.removeItem(LOCAL_STORAGE_KEY_PREFIX + 'timeline')
     localStorage.removeItem(LOCAL_STORAGE_KEY_PREFIX + 'marketing')
     localStorage.setItem(DATA_VERSION_KEY, 'true')
-
-    if (isFirebaseConfigured && db) {
-      getDocs(collection(db, 'services')).then(async (snap) => {
-        for (const d of snap.docs) {
-          await deleteDoc(doc(db, 'services', d.id)).catch(() => {})
-        }
-        for (const s of defaultServices) {
-          await setDoc(doc(db, 'services', s.id), s).catch(() => {})
-        }
-      }).catch(() => {})
-    }
   } catch (e) {
     void e
   }
@@ -345,9 +337,21 @@ export const getKatalogList = async () => {
   return getLocalData('products', portfolioProducts)
 }
 
+export const createSlug = (text) => {
+  if (!text) return ''
+  return String(text)
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
+
 export const saveKatalogItem = async (item) => {
+  const slug = item.slug || createSlug(item.name) || (item.id ? String(item.id) : '')
   const payload = {
     ...item,
+    slug,
     createdAt: item.createdAt || new Date().toISOString(),
     updatedAt: new Date().toISOString()
   }
@@ -392,14 +396,41 @@ const saveLocalKatalog = (payload) => {
   return newId
 }
 
-export const deleteKatalogItem = async (id, imageUrl) => {
-  let targetImageUrl = imageUrl
-  if (!targetImageUrl) {
-    const item = await getKatalogById(id).catch(() => null)
-    if (item && item.image) targetImageUrl = item.image
+export const normalizeProductImages = (product) => {
+  if (!product) return []
+  if (Array.isArray(product.images) && product.images.length > 0) {
+    return product.images
+      .map((item) => {
+        if (typeof item === 'string') {
+          return { url: item, gender: 'Unisex' }
+        }
+        return {
+          url: item?.url || '',
+          gender: item?.gender || 'Unisex'
+        }
+      })
+      .filter((img) => Boolean(img.url))
   }
-  if (targetImageUrl) {
-    await deleteFromCloudinary(targetImageUrl).catch(() => {})
+  if (product.image) {
+    return [{ url: product.image, gender: 'Unisex' }]
+  }
+  return []
+}
+
+export const deleteKatalogItem = async (id, imageUrl) => {
+  const item = await getKatalogById(id).catch(() => null)
+  const imagesToDelete = []
+  if (imageUrl) imagesToDelete.push(imageUrl)
+  if (item?.image) imagesToDelete.push(item.image)
+  if (Array.isArray(item?.images)) {
+    for (const img of item.images) {
+      const u = typeof img === 'string' ? img : img?.url
+      if (u) imagesToDelete.push(u)
+    }
+  }
+  const uniqueUrls = Array.from(new Set(imagesToDelete))
+  for (const u of uniqueUrls) {
+    await deleteFromCloudinary(u).catch(() => {})
   }
   if (isFirebaseConfigured && db) {
     try {
@@ -948,7 +979,7 @@ export const seedInitialDataToFirestore = async () => {
     results.clients += 1
   }
 
-  for (const s of servicesData) {
+  for (const s of defaultServices) {
     await setDoc(doc(db, 'services', String(s.id)), {
       ...s,
       createdAt: serverTimestamp()

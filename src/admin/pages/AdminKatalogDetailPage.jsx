@@ -12,11 +12,12 @@ import {
   Loader2,
   FileText
 } from 'lucide-react'
-import { getKatalogById } from '../../firebase/adminService'
+import { getKatalogById, normalizeProductImages, createSlug } from '../../firebase/adminService'
 
 export default function AdminKatalogDetailPage() {
   const { id } = useParams()
   const [product, setProduct] = useState(null)
+  const [activePhotoIdx, setActivePhotoIdx] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -66,6 +67,10 @@ export default function AdminKatalogDetailPage() {
     )
   }
 
+  const productImages = normalizeProductImages(product)
+  const activeImage = productImages[activePhotoIdx] || productImages[0]
+  const productSlug = product.slug || createSlug(product.name) || product.id
+
   return (
     <div className="admin-detail-page">
       <div className="admin-card">
@@ -95,7 +100,7 @@ export default function AdminKatalogDetailPage() {
               <Edit2 size={16} />
             </Link>
             <a
-              href={`/katalog/${product.id}`}
+              href={`/katalog/${productSlug}`}
               target="_blank"
               rel="noopener noreferrer"
               className="admin-action-icon-btn"
@@ -109,12 +114,29 @@ export default function AdminKatalogDetailPage() {
 
         <div className="admin-katalog-detail-grid">
           <div className="admin-katalog-showcase">
-            <div className="admin-katalog-media-frame">
-              {product.image ? (
-                <img
-                  src={product.image}
-                  alt={product.name}
-                />
+            <div className="admin-katalog-media-frame" style={{ position: 'relative' }}>
+              {activeImage?.url ? (
+                <>
+                  <img
+                    src={activeImage.url}
+                    alt={product.name}
+                  />
+                  {activeImage.gender && (
+                    <div style={{ position: 'absolute', top: '0.75rem', left: '0.75rem', zIndex: 5 }}>
+                      <span
+                        className={
+                          activeImage.gender === 'Laki-laki'
+                            ? 'admin-badge-male'
+                            : activeImage.gender === 'Perempuan'
+                            ? 'admin-badge-female'
+                            : 'admin-badge-unisex'
+                        }
+                      >
+                        {activeImage.gender}
+                      </span>
+                    </div>
+                  )}
+                </>
               ) : (
                 <div style={{ textAlign: 'center', color: 'var(--admin-text-subtle)', padding: '2rem 1rem' }}>
                   <Shirt size={48} style={{ margin: '0 auto 0.5rem auto', opacity: 0.4 }} />
@@ -122,6 +144,53 @@ export default function AdminKatalogDetailPage() {
                 </div>
               )}
             </div>
+
+            {productImages.length > 1 && (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(70px, 1fr))', gap: '0.5rem', marginTop: '0.75rem' }}>
+                {productImages.map((img, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setActivePhotoIdx(idx)}
+                    style={{
+                      position: 'relative',
+                      height: '70px',
+                      borderRadius: 'var(--admin-radius)',
+                      overflow: 'hidden',
+                      padding: 0,
+                      border: activePhotoIdx === idx ? '2px solid var(--admin-primary)' : '1px solid var(--admin-border)',
+                      background: 'var(--admin-surface-hover)',
+                      cursor: 'pointer',
+                      opacity: activePhotoIdx === idx ? 1 : 0.65
+                    }}
+                  >
+                    <img src={img.url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    {img.gender && (
+                      <span
+                        style={{
+                          position: 'absolute',
+                          bottom: '2px',
+                          left: '2px',
+                          right: '2px',
+                          fontSize: '9px',
+                          fontWeight: 700,
+                          padding: '1px 3px',
+                          borderRadius: '2px',
+                          textAlign: 'center',
+                          color: '#FFFFFF',
+                          background: img.gender === 'Laki-laki' ? '#2563EB' : img.gender === 'Perempuan' ? '#DB2777' : '#475569',
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis'
+                        }}
+                      >
+                        {img.gender}
+                      </span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
@@ -141,8 +210,17 @@ export default function AdminKatalogDetailPage() {
                   <Building2 size={13} />
                   <span>Mitra / Lembaga Pemesan</span>
                 </div>
-                <div className="admin-katalog-meta-body">
-                  {product.client || '-'}
+                <div className="admin-katalog-meta-body" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  <span style={{ fontWeight: 700 }}>{product.client || '-'}</span>
+                  {product.clientId && (
+                    <Link
+                      to={`/admin/klien/detail/${product.clientId}`}
+                      className="admin-badge admin-badge-primary"
+                      style={{ fontSize: '0.6875rem', textDecoration: 'none' }}
+                    >
+                      Lihat Klien
+                    </Link>
+                  )}
                 </div>
               </div>
 

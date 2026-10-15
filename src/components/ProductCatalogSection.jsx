@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { School, ArrowRight } from 'lucide-react'
-import { getKatalogList } from '../firebase/adminService'
+import { getKatalogList, normalizeProductImages, createSlug } from '../firebase/adminService'
 import { portfolioProducts as fallbackProducts } from '../data/siteData'
 
 export default function ProductCatalogSection({ limit, showHeader = false, showViewAll = false }) {
@@ -40,38 +40,44 @@ export default function ProductCatalogSection({ limit, showHeader = false, showV
           </div>
         ) : (
           <div className="products-grid">
-            {displayedItems.map((product, idx) => (
-              <Link
-                key={product.id}
-                to={`/katalog/${product.id}`}
-                className={`product-card product-card-clean reveal-up delay-${Math.min((idx % 4) * 100 + 100, 400)}`}
-              >
-                <div className="product-img-wrapper">
-                  {product.image ? (
-                    <img
-                      src={product.image}
-                      alt={`${product.name} - Konveksi Pakaian Azhar Collection`}
-                      className="product-img"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F1F5F9', color: '#94A3B8', fontSize: '0.75rem' }}>
-                      Foto Busana
-                    </div>
-                  )}
-                </div>
+            {displayedItems.map((product, idx) => {
+              const productImages = normalizeProductImages(product)
+              const coverImg = productImages[0]?.url || product.image
+              const itemSlug = product.slug || createSlug(product.name) || product.id
 
-                <div className="product-content">
-                  <span className="product-category-text">{product.categoryLabel || product.category}</span>
-                  <h3 className="product-name">{product.name}</h3>
-
-                  <div className="product-clean-origin">
-                    <School size={15} style={{ color: 'var(--color-primary)', flexShrink: 0 }} />
-                    <span>{product.clientOrigin || product.client || 'Azhar Collection'}</span>
+              return (
+                <Link
+                  key={product.id}
+                  to={`/katalog/${itemSlug}`}
+                  className={`product-card product-card-clean reveal-up delay-${Math.min((idx % 4) * 100 + 100, 400)}`}
+                >
+                  <div className="product-img-wrapper">
+                    {coverImg ? (
+                      <img
+                        src={coverImg}
+                        alt={`${product.name} - Konveksi Pakaian Azhar Collection`}
+                        className="product-img"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F1F5F9', color: '#94A3B8', fontSize: '0.75rem' }}>
+                        Foto Busana
+                      </div>
+                    )}
                   </div>
-                </div>
-              </Link>
-            ))}
+
+                  <div className="product-content">
+                    <span className="product-category-text">{product.categoryLabel || product.category}</span>
+                    <h3 className="product-name">{product.name}</h3>
+
+                    <div className="product-clean-origin">
+                      <School size={15} style={{ color: 'var(--color-primary)', flexShrink: 0 }} />
+                      <span>{product.clientOrigin || product.client || 'Azhar Collection'}</span>
+                    </div>
+                  </div>
+                </Link>
+              )
+            })}
           </div>
         )}
 

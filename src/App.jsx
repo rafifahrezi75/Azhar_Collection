@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Outlet, Navigate, useLocation } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Outlet, Navigate, useLocation, useParams } from 'react-router-dom'
 import ScrollToTop from './components/ScrollToTop'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
@@ -52,6 +52,11 @@ import AdminTimelineDetailPage from './admin/pages/AdminTimelineDetailPage'
 import { useEffect } from 'react'
 import AdminPengaturanPage from './admin/pages/AdminPengaturanPage'
 import { trackPublicVisit } from './firebase/visitorService'
+
+function PortofolioProductRedirect() {
+  const { slug } = useParams()
+  return <Navigate to={slug ? `/katalog/${slug}` : '/katalog'} replace />
+}
 
 function PublicLayout({ onOpenQuote }) {
   const location = useLocation()
@@ -145,9 +150,9 @@ export default function App() {
           <Route path="/layanan" element={<ServicesPage />} />
           <Route path="/layanan/:slug" element={<ServiceDetailPage />} />
           <Route path="/katalog" element={<PortfolioPage />} />
-          <Route path="/katalog/:productId" element={<ProductDetailPage />} />
-          <Route path="/portofolio" element={<PortfolioPage />} />
-          <Route path="/portofolio/:productId" element={<ProductDetailPage />} />
+          <Route path="/katalog/:slug" element={<ProductDetailPage />} />
+          <Route path="/portofolio" element={<Navigate to="/katalog" replace />} />
+          <Route path="/portofolio/:slug" element={<PortofolioProductRedirect />} />
           <Route path="/klien" element={<ClientsPage />} />
           <Route
             path="/klien/:clientId"
