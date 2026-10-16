@@ -62,7 +62,7 @@ export default function OrderProcessSection() {
           </p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem' }}>
+        <div className="order-process-grid">
           {steps.map((item, idx) => (
             <div
               key={idx}

@@ -25,22 +25,24 @@ export default function DetailModal({
             {data.fullDesc}
           </p>
 
-          <table className="spec-table" style={{ marginBottom: '1.75rem' }}>
-            <tbody>
-              <tr>
-                <th style={{ width: '35%' }}>Bahan Kain Rekomendasi</th>
-                <td>{data.materials?.join(', ')}</td>
-              </tr>
-              <tr>
-                <th>Minimum Pemesanan (MOQ)</th>
-                <td>{data.moq}</td>
-              </tr>
-              <tr>
-                <th>Estimasi Waktu Pengerjaan</th>
-                <td>{data.leadTime}</td>
-              </tr>
-            </tbody>
-          </table>
+          <div className="table-responsive-wrapper" style={{ marginBottom: '1.75rem' }}>
+            <table className="spec-table">
+              <tbody>
+                <tr>
+                  <th style={{ width: '35%' }}>Bahan Kain Rekomendasi</th>
+                  <td>{data.materials?.join(', ')}</td>
+                </tr>
+                <tr>
+                  <th>Minimum Pemesanan (MOQ)</th>
+                  <td>{data.moq}</td>
+                </tr>
+                <tr>
+                  <th>Estimasi Waktu Pengerjaan</th>
+                  <td>{data.leadTime}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
           <div className="modal-footer-btns">
             <a
@@ -71,7 +73,7 @@ export default function DetailModal({
           />
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
             <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-accent)', textTransform: 'uppercase' }}>
-              {data.categoryLabel} - {data.id}
+              {(data.categoryLabel || data.category)} - {data.id}
             </span>
           </div>
 
@@ -84,22 +86,24 @@ export default function DetailModal({
             <span style={{ color: 'var(--color-text-main)' }}>{data.client}</span>
           </div>
 
-          <table className="spec-table" style={{ marginBottom: '1.5rem' }}>
-            <tbody>
-              <tr>
-                <th style={{ width: '35%' }}>Bahan Kain</th>
-                <td>{data.specs}</td>
-              </tr>
-              <tr>
-                <th>Fitur & Kustomisasi</th>
-                <td>{data.customDetails}</td>
-              </tr>
-              <tr>
-                <th>Status Produksi</th>
-                <td>Menerima pesanan kustom serupa dengan modifikasi logo, model, dan warna</td>
-              </tr>
-            </tbody>
-          </table>
+          <div className="table-responsive-wrapper" style={{ marginBottom: '1.5rem' }}>
+            <table className="spec-table">
+              <tbody>
+                <tr>
+                  <th style={{ width: '35%' }}>Bahan Kain</th>
+                  <td>{data.specs}</td>
+                </tr>
+                <tr>
+                  <th>Fitur & Kustomisasi</th>
+                  <td>{data.customDetails}</td>
+                </tr>
+                <tr>
+                  <th>Status Produksi</th>
+                  <td>Menerima pesanan kustom serupa dengan modifikasi logo, model, dan warna</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
           <div className="modal-footer-btns">
             <a

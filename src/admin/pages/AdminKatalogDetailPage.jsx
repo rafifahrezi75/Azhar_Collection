@@ -12,7 +12,7 @@ import {
   Loader2,
   FileText
 } from 'lucide-react'
-import { getKatalogById, normalizeProductImages, createSlug } from '../../firebase/adminService'
+import { getKatalogById, normalizeProductImages, createSlug, normalizeProductCategory } from '../../firebase/adminService'
 function shouldShowBadge(gender) {
   if (!gender) return false
   const g = String(gender).trim().toLowerCase()
@@ -87,7 +87,7 @@ export default function AdminKatalogDetailPage() {
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', flexWrap: 'wrap' }}>
                 <h1 className="admin-page-title" style={{ margin: 0 }}>{product.name}</h1>
-                <span className="admin-badge admin-badge-primary">{product.categoryLabel || product.category || 'Katalog'}</span>
+                <span className="admin-badge admin-badge-primary">{normalizeProductCategory(product.category, product.categoryLabel).categoryLabel || 'Katalog'}</span>
               </div>
               <p className="admin-page-desc" style={{ margin: '0.25rem 0 0 0' }}>
                 Rincian spesifikasi teknis model busana dan dokumentasi jahitan.
@@ -211,7 +211,7 @@ export default function AdminKatalogDetailPage() {
                   <span>Kategori Busana</span>
                 </div>
                 <div className="admin-katalog-meta-body">
-                  {product.categoryLabel || product.category || '-'}
+                  {normalizeProductCategory(product.category, product.categoryLabel).categoryLabel || '-'}
                 </div>
               </div>
 

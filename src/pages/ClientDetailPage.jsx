@@ -209,28 +209,8 @@ export default function ClientDetailPage() {
 
       <section style={{ padding: '2rem 0 5rem 0' }}>
         <div className="container">
-          <div
-            style={{
-              background: '#FFFFFF',
-              borderRadius: 'var(--radius-xl)',
-              border: '1px solid var(--color-border)',
-              borderTop: '4px solid var(--color-primary)',
-              boxShadow: 'var(--shadow-sm)',
-              padding: '2.5rem',
-              marginBottom: '3.5rem'
-            }}
-          >
-            <div
-              className="client-detail-top-grid"
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'minmax(0, 1.4fr) minmax(0, 1fr)',
-                gap: '2.5rem',
-                alignItems: 'start',
-                paddingBottom: '2.25rem',
-                borderBottom: '1px solid var(--color-border-subtle)'
-              }}
-            >
+          <div className="client-detail-card">
+            <div className="client-detail-top-grid">
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <Building2 size={18} style={{ color: 'var(--color-primary)' }} />

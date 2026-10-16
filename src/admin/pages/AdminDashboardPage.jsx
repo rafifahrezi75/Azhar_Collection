@@ -29,7 +29,8 @@ import {
   getKatalogList,
   getKlienList,
   getLayananList,
-  getInquiriesList
+  getInquiriesList,
+  normalizeProductCategory
 } from '../../firebase/adminService'
 import { getVisitorStats } from '../../firebase/visitorService'
 import { isFirebaseConfigured } from '../../firebase/config'
@@ -87,7 +88,7 @@ export default function AdminDashboardPage() {
 
       const categoryMap = {}
       prods.forEach((p) => {
-        const cat = p.categoryLabel || p.category || 'Lainnya'
+        const cat = normalizeProductCategory(p.category, p.categoryLabel).categoryLabel || 'Lainnya'
         categoryMap[cat] = (categoryMap[cat] || 0) + 1
       })
       setCategoryStats({

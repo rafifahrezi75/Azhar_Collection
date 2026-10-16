@@ -17,6 +17,7 @@ import {
   deleteDoc,
   query,
   orderBy,
+  where,
   serverTimestamp,
   writeBatch
 } from 'firebase/firestore'
@@ -327,14 +328,69 @@ export const getKatalogList = async () => {
         }
       }
       if (docs.length > 0) {
-        setLocalData('products', docs)
-        return docs
+        const normalized = docs.map((d) => {
+          const norm = normalizeProductCategory(d.category, d.categoryLabel)
+          return { ...d, category: norm.category, categoryLabel: norm.categoryLabel }
+        })
+        setLocalData('products', normalized)
+        return normalized
       }
     } catch {
-      return getLocalData('products', portfolioProducts)
+      const raw = getLocalData('products', portfolioProducts)
+      return raw.map((d) => {
+        const norm = normalizeProductCategory(d.category, d.categoryLabel)
+        return { ...d, category: norm.category, categoryLabel: norm.categoryLabel }
+      })
     }
   }
-  return getLocalData('products', portfolioProducts)
+  const raw = getLocalData('products', portfolioProducts)
+  return raw.map((d) => {
+    const norm = normalizeProductCategory(d.category, d.categoryLabel)
+    return { ...d, category: norm.category, categoryLabel: norm.categoryLabel }
+  })
+}
+
+export const categoryLabels = {
+  seragam: 'Seragam Sekolah',
+  batik: 'Batik Identitas',
+  kemeja: 'Kemeja PDH / PDL',
+  jas: 'Jas Almamater',
+  jaket: 'Jaket & Rompi',
+  kaos: 'Kaos & Olahraga'
+}
+
+export const normalizeProductCategory = (category, categoryLabel) => {
+  const cat = String(category || '').toLowerCase().trim()
+  const lbl = String(categoryLabel || '').toLowerCase().trim()
+  const combined = `${cat} ${lbl}`
+
+  if (cat === 'jas' || cat === 'almamater' || combined.includes('almamater') || combined.includes('jas ')) {
+    return { category: 'jas', categoryLabel: 'Jas Almamater' }
+  }
+  if (cat === 'kemeja' || cat === 'pdh' || cat === 'pdl' || combined.includes('pdh') || combined.includes('pdl') || combined.includes('kemeja')) {
+    return { category: 'kemeja', categoryLabel: 'Kemeja PDH / PDL' }
+  }
+  if (cat === 'kaos' || cat === 'olahraga' || combined.includes('olahraga') || combined.includes('polo') || combined.includes('kaos')) {
+    return { category: 'kaos', categoryLabel: 'Kaos & Olahraga' }
+  }
+  if (cat === 'batik' || combined.includes('batik')) {
+    return { category: 'batik', categoryLabel: 'Batik Identitas' }
+  }
+  if (cat === 'jaket' || cat === 'rompi' || combined.includes('jaket') || combined.includes('rompi')) {
+    return { category: 'jaket', categoryLabel: 'Jaket & Rompi' }
+  }
+  if (cat === 'seragam' || combined.includes('seragam') || combined.includes('pramuka')) {
+    return { category: 'seragam', categoryLabel: categoryLabel || 'Seragam Sekolah' }
+  }
+
+  if (categoryLabels[cat]) {
+    return { category: cat, categoryLabel: categoryLabels[cat] }
+  }
+
+  return {
+    category: cat || 'seragam',
+    categoryLabel: categoryLabel || categoryLabels[cat] || 'Seragam Sekolah'
+  }
 }
 
 export const createSlug = (text) => {
@@ -348,9 +404,12 @@ export const createSlug = (text) => {
 }
 
 export const saveKatalogItem = async (item) => {
+  const normCat = normalizeProductCategory(item.category, item.categoryLabel)
   const slug = item.slug || createSlug(item.name) || (item.id ? String(item.id) : '')
   const payload = {
     ...item,
+    category: normCat.category,
+    categoryLabel: normCat.categoryLabel,
     slug,
     createdAt: item.createdAt || new Date().toISOString(),
     updatedAt: new Date().toISOString()
@@ -379,19 +438,25 @@ export const saveKatalogItem = async (item) => {
 }
 
 const saveLocalKatalog = (payload) => {
+  const normCat = normalizeProductCategory(payload.category, payload.categoryLabel)
+  const normalizedPayload = {
+    ...payload,
+    category: normCat.category,
+    categoryLabel: normCat.categoryLabel
+  }
   const current = getLocalData('products', portfolioProducts)
-  if (payload.id) {
-    const exists = current.some((p) => String(p.id) === String(payload.id))
+  if (normalizedPayload.id) {
+    const exists = current.some((p) => String(p.id) === String(normalizedPayload.id))
     if (exists) {
-      const updated = current.map((p) => (String(p.id) === String(payload.id) ? { ...p, ...payload } : p))
+      const updated = current.map((p) => (String(p.id) === String(normalizedPayload.id) ? { ...p, ...normalizedPayload } : p))
       setLocalData('products', updated)
     } else {
-      setLocalData('products', [payload, ...current])
+      setLocalData('products', [normalizedPayload, ...current])
     }
-    return payload.id
+    return normalizedPayload.id
   }
   const newId = `PROD-${Date.now()}`
-  const newItem = { ...payload, id: newId }
+  const newItem = { ...normalizedPayload, id: newId }
   setLocalData('products', [newItem, ...current])
   return newId
 }
@@ -1063,7 +1128,9 @@ export const getKatalogById = async (idOrSlug) => {
     try {
       const snap = await getDoc(doc(db, 'products', String(idOrSlug)))
       if (snap.exists()) {
-        const item = { id: snap.id, ...snap.data() }
+        const raw = { id: snap.id, ...snap.data() }
+        const norm = normalizeProductCategory(raw.category, raw.categoryLabel)
+        const item = { ...raw, category: norm.category, categoryLabel: norm.categoryLabel }
         saveLocalKatalog(item)
         return item
       }
@@ -1072,7 +1139,9 @@ export const getKatalogById = async (idOrSlug) => {
       const querySnap = await getDocs(q)
       if (!querySnap.empty) {
         const docItem = querySnap.docs[0]
-        const item = { id: docItem.id, ...docItem.data() }
+        const raw = { id: docItem.id, ...docItem.data() }
+        const norm = normalizeProductCategory(raw.category, raw.categoryLabel)
+        const item = { ...raw, category: norm.category, categoryLabel: norm.categoryLabel }
         saveLocalKatalog(item)
         return item
       }
@@ -1082,14 +1151,15 @@ export const getKatalogById = async (idOrSlug) => {
   }
 
   const list = await getKatalogList().catch(() => getLocalData('products', portfolioProducts))
-  return (
-    list.find(
-      (item) =>
-        String(item.id) === String(idOrSlug) ||
-        (item.slug && item.slug.toLowerCase() === target) ||
-        createSlug(item.name) === target
-    ) || null
+  const found = list.find(
+    (item) =>
+      String(item.id) === String(idOrSlug) ||
+      (item.slug && item.slug.toLowerCase() === target) ||
+      createSlug(item.name) === target
   )
+  if (!found) return null
+  const norm = normalizeProductCategory(found.category, found.categoryLabel)
+  return { ...found, category: norm.category, categoryLabel: norm.categoryLabel }
 }
 
 export const getKlienById = async (id) => {

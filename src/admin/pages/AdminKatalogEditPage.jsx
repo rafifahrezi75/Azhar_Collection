@@ -3,18 +3,9 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ArrowLeft, Save, AlertCircle, Loader2, Plus, Trash2, GripVertical, ArrowUp, ArrowDown, Image as ImageIcon } from 'lucide-react'
 import AdminImageUploader from '../components/AdminImageUploader'
 import { uploadToCloudinary } from '../../firebase/cloudinaryService'
-import { getKatalogById, getKlienList, saveKatalogItem, createSlug } from '../../firebase/adminService'
+import { getKatalogById, getKlienList, saveKatalogItem, createSlug, categoryLabels, normalizeProductCategory } from '../../firebase/adminService'
 import AdminClientAutocomplete from '../components/AdminClientAutocomplete'
 import { showSuccessAlert, showErrorAlert } from '../utils/swal'
-
-const categoryLabels = {
-  seragam: 'Seragam Sekolah',
-  batik: 'Batik Identitas',
-  kemeja: 'Kemeja PDH / PDL',
-  jas: 'Jas Almamater',
-  jaket: 'Jaket & Rompi',
-  kaos: 'Kaos & Olahraga'
-}
 
 export default function AdminKatalogEditPage() {
   const { id } = useParams()
@@ -84,11 +75,13 @@ export default function AdminKatalogEditPage() {
             if (found) matchedClientId = found.id
           }
 
+          const normCat = normalizeProductCategory(data.category, data.categoryLabel)
+
           setFormData({
             id: data.id,
             name: data.name || '',
-            category: data.category || 'seragam',
-            categoryLabel: data.categoryLabel || categoryLabels[data.category] || 'Seragam Sekolah',
+            category: normCat.category,
+            categoryLabel: normCat.categoryLabel,
             clientId: matchedClientId,
             client: data.client || '',
             specs: data.specs || data.customDetails || ''
@@ -110,10 +103,11 @@ export default function AdminKatalogEditPage() {
   }, [id])
 
   const handleCategoryChange = (val) => {
+    const norm = normalizeProductCategory(val, categoryLabels[val])
     setFormData((prev) => ({
       ...prev,
-      category: val,
-      categoryLabel: categoryLabels[val] || val
+      category: norm.category,
+      categoryLabel: norm.categoryLabel
     }))
   }
 

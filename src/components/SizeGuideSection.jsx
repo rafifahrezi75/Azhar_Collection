@@ -23,15 +23,7 @@ export default function SizeGuideSection() {
           {sections.map((sec, idx) => (
             <div
               key={sec.key}
-              className={`reveal-up delay-${(idx % 3) * 100 + 100}`}
-              style={{
-                background: '#FFFFFF',
-                border: '1px solid var(--color-border)',
-                borderRadius: 'var(--radius-lg)',
-                padding: '1.75rem',
-                boxShadow: 'var(--shadow-sm)',
-                overflowX: 'auto'
-              }}
+              className={`size-guide-card reveal-up delay-${(idx % 3) * 100 + 100}`}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', marginBottom: '1.25rem', color: 'var(--color-primary-dark)' }}>
                 <div style={{ width: '36px', height: '36px', borderRadius: '4px', background: 'var(--color-primary-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary)' }}>

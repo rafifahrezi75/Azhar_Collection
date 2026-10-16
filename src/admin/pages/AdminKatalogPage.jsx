@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Plus, Search, Edit2, Trash2, Shirt, Image as ImageIcon, Eye } from 'lucide-react'
 import AdminPagination from '../components/AdminPagination'
-import { getKatalogList, deleteKatalogItem, normalizeProductImages, createSlug } from '../../firebase/adminService'
+import { getKatalogList, deleteKatalogItem, normalizeProductImages, createSlug, normalizeProductCategory } from '../../firebase/adminService'
 import { showDeleteConfirm, showToast, showErrorAlert } from '../utils/swal'
 
 export default function AdminKatalogPage() {
@@ -42,7 +42,8 @@ export default function AdminKatalogPage() {
     const matchSearch =
       (item.name || '').toLowerCase().includes(search.toLowerCase()) ||
       (item.client || '').toLowerCase().includes(search.toLowerCase())
-    const matchCat = categoryFilter === 'all' || item.category === categoryFilter
+    const norm = normalizeProductCategory(item.category, item.categoryLabel)
+    const matchCat = categoryFilter === 'all' || norm.category === categoryFilter
     return matchSearch && matchCat
   })
 
@@ -206,7 +207,7 @@ export default function AdminKatalogPage() {
                       </td>
                       <td>
                         <span className="admin-badge admin-badge-primary">
-                          {item.categoryLabel || item.category}
+                          {normalizeProductCategory(item.category, item.categoryLabel).categoryLabel}
                         </span>
                       </td>
                     <td>{item.client || '-'}</td>

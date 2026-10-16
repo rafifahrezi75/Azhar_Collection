@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { School, ArrowRight } from 'lucide-react'
-import { getKatalogList, getKlienList, normalizeProductImages, createSlug } from '../firebase/adminService'
+import { getKatalogList, getKlienList, normalizeProductImages, createSlug, normalizeProductCategory } from '../firebase/adminService'
 import { portfolioProducts as fallbackProducts, clientsData as fallbackClients } from '../data/siteData'
 import { ProductCatalogSkeleton } from './SkeletonLoader'
 
@@ -81,7 +81,7 @@ export default function ProductCatalogSection({ limit, showHeader = false, showV
                   </div>
 
                   <div className="product-content">
-                    <span className="product-category-text">{product.categoryLabel || product.category}</span>
+                    <span className="product-category-text">{normalizeProductCategory(product.category, product.categoryLabel).categoryLabel}</span>
                     <h3 className="product-name">{product.name}</h3>
 
                     <div className="product-clean-origin">

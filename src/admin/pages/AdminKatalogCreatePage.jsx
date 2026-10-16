@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { ArrowLeft, Save, AlertCircle, Loader2, Plus, Trash2, GripVertical, ArrowUp, ArrowDown, Image as ImageIcon } from 'lucide-react'
 import AdminImageUploader from '../components/AdminImageUploader'
 import { uploadToCloudinary } from '../../firebase/cloudinaryService'
-import { getKlienList, saveKatalogItem, createSlug } from '../../firebase/adminService'
+import { getKlienList, saveKatalogItem, createSlug, categoryLabels, normalizeProductCategory } from '../../firebase/adminService'
 import AdminClientAutocomplete from '../components/AdminClientAutocomplete'
 import { showSuccessAlert, showErrorAlert } from '../utils/swal'
 
@@ -30,15 +30,6 @@ export default function AdminKatalogCreatePage() {
     specs: ''
   })
 
-  const categoryLabels = {
-    seragam: 'Seragam Sekolah',
-    batik: 'Batik Identitas',
-    kemeja: 'Kemeja PDH / PDL',
-    jas: 'Jas Almamater',
-    jaket: 'Jaket & Rompi',
-    kaos: 'Kaos & Olahraga'
-  }
-
   useEffect(() => {
     let isMounted = true
     getKlienList()
@@ -57,10 +48,11 @@ export default function AdminKatalogCreatePage() {
   }, [])
 
   const handleCategoryChange = (val) => {
+    const norm = normalizeProductCategory(val, categoryLabels[val])
     setFormData((prev) => ({
       ...prev,
-      category: val,
-      categoryLabel: categoryLabels[val] || val
+      category: norm.category,
+      categoryLabel: norm.categoryLabel
     }))
   }
 

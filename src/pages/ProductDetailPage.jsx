@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import PageHeader from '../components/PageHeader'
-import { getKatalogList, getKlienList, normalizeProductImages, createSlug } from '../firebase/adminService'
+import { getKatalogList, getKlienList, normalizeProductImages, createSlug, normalizeProductCategory } from '../firebase/adminService'
 import { ProductDetailSkeleton } from '../components/SkeletonLoader'
 import { portfolioProducts as fallbackProducts, clientsData as fallbackClients } from '../data/siteData'
 import {
@@ -263,7 +263,7 @@ export default function ProductDetailPage() {
 
             <div className="reveal-right delay-150" style={{ display: 'flex', flexDirection: 'column' }}>
               <div style={{ marginBottom: '0.75rem' }}>
-                <span className="section-tag" style={{ margin: 0 }}>{product.categoryLabel || product.category}</span>
+                <span className="section-tag" style={{ margin: 0 }}>{normalizeProductCategory(product.category, product.categoryLabel).categoryLabel}</span>
               </div>
 
               <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--color-primary-dark)', margin: '0 0 1.25rem 0', lineHeight: 1.3 }}>
@@ -361,7 +361,7 @@ export default function ProductDetailPage() {
           </div>
 
           <div className="reveal-up">
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.75rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.75rem' }}>
               <div>
                 <span className="section-tag">KATALOG LAINNYA</span>
                 <h3 style={{ fontSize: '1.375rem', fontWeight: 800, color: 'var(--color-primary-dark)', margin: 0 }}>
@@ -401,7 +401,7 @@ export default function ProductDetailPage() {
                     </div>
 
                     <div className="product-content">
-                      <span className="product-category-text">{item.categoryLabel || item.category}</span>
+                      <span className="product-category-text">{normalizeProductCategory(item.category, item.categoryLabel).categoryLabel}</span>
                       <h3 className="product-name">{item.name}</h3>
 
                       <div className="product-clean-origin">
