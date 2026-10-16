@@ -206,7 +206,7 @@ export default function ContactMapSection({ showForm = true }) {
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: '230px' }}>
-                <div style={{ paddingBottom: '0.625rem', borderBottom: '2px solid var(--color-border)', marginBottom: '0.875rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ paddingBottom: '0.625rem', borderBottom: '2px solid var(--color-border)', marginBottom: '0.875rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
                   <h3 style={{ fontSize: '1.125rem', fontWeight: 800, color: 'var(--color-primary-dark)', margin: 0 }}>
                     Peta Lokasi Workshop
                   </h3>

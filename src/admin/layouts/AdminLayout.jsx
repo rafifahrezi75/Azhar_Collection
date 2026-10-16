@@ -48,6 +48,26 @@ export default function AdminLayout() {
     return () => unsubscribe()
   }, [])
 
+  useEffect(() => {
+    if (isMobileOpen) {
+      const prevOverflow = document.body.style.overflow
+      document.body.style.overflow = 'hidden'
+      return () => {
+        document.body.style.overflow = prevOverflow
+      }
+    }
+  }, [isMobileOpen])
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 1024) {
+        setIsMobileOpen(false)
+      }
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
   const handleToggleDarkMode = () => {
     setIsDarkMode((prev) => !prev)
   }

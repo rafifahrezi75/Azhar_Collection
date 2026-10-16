@@ -310,7 +310,7 @@ export default function ProductDetailPage() {
 
                     {client.id && (
                       <Link
-                        to={`/klien/${client.id}`}
+                        to="/klien"
                         style={{
                           fontSize: '0.75rem',
                           fontWeight: 700,

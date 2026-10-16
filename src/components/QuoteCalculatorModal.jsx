@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { X, Calculator, MessageSquare, Sparkles } from 'lucide-react'
 
 export default function QuoteCalculatorModal({ isOpen, onClose }) {
@@ -7,6 +7,22 @@ export default function QuoteCalculatorModal({ isOpen, onClose }) {
   const [fabricTier, setFabricTier] = useState('standard')
   const [withEmbroidery, setWithEmbroidery] = useState(true)
   const [withIndividualPacking, setWithIndividualPacking] = useState(true)
+
+  useEffect(() => {
+    if (!isOpen) return
+    const prevOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && onClose) {
+        onClose()
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.body.style.overflow = prevOverflow
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isOpen, onClose])
 
   if (!isOpen) return null
 

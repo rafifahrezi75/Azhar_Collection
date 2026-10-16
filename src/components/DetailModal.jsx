@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { X, MessageSquare, Ruler, Info } from 'lucide-react'
 import { sizeChartData } from '../data/siteData'
 
@@ -7,6 +8,22 @@ export default function DetailModal({
   data,
   onClose
 }) {
+  useEffect(() => {
+    if (!isOpen) return
+    const prevOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && onClose) {
+        onClose()
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.body.style.overflow = prevOverflow
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isOpen, onClose])
+
   if (!isOpen || !data) return null
 
   const renderContent = () => {

@@ -40,6 +40,26 @@ export default function Navbar({ onOpenQuote }) {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  useEffect(() => {
+    if (isMobileOpen) {
+      const prevOverflow = document.body.style.overflow
+      document.body.style.overflow = 'hidden'
+      return () => {
+        document.body.style.overflow = prevOverflow
+      }
+    }
+  }, [isMobileOpen])
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 992) {
+        setIsMobileOpen(false)
+      }
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
   const navItems = [
     { label: 'Beranda', to: '/' },
     { label: 'Tentang Kami', to: '/tentang-kami' },

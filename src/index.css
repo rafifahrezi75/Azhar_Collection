@@ -775,6 +775,13 @@ img {
   }
 }
 
+@media (max-width: 480px) {
+  .about-stats-card {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
 .stat-item {
   text-align: left;
 }
@@ -3701,6 +3708,14 @@ img {
   transform: translateY(0);
 }
 
+@media (hover: none) {
+  .gallery-card-date-badge {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+}
+
 .gallery-page-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -3889,7 +3904,7 @@ img {
 
 .visi-misi-cards-row {
   display: grid;
-  grid-template-columns: 350px 1fr;
+  grid-template-columns: minmax(0, 350px) minmax(0, 1fr);
   gap: 1.75rem;
   align-items: stretch;
 }
