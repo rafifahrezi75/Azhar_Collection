@@ -271,23 +271,98 @@ export default function ProductDetailPage() {
               </h1>
 
               {client && (
-                <div style={{ background: '#FFFFFF', padding: '1.25rem', borderRadius: 'var(--radius-lg)', marginBottom: '1.75rem', border: '1px solid var(--color-border)', boxShadow: 'var(--shadow-xs)' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <div
+                  style={{
+                    background: '#FFFFFF',
+                    borderRadius: 'var(--radius-lg)',
+                    marginBottom: '1.75rem',
+                    border: '1px solid var(--color-border)',
+                    boxShadow: 'var(--shadow-xs)',
+                    overflow: 'hidden'
+                  }}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      padding: '0.625rem 1.25rem',
+                      background: 'rgba(128, 0, 128, 0.04)',
+                      borderBottom: '1px solid var(--color-border-subtle)',
+                      gap: '0.75rem',
+                      flexWrap: 'wrap'
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <School size={14} style={{ color: 'var(--color-primary)' }} />
+                      <span
+                        style={{
+                          fontSize: '0.6875rem',
+                          fontWeight: 800,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.06em',
+                          color: 'var(--color-primary)'
+                        }}
+                      >
+                        Instansi Pemesan
+                      </span>
+                    </div>
+
+                    {client.id && (
+                      <Link
+                        to={`/klien/${client.id}`}
+                        style={{
+                          fontSize: '0.75rem',
+                          fontWeight: 700,
+                          color: 'var(--color-primary)',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '0.25rem',
+                          textDecoration: 'none'
+                        }}
+                      >
+                        <span>Lihat Profil Mitra</span>
+                        <ChevronRight size={13} />
+                      </Link>
+                    )}
+                  </div>
+
+                  <div style={{ padding: '1.125rem 1.25rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
                     <img
                       src={client.logo || client.image || product.image}
                       alt={client.name}
-                      style={{ width: '56px', height: '56px', borderRadius: 'var(--radius-md)', objectFit: 'cover', border: '1px solid var(--color-border)', flexShrink: 0 }}
+                      style={{
+                        width: '54px',
+                        height: '54px',
+                        borderRadius: 'var(--radius-md)',
+                        objectFit: 'cover',
+                        border: '1px solid var(--color-border)',
+                        flexShrink: 0,
+                        background: '#FFFFFF'
+                      }}
                     />
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', minWidth: 0 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-                        <span style={{ fontSize: '0.6875rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--color-primary)', background: 'var(--color-primary-soft)', padding: '0.15rem 0.5rem', borderRadius: '4px' }}>
-                          Instansi Pemesan
-                        </span>
-                        <h3 style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--color-primary-dark)', margin: 0, lineHeight: 1.3 }}>
-                          {client.name}
-                        </h3>
-                      </div>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '1rem', fontSize: '0.8125rem', color: 'var(--color-text-muted)', marginTop: '0.25rem' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', minWidth: 0 }}>
+                      <h3
+                        style={{
+                          fontSize: '1.0625rem',
+                          fontWeight: 800,
+                          color: 'var(--color-primary-dark)',
+                          margin: 0,
+                          lineHeight: 1.35
+                        }}
+                      >
+                        {client.name}
+                      </h3>
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexWrap: 'wrap',
+                          alignItems: 'center',
+                          gap: '1rem',
+                          fontSize: '0.8125rem',
+                          color: 'var(--color-text-muted)'
+                        }}
+                      >
                         {client.city && (
                           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
                             <MapPin size={14} style={{ color: 'var(--color-accent)', flexShrink: 0 }} />
