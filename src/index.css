@@ -311,14 +311,19 @@ img {
 
 .nav-body {
   transition: all var(--transition-normal);
-  background: transparent;
+  background: rgba(45, 8, 49, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   color: #FFFFFF;
 }
 
 .nav-body.scrolled {
-  background: rgba(45, 8, 49, 0.96);
-  backdrop-filter: blur(12px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  background: rgba(35, 6, 38, 0.98);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  border-bottom-color: rgba(255, 255, 255, 0.12);
 }
 
 .nav-inner {
@@ -326,12 +331,15 @@ img {
   align-items: center;
   justify-content: space-between;
   height: 5rem;
+  gap: 2rem;
 }
 
 .brand-logo-container {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  flex-shrink: 0;
+  text-decoration: none;
 }
 
 .brand-logo-img {
@@ -356,7 +364,7 @@ img {
 
 .brand-tagline {
   font-size: 0.6875rem;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--color-accent);
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -365,16 +373,20 @@ img {
 .nav-links-desktop {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 1.75rem;
+  margin: 0 auto;
 }
 
 .nav-link {
   font-size: 0.9375rem;
   font-weight: 500;
-  color: #FFFFFF;
+  color: rgba(255, 255, 255, 0.9);
   transition: color var(--transition-fast);
   position: relative;
   padding: 0.5rem 0;
+  text-decoration: none;
+  white-space: nowrap;
 }
 
 .nav-link:hover,
@@ -397,7 +409,23 @@ img {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin-left: auto;
+  flex-shrink: 0;
+}
+
+@media (min-width: 1025px) and (max-width: 1240px) {
+  .nav-inner {
+    gap: 1.25rem;
+  }
+  .nav-links-desktop {
+    gap: 1.15rem;
+  }
+  .nav-link {
+    font-size: 0.84375rem;
+  }
+  .btn-nav-cta {
+    padding: 0.5rem 0.875rem !important;
+    font-size: 0.8125rem !important;
+  }
 }
 
 .mobile-toggle-btn {
@@ -422,6 +450,9 @@ img {
 @media (max-width: 1024px) {
   .nav-links-desktop {
     display: none;
+  }
+  .nav-actions-right {
+    margin-left: auto;
   }
   .mobile-toggle-btn {
     display: flex;
@@ -1991,7 +2022,7 @@ img {
 
 .subpage-header-banner {
   position: relative;
-  padding: 8.5rem 0 3.75rem 0;
+  padding: 9.5rem 0 4rem 0;
   background-color: var(--color-primary-dark);
   background-image: linear-gradient(135deg, rgba(30, 10, 36, 0.88) 0%, rgba(77, 12, 85, 0.84) 100%), url('/images/page-header.jpg');
   background-size: cover;
